@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.domain;
+package com.cu.sci.lambdaserver.UserPackage;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @Table(name="users")
 public class User {
     @Id
-    private String user_id;
-    private String user_name;
+    private String userId;
+    private String userName;
 }

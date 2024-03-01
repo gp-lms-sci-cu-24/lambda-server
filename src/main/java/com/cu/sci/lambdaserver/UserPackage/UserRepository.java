@@ -1,6 +1,5 @@
-package com.cu.sci.lambdaserver.repositories;
+package com.cu.sci.lambdaserver.UserPackage;
 
-import com.cu.sci.lambdaserver.domain.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

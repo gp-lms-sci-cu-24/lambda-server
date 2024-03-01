@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver;
 
-import com.cu.sci.lambdaserver.repositories.UserRepository;
+import com.cu.sci.lambdaserver.UserPackage.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,13 +14,17 @@ public class LambdaServerApplication implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
-		SpringApplication.run(LambdaServerApplication.class, args);
-	}
+        SpringApplication.run(LambdaServerApplication.class, args);
+    }
 
     @Override
-    public void run(String... args) throws Exception{
-        userRepository.findAll().forEach(user->{
-            System.out.println(user.toString() );
+    public void run(String... args) throws Exception {
+        // Create a RestTemplate instance
+        // Create a RestTemplate instance
+        System.out.println("printing all users in db on start of application");
+        userRepository.findAll().forEach(user -> {
+            System.out.println(user.toString());
         });
     }
+
 }
