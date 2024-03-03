@@ -49,12 +49,19 @@ public class UserService {
     }
     @PostConstruct
     public void seedUsers() {
-        User user1 = new User("user1", "User One");
-        User user2 = new User("user2", "User Two");
-        User user3 = new User("user3", "User Three");
+        User user1 = new User("user1", "password1", "User", "One", "user1@example.com",
+                "123456789", "https://example.com/user1.jpg", 25, Role.USER);
 
+        User user2 = new User("user2", "password2", "User", "Two", "user2@example.com",
+                "987654321", "https://example.com/user2.jpg", 30, Role.USER);
+
+        User user3 = new User("user3", "password3", "User", "Three", "user3@example.com",
+                "456789123", "https://example.com/user3.jpg", 35, Role.USER);
+        User user4 = new User("user4", "password4", "User", "Four", "user4@example.com",
+                "789123456", "https://example.com/user4.jpg", 40, Role.ADMIN);
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
+        userRepository.save(user4);
     }
 }
