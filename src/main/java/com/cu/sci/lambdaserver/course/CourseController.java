@@ -17,8 +17,25 @@ public class CourseController {
     public List<Course> GetCourses(){
         return courseService.GetCourses();
     }
-    @PostMapping
+    @GetMapping("/{id}")
+    public Course getCourseById(@PathVariable(name = "id") Long courseId){
+        return courseService.getCourse(courseId);
+    }
+
+    @PostMapping(path = "/add")
     public void addCourse(@RequestBody Course course){
         courseService.addCourse(course);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCourse(@PathVariable(name = "id") Long courseId){
+        courseService.deleteCourse(courseId);
+    }
+    @PutMapping(path = "/update/{id}")
+    public void updateCourse(@PathVariable(name = "id") Long courseId,
+                             @RequestParam(required = false) String name,
+                             @RequestParam(required = false)String code,
+                             @RequestParam(required = false)String department){
+        courseService.updateCourse(courseId,name,code,department);
     }
 }
