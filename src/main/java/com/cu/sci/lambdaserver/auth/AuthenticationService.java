@@ -24,7 +24,14 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public User register(RegisterRequest request){
+    public ResponseEntity<Object> register(RegisterRequest request) {
+        // Check if the user ID already exists in the database
+        if (repository.existsById(Long.parseLong(request.getId()))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with ID " + request.getId() + " already exists");
+        }
+
+        // Create a new user and save it
         User user = new User();
         user.setId(request.getId());
         user.setEmail(request.getEmail());
@@ -32,7 +39,11 @@ public class AuthenticationService {
         user.setRole(request.getRole());
         user.setLastname(request.getLastname());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        return repository.save(user);
+
+        User savedUser = repository.save(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(savedUser);
     }
     //  public  AuthenticationResponse login(LoginRequest request){
 //    authenticationManager.authenticate(
