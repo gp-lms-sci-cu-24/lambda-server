@@ -14,31 +14,23 @@ public class Student {
     private Long id;
 
     @NotNull()
-    @NotEmpty()
     private String firstName ;
     @NotNull()
-    @NotEmpty()
     private String lastName ;
     @NotNull()
-    @NotEmpty()
     @Column(unique = true)
     private Long code ;
     private Integer creditHours = 0 ;
     @NotNull()
-    @NotEmpty()
     private String address ;
     @NotNull()
-    @NotEmpty()
     private Integer phoneNumber ;
     @NotNull()
-    @NotEmpty()
     private  String highSchoolmajor ;
     private Double gpa  = 0.0 ;
     @NotNull()
-    @NotEmpty()
     private Integer level ;
     @NotNull()
-    @NotEmpty()
     private String department ;
     @ManyToMany
     @JoinTable(
