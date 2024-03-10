@@ -29,8 +29,9 @@ public class StudentService {
         }
     }
 
-    public Student createStudent(Student student){
-        return studentRepository.save(student) ;
+    public StudentDto createStudent(Student student){
+        Student saveStudent = studentRepository.save(student) ;
+        return StudentDto.toDto(saveStudent);
     }
 
     public Student updateStudent(Student studentDetails , Long id){
