@@ -1,22 +1,27 @@
 package com.cu.sci.lambdaserver.StudentPackage;
 
+import com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto.toDto;
 
 @Service
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository ;
 
-    public List<Student> getAllStudents(){
-        return studentRepository.findAll() ;
+    public List<StudentDto> getAllStudents(){
+        List<Student> students = studentRepository.findAll() ;
+        return students.stream().map(student -> toDto(student)).collect(Collectors.toList());
     }
 
-    public Optional<Student> getStudent(Long id){
-        return studentRepository.findById(id) ;
+    public Student getStudent(Long id){
+        return studentRepository.findById(id).orElseThrow(()->new RuntimeException("Student Not Found With This Id" + id)) ;
     }
 
     public Student createStudent(Student student){
