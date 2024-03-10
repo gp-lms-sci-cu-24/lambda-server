@@ -29,9 +29,8 @@ public class StudentService {
         }
     }
 
-    public StudentDto createStudent(Student student){
-        Student saveStudent = studentRepository.save(student) ;
-        return StudentDto.toDto(saveStudent);
+    public Student createStudent(Student student){
+       return studentRepository.save(student) ;
     }
 
     public Student updateStudent(Student studentDetails , Long id){
@@ -39,10 +38,12 @@ public class StudentService {
         student.setLevel(studentDetails.getLevel());
         student.setCreditHours(studentDetails.getCreditHours());
         student.setDepartment(studentDetails.getDepartment());
+        student.setGpa(studentDetails.getGpa());
+        student.setPhoneNumber(studentDetails.getPhoneNumber());
         return studentRepository.save(student) ;
     }
 
-    public void deleteStudent (Student studentDetails , Long id){
+    public void deleteStudent (Long id){
         Student student = studentRepository.findById(id).orElseThrow(()->new RuntimeException("Student Not Found With This Id" + id)) ;
         studentRepository.delete(student);
 
