@@ -20,8 +20,13 @@ public class StudentService {
         return students.stream().map(student -> toDto(student)).collect(Collectors.toList());
     }
 
-    public Student getStudent(Long id){
-        return studentRepository.findById(id).orElseThrow(()->new RuntimeException("Student Not Found With This Id" + id)) ;
+    public StudentDto getStudent(Long id){
+        Optional<Student> student = studentRepository.findById(id) ;
+        if(student.isPresent()){
+            return StudentDto.toDto(student.get()) ;
+        }else {
+            return null ;
+        }
     }
 
     public Student createStudent(Student student){
