@@ -1,10 +1,16 @@
 package com.cu.sci.lambdaserver.StudentPackage.Dto;
 
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.cu.sci.lambdaserver.StudentPackage.Student;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentDto {
     private Long id;
     private String firstName ;
@@ -17,5 +23,19 @@ public class StudentDto {
     private Double gpa   ;
     private Integer level ;
     private String department ;
+
+    public static StudentDto toDto(Student student){
+        return StudentDto.builder()
+                .id(student.getId())
+                .firstName(student.getFirstName())
+                .lastName(student.getLastName())
+                .code(student.getCode())
+                .creditHours(student.getCreditHours())
+                .address(student.getAddress())
+                .phoneNumber(student.getPhoneNumber())
+                .gpa(student.getGpa())
+                .level(student.getLevel())
+                .department(student.getDepartment()).build();
+    }
 
 }
