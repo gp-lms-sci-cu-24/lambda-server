@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto.toDto;
@@ -47,5 +48,10 @@ public class StudentService {
         Student student = studentRepository.findById(id).orElseThrow(()->new RuntimeException("Student Not Found With This Id" + id)) ;
         studentRepository.delete(student);
 
+    }
+
+    public Set<Course> getAllCoursesForStudent(Long id){
+        Student student = studentRepository.findById(id).orElseThrow(()->new RuntimeException("Student Not Found With This Id" + id)) ;
+        return student.getCourses() ;
     }
 }
