@@ -49,9 +49,4 @@ public class StudentService {
         studentRepository.delete(student);
 
     }
-
-    public Set<Course> getAllCoursesForStudent(Long id){
-        Student student = studentRepository.findById(id).orElseThrow(()->new RuntimeException("Student Not Found With This Id" + id)) ;
-        return student.getCourses() ;
     }
-}

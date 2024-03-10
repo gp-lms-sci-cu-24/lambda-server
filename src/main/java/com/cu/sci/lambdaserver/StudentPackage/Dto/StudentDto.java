@@ -37,5 +37,4 @@ public class StudentDto {
                 .level(student.getLevel())
                 .department(student.getDepartment()).build();
     }
-
 }
