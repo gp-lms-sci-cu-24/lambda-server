@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.StudentPackage.Dto;
 
 
-import com.cu.sci.lambdaserver.StudentPackage.Student;
+import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,12 +1,12 @@
 package com.cu.sci.lambdaserver.StudentPackage;
 
 import com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto;
+import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("api/students")
