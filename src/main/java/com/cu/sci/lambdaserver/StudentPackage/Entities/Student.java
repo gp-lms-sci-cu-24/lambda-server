@@ -18,9 +18,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull()
-    private String firstName;
-    @NotNull()
-    private String lastName;
+    private String name;
     @NotNull()
     @Column(unique = true)
     private Long code;
