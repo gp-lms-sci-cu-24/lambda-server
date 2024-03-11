@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.auth;
 
-import com.cu.sci.lambdaserver.UserPackage.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +27,6 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(service.register(request));
     }
-//  @PostMapping("/authenticate")
-//  public ResponseEntity<AuthenticationResponse> authenticate(
-//      @RequestBody AuthenticationRequest request
-//  ) {
-//    return ResponseEntity.ok(service.authenticate(request));
-//  }
-
     @PostMapping("/signin")
     public ResponseEntity<String> signin(
             @RequestBody AuthenticationRequest request

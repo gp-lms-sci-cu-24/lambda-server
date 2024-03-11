@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,14 +25,11 @@ public class User implements UserDetails {
 
     @Id
     private String id;
-    @NonNull
     private String firstname;
-    @NonNull
     private String lastname;
     private String email;
     private String password;
     private String profilepicture="null";
-
     @Enumerated(EnumType.STRING)
     private Role role;
 

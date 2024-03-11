@@ -1,9 +1,8 @@
 package com.cu.sci.lambdaserver.auth;
 
-
 import com.cu.sci.lambdaserver.UserPackage.User;
 import com.cu.sci.lambdaserver.UserPackage.UserRepository;
-import com.cu.sci.lambdaserver.config.JwtService;
+import com.cu.sci.lambdaserver.validator.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +12,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public ResponseEntity<Object> register(RegisterRequest request) {
+    private final ObjectValidator validator;
+
+    public Object register(RegisterRequest request) {
+        var violations = validator.validate(request);
+        if(!violations.isEmpty()){
+            return violations.stream().collect(Collectors.joining("\n"));
+        }
+
         // Check if the user ID already exists in the database
         if (repository.existsById(Long.parseLong(request.getId()))) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -45,15 +49,7 @@ public class AuthenticationService {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedUser);
     }
-    //  public  AuthenticationResponse login(LoginRequest request){
-//    authenticationManager.authenticate(
-//            new UsernamePasswordAuthenticationToken(
-//                    request.getEmail(), request.getEmail()
-////                passwordEncoder.encode(request.getPassword())
-//            )
-//    );
-//
-//  }
+
     public ResponseEntity<String> signIn(AuthenticationRequest request) {
         System.err.println(request.getId());
         System.err.println(request.getPassword());
