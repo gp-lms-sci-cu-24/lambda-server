@@ -2,62 +2,45 @@ package com.cu.sci.lambdaserver.StudentPackage;
 
 import com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto;
 import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
+import com.cu.sci.lambdaserver.StudentPackage.Mapper.Mapper;
+import com.cu.sci.lambdaserver.StudentPackage.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/students")
+@RequestMapping("students")
 public class StudentController {
+    private final Mapper<Student, StudentDto> studentMapper;
     @Autowired
-    private StudentService studentService ;
-    @GetMapping()
-    public ResponseEntity<List<StudentDto>> getAllStudents(){
-        List<StudentDto> students = studentService.getAllStudents();
-        if(students.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else {
-            return new ResponseEntity<>(students, HttpStatus.OK);
-        }
+    private StudentService studentService;
+
+    public StudentController(Mapper<Student, StudentDto> studentMapper) {
+        this.studentMapper = studentMapper;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StudentDto> getStudentById (@PathVariable long id ){
-        StudentDto studentDto = studentService.getStudent(id) ;
-        if(studentDto!=null){
-            return new ResponseEntity<>(studentDto, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND) ;
-        }
+    @PostMapping()
+    public ResponseEntity<StudentDto> createStudent(@RequestBody StudentDto studentDto) {
+        Student studentEntity = studentMapper.mapFrom(studentDto);
+        Student savedStudent = studentService.creatStudent(studentEntity);
+        return new ResponseEntity(studentMapper.mapTo(savedStudent), HttpStatus.CREATED);
     }
 
-    @PostMapping("create-student")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student){
-        Student createdStudent= studentService.createStudent(student);
-        return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
+    @GetMapping
+    public List<StudentDto> getAllStudents() {
+        List<Student> students = studentService.getAllStudents();
+        return students.stream().map(studentMapper::mapTo).collect(Collectors.toList());
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@RequestBody Student studentDetails , @PathVariable Long id){
-        try{
-            Student updatedStudent = studentService.updateStudent(studentDetails, id);
-            return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
-        }catch (RuntimeException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<StudentDto> getStudent(@PathVariable Long id) {
+        Optional<Student> foundstudent = studentService.getStudent(id);
+        return foundstudent.map(student -> new ResponseEntity<>(studentMapper.mapTo(student), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deleteStudent (@PathVariable Long id){
-        try{
-            studentService.deleteStudent(id);
-            return new ResponseEntity(HttpStatus.OK);
-        }catch (RuntimeException e){
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-    }
-
-
 }
