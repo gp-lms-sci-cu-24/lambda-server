@@ -1,12 +1,7 @@
 package com.cu.sci.lambdaserver.auth;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService service;
-    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(
@@ -28,13 +22,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
     @PostMapping("/signin")
-    public ResponseEntity<String> signin(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<Object> signin(
+            @RequestBody LoginRequest request
     ) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getId(),request.getPassword()
-        ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>(authentication.getName(), HttpStatus.OK);
+        return ResponseEntity.ok(service.signIn(request));
     }
 }
