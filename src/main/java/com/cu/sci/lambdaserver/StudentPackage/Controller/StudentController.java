@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.StudentPackage;
+package com.cu.sci.lambdaserver.StudentPackage.Controller;
 
 import com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto;
 import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
@@ -42,5 +42,24 @@ public class StudentController {
         Optional<Student> foundstudent = studentService.getStudent(id);
         return foundstudent.map(student -> new ResponseEntity<>(studentMapper.mapTo(student), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id,@RequestBody StudentDto studentDto){
+        if(!studentService.isExsist(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND) ;
+        }
+        Student student = studentMapper.mapFrom(studentDto) ;
+        Student updatedStudent = studentService.updateStudent(id,student) ;
+        return new ResponseEntity<>(studentMapper.mapTo(updatedStudent),HttpStatus.OK) ;
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity deletStudent(@PathVariable("id") Long id){
+        if(!studentService.isExsist(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND) ;
+        }
+        studentService.deleteStudent(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT) ;
     }
 }
