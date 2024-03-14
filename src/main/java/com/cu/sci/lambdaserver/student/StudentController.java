@@ -3,7 +3,7 @@ package com.cu.sci.lambdaserver.student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.mapper.iMapper;
 import com.cu.sci.lambdaserver.student.service.iStudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,16 +14,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("students")
+@RequiredArgsConstructor
 public class StudentController {
     private final iMapper<Student, StudentDto> studentMapper;
-    @Autowired
-    private iStudentService studentService;
+    private final iStudentService studentService;
 
-    public StudentController(iMapper<Student, StudentDto> studentMapper) {
-        this.studentMapper = studentMapper;
-    }
-
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<StudentDto> createStudent(@RequestBody StudentDto studentDto) {
         Student studentEntity = studentMapper.mapFrom(studentDto);
         Student savedStudent = studentService.creatStudent(studentEntity);
