@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.StudentPackage.Entities;
+package com.cu.sci.lambdaserver.student;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,11 +1,11 @@
-package com.cu.sci.lambdaserver.StudentPackage.Service;
+package com.cu.sci.lambdaserver.student.service;
 
-import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
+import com.cu.sci.lambdaserver.student.Student;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface StudentService {
+public interface iStudentService {
     Student creatStudent(Student student);
 
     List<Student> getAllStudents();

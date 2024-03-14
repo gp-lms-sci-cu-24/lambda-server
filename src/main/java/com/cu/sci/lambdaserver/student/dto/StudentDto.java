@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.StudentPackage.Dto;
+package com.cu.sci.lambdaserver.student.dto;
 
 
 import lombok.AllArgsConstructor;

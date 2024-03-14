@@ -1,9 +1,8 @@
-package com.cu.sci.lambdaserver.StudentPackage.Controller;
+package com.cu.sci.lambdaserver.student;
 
-import com.cu.sci.lambdaserver.StudentPackage.Dto.StudentDto;
-import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
-import com.cu.sci.lambdaserver.StudentPackage.Mapper.Mapper;
-import com.cu.sci.lambdaserver.StudentPackage.Service.StudentService;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.student.mapper.iMapper;
+import com.cu.sci.lambdaserver.student.service.iStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +15,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("students")
 public class StudentController {
-    private final Mapper<Student, StudentDto> studentMapper;
+    private final iMapper<Student, StudentDto> studentMapper;
     @Autowired
-    private StudentService studentService;
+    private iStudentService studentService;
 
-    public StudentController(Mapper<Student, StudentDto> studentMapper) {
+    public StudentController(iMapper<Student, StudentDto> studentMapper) {
         this.studentMapper = studentMapper;
     }
 

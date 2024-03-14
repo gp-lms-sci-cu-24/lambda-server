@@ -1,8 +1,8 @@
-package com.cu.sci.lambdaserver.StudentPackage.Service.Impl;
+package com.cu.sci.lambdaserver.student.service;
 
-import com.cu.sci.lambdaserver.StudentPackage.Entities.Student;
-import com.cu.sci.lambdaserver.StudentPackage.Service.StudentService;
-import com.cu.sci.lambdaserver.StudentPackage.StudentRepository;
+import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.student.service.iStudentService;
+import com.cu.sci.lambdaserver.student.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 @Service
-public class StudentServiceImpl implements StudentService {
+public class StudentService implements iStudentService {
     @Autowired
     private StudentRepository studentRepository;
 

@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.StudentPackage.Config;
+package com.cu.sci.lambdaserver.student.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
