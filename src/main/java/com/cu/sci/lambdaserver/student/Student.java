@@ -41,4 +41,6 @@ public class Student extends User {
 
     @Enumerated(EnumType.STRING)
     private Level level;
+
+    private String joiningYear;
 }
