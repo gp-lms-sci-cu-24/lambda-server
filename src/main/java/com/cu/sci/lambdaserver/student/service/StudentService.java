@@ -1,9 +1,8 @@
 package com.cu.sci.lambdaserver.student.service;
 
 import com.cu.sci.lambdaserver.student.Student;
-import com.cu.sci.lambdaserver.student.service.iStudentService;
 import com.cu.sci.lambdaserver.student.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +10,10 @@ import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class StudentService implements iStudentService {
-    @Autowired
-    private StudentRepository studentRepository;
+
+    private final StudentRepository studentRepository;
 
     @Override
     public Student creatStudent(Student student) {
