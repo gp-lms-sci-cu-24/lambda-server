@@ -1,6 +1,5 @@
-package com.cu.sci.lambdaserver.UserPackage;
+package com.cu.sci.lambdaserver.user;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,14 +46,14 @@ public class UserService {
             throw new RuntimeException("Failed to delete user: " + e.getMessage());
         }
     }
-    @PostConstruct
-    public void seedUsers() {
-        User user1 = new User("user1", "User One");
-        User user2 = new User("user2", "User Two");
-        User user3 = new User("user3", "User Three");
-
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
-    }
+//    @PostConstruct
+//    public void seedUsers() {
+//        User user1 = new User("user1", "User One");
+//        User user2 = new User("user2", "User Two");
+//        User user3 = new User("user3", "User Three");
+//
+//        userRepository.save(user1);
+//        userRepository.save(user2);
+//        userRepository.save(user3);
+//    }
 }

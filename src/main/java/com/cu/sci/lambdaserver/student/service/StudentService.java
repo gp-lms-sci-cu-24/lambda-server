@@ -40,7 +40,7 @@ public class StudentService implements iStudentService {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student Not Found With This Id" + id));
         student.setLevel(studentDetails.getLevel());
         student.setCreditHours(studentDetails.getCreditHours());
-        student.setDepartment(studentDetails.getDepartment());
+//        student.setDepartment(studentDetails.getDepartment());
         student.setGpa(studentDetails.getGpa());
         return studentRepository.save(student);
     }

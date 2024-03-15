@@ -17,6 +17,7 @@ public class CourseService {
         return courseRepository.findAll();
     }
     public Course getCourse(Long courseId){
+        /* @TODO: Refactor code to check optional isPresent*/
         if(courseRepository.existsById(courseId))
             return courseRepository.findById(courseId).get();
         else
@@ -34,24 +35,24 @@ public class CourseService {
     @Transactional
     public void updateCourse(Long courseId,
                              String name,
-                             String code,
-                             String department){
+                             String code){
         Course c;
+        /* @TODO: Refactor code to check optional isPresent*/
         if(courseRepository.existsById(courseId))
             c=courseRepository.findById(courseId).get();
         else
             throw new IllegalStateException("this course doesn't exist");
         if(name!=null&&
-                name.length()>0
+                !name.isEmpty()
                 &&!c.getName().equals(name))
             c.setName(name);
         if(code!=null
-                &&code.length()>0
+                &&!code.isEmpty()
                 &&!c.getCode().equals(code))
             c.setCode(code);
-        if(department!=null
-                &&department.length()>0
-                &&!c.getDepartment().equals(department))
-            c.setDepartment(department);
+//        if(department!=null
+//                &&department.length()>0
+//                &&!c.getDepartment().equals(department))
+//            c.setDepartment(department);
     }
 }

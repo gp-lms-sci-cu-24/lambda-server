@@ -1,45 +1,44 @@
 package com.cu.sci.lambdaserver.student;
 
+import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Level;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
-@Table
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotNull()
-    private String name;
-    @NotNull()
-    @Column(unique = true)
-    private Long code;
-    private Integer creditHours = 0;
-    @NotNull()
+@Table(name = "students")
+public class Student extends User {
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String fatherName;
+
+    @Column(nullable = false)
+    private String grandfatherName;
+
+    @Column(nullable = false)
+    private String lastname;
+
+    @Column(unique = true, nullable = false)
+    private String code;
+
+    @Column(columnDefinition = "integer default 0")
+    private Integer creditHours;
+
     private String address;
-    @NotNull()
-    private Integer phoneNumber;
-    @NotNull()
-    private String highSchoolmajor;
-    private Double gpa = 0.0;
-    @NotNull()
-    private Integer level;
-    @NotNull()
-    private String department;
-//    @ManyToMany
-//    @JoinTable(
-//            name = "student_courses",
-//            joinColumns = @JoinColumn(name = "student_id"),
-//            inverseJoinColumns = @JoinColumn(name = "course_id")
-//    )
-//
-//    private Set<Course> courses = new HashSet<>() ;
+
+    @Column(columnDefinition = "double default 0")
+    private Double gpa;
+
+    @Enumerated(EnumType.STRING)
+    private Level level;
 }
