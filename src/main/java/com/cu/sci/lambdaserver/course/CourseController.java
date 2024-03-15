@@ -34,8 +34,7 @@ public class CourseController {
     @PutMapping(path = "/update/{id}")
     public void updateCourse(@PathVariable(name = "id") Long courseId,
                              @RequestParam(required = false) String name,
-                             @RequestParam(required = false)String code,
-                             @RequestParam(required = false)String department){
-        courseService.updateCourse(courseId,name,code,department);
+                             @RequestParam(required = false)String code){
+        courseService.updateCourse(courseId,name,code);
     }
 }
