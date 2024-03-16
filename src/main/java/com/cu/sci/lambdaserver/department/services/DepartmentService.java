@@ -51,6 +51,9 @@ public class DepartmentService implements iDepartmentService {
 
     @Override
     public void deleteDepartment(Long id) {
+        if (!departmentRepository.existsById(id)) {
+            throw new EntityNotFoundException("Department with ID " + id + " does not exist");
+        }
         departmentRepository.deleteById(id);
     }
 }

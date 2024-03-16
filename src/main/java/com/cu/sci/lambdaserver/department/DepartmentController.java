@@ -43,4 +43,26 @@ public class DepartmentController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND) ;
         }
     }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity updateDepartment(@PathVariable Long id, @RequestBody DepartmentDto departmentDto) {
+        try {
+            Department department = departmentMapper.mapFrom(departmentDto);
+            Department updatedDepartment = departmentService.updateDepartment(id, department);
+            return new ResponseEntity(departmentMapper.mapTo(updatedDepartment), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity deleteDepartment(@PathVariable Long id) {
+        try {
+            departmentService.deleteDepartment(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
