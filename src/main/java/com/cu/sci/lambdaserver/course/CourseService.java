@@ -5,54 +5,66 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class CourseService {
+public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
+
     @Autowired
     public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
-    public List<Course> GetCourses(){
+
+    public List<Course> GetCourses() {
         return courseRepository.findAll();
     }
-    public Course getCourse(Long courseId){
-        /* @TODO: Refactor code to check optional isPresent*/
-        if(courseRepository.existsById(courseId))
-            return courseRepository.findById(courseId).get();
+
+    public Course getCourse(Long courseId) {
+        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        if (optionalCourse.isPresent())
+            return optionalCourse.get();
         else
             throw new IllegalStateException("this course doesn't exist");
     }
+
     public void addCourse(Course course) {
         courseRepository.save(course);
     }
-    public void deleteCourse(Long courseId){
-        if(courseRepository.existsById(courseId))
+
+    public void deleteCourse(Long courseId) {
+        if (courseRepository.existsById(courseId))
             courseRepository.deleteById(courseId);
         else
             throw new IllegalStateException("this course doesn't exist");
     }
+
     @Transactional
     public void updateCourse(Long courseId,
                              String name,
-                             String code){
+                             String code,
+                             String info,
+                             Integer creditHours) {
+        Optional<Course> optionalCourse = courseRepository.findById(courseId);
         Course c;
-        /* @TODO: Refactor code to check optional isPresent*/
-        if(courseRepository.existsById(courseId))
-            c=courseRepository.findById(courseId).get();
+        if (optionalCourse.isPresent())
+            c = optionalCourse.get();
         else
             throw new IllegalStateException("this course doesn't exist");
-        if(name!=null&&
+        if (name != null &&
                 !name.isEmpty()
-                &&!c.getName().equals(name))
+                && !c.getName().equals(name))
             c.setName(name);
-        if(code!=null
-                &&!code.isEmpty()
-                &&!c.getCode().equals(code))
+        if (code != null
+                && !code.isEmpty()
+                && !c.getCode().equals(code))
             c.setCode(code);
-//        if(department!=null
-//                &&department.length()>0
-//                &&!c.getDepartment().equals(department))
-//            c.setDepartment(department);
+        if (info != null
+                && !info.isEmpty()
+                && !c.getInfo().equals(info))
+            c.setInfo(info);
+        if (creditHours != null
+                && !c.getCreditHours().equals(creditHours))
+            c.setCreditHours(creditHours);
     }
 }
