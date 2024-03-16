@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.student.mapper;
+package com.cu.sci.lambdaserver.utils.mapper.config;
 
 public interface iMapper<A, B> {
     B mapTo(A a);

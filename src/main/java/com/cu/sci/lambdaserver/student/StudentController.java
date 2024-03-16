@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.student;
 
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
-import com.cu.sci.lambdaserver.student.mapper.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import com.cu.sci.lambdaserver.student.service.iStudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
