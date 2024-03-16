@@ -21,16 +21,16 @@ public class Department {
     @SequenceGenerator(name = "department_seq", sequenceName = "department_seq", allocationSize = 10)
     private Long id;
 
-    @Column(unique = true , nullable = false)
-    private String name ;
+    @Column(unique = true, nullable = false)
+    private String name;
 
     @Column(nullable = false)
-    private String info ;
+    private String info;
 
-    private String image ;
+    private String image;
 
     @OneToMany(mappedBy = "department")
-    private List<Student> students ;
+    private List<Student> students;
 
 
 }
