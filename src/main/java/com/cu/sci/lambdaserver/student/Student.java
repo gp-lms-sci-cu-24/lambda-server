@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.student;
 
+import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import jakarta.persistence.*;
@@ -43,4 +44,8 @@ public class Student extends User {
     private Level level;
 
     private String joiningYear;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department ;
 }
