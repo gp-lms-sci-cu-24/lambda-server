@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.department.services;
 import com.cu.sci.lambdaserver.department.Department;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface iDepartmentService {
     Department createDepartment (Department department) ;
@@ -13,7 +14,7 @@ public interface iDepartmentService {
 
     Department getDepartmentByname(String name) ;
 
-    Department updateDepartment(Long id) ;
+    Department updateDepartment(Long id,Department department) ;
 
     void deleteDepartment(Long id) ;
 }
