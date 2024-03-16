@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.department;
 
 import com.cu.sci.lambdaserver.department.services.DepartmentService;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,15 @@ public class DepartmentController {
         List<Department> departmentsList = departmentService.getAllDepartments() ;
         List<DepartmentDto>departmentDtos = departmentsList.stream().map(departmentMapper::mapTo).collect(Collectors.toList());
         return new ResponseEntity<>(departmentDtos,HttpStatus.OK) ;
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity getDepartment(@PathVariable("id") long id){
+        try{
+            Department department = departmentService.getDepartmentByid(id) ;
+            return new ResponseEntity<>(departmentMapper.mapTo(department),HttpStatus.FOUND) ;
+        }catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND) ;
+        }
     }
 }
