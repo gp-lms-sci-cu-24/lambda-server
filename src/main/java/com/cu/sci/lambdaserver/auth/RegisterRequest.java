@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.auth;
 
-import com.cu.sci.lambdaserver.UserPackage.Role;
+import com.cu.sci.lambdaserver.user.Role;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

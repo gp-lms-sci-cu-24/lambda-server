@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.config;
 
-import com.cu.sci.lambdaserver.UserPackage.UserRepository;
+import com.cu.sci.lambdaserver.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
 
     private final UserRepository repository;
-
     @Bean
     public UserDetailsService userDetailsService() {
         return id -> repository.findById(id)

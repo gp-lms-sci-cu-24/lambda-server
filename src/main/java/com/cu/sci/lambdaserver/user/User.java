@@ -1,37 +1,44 @@
-package com.cu.sci.lambdaserver.UserPackage;
+package com.cu.sci.lambdaserver.user;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Data
-@Builder
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "_user")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
-    private String id;
-    private String firstname;
-    private String lastname;
-    private String email;
+    private String userId;
     private String password;
-    private String profilepicture="null";
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private String nationalId;
+    private String profilePictureUrl;
+    private String title;
+    private String biography;
+    private Integer age;
+    private Boolean isLocked;
+    private Boolean isActive;
     @Enumerated(EnumType.STRING)
-    private Role role;
+//    @Setter(AccessLevel.NONE)
+    private Role role = Role.USER;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

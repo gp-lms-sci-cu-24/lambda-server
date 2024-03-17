@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.auth;
 
-import com.cu.sci.lambdaserver.UserPackage.User;
-import com.cu.sci.lambdaserver.UserPackage.UserRepository;
+import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.user.UserRepository;
 import com.cu.sci.lambdaserver.config.JwtService;
 import com.cu.sci.lambdaserver.validator.ObjectValidator;
 import lombok.RequiredArgsConstructor;
@@ -37,17 +37,17 @@ public class AuthenticationService {
         }
 
         // Check if the user ID already exists in the database
-        if (repository.existsById(Long.parseLong(request.getId()))) {
+        if (repository.existsById(request.getId() ) ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("User with ID " + request.getId() + " already exists");
         }
         // Create a new user and save it
         User user = new User();
-        user.setId(request.getId());
+        user.setUserId(request.getId());
         user.setEmail(request.getEmail());
-        user.setFirstname(request.getFirstname());
+        user.setFirstName(request.getFirstname());
         user.setRole(request.getRole());
-        user.setLastname(request.getLastname());
+        user.setLastName(request.getLastname());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = repository.save(user);
