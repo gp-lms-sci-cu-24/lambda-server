@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.student.service;
 
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +38,12 @@ public class StudentService implements iStudentService {
 
     @Override
     public Student updateStudent(Long id, Student studentDetails) {
-        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student Not Found With This Id" + id));
-        student.setLevel(studentDetails.getLevel());
-        student.setCreditHours(studentDetails.getCreditHours());
-//        student.setDepartment(studentDetails.getDepartment());
-        student.setGpa(studentDetails.getGpa());
-        return studentRepository.save(student);
+        return studentRepository.findById(id).map(exsistStudent->{
+            Optional.ofNullable(studentDetails.getGpa()).ifPresent(exsistStudent::setGpa);
+            Optional.ofNullable(studentDetails.getCreditHours()).ifPresent(exsistStudent::setCreditHours);
+            Optional.ofNullable(studentDetails.getLevel()).ifPresent(exsistStudent::setLevel);
+            return studentRepository.save(exsistStudent) ;
+        }).orElseThrow(()->new EntityNotFoundException("Department with ID " + id + " does not exist")) ;
     }
 
     @Override

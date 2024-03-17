@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("students")
+@RequestMapping(path = "/api/students")
 @RequiredArgsConstructor
 public class StudentController {
     private final iMapper<Student, StudentDto> studentMapper;
