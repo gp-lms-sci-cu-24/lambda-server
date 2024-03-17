@@ -1,33 +1,33 @@
 package com.cu.sci.lambdaserver.course;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = ("/api/courses"))
+@RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
-
-    @Autowired
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
-    }
+    private final iMapper<Course, CourseDto> courseMapper;
 
     @GetMapping
-    public List<Course> GetCourses() {
-        return courseService.GetCourses();
+    public List<CourseDto> GetCourses() {
+        List<Course> l = courseService.GetCourses();
+        return l.stream().map(courseMapper::mapTo).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Course getCourseById(@PathVariable(name = "id") Long courseId) {
-        return courseService.getCourse(courseId);
+    public CourseDto getCourseById(@PathVariable(name = "id") Long courseId) {
+        return courseMapper.mapTo(courseService.getCourse(courseId));
     }
 
     @PostMapping(path = "/add")
-    public void addCourse(@RequestBody Course course) {
-        courseService.addCourse(course);
+    public void addCourse(@RequestBody CourseDto course) {
+        courseService.addCourse(courseMapper.mapFrom(course));
     }
 
     @DeleteMapping("/{id}")
