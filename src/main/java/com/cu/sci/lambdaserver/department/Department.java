@@ -1,11 +1,13 @@
 package com.cu.sci.lambdaserver.department;
 
 
+import com.cu.sci.lambdaserver.course.DepartmentCourses;
 import com.cu.sci.lambdaserver.student.Student;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,6 +29,9 @@ public class Department {
     private String info;
 
     private String image;
+
+    @OneToMany(mappedBy = "department")
+    private Set<DepartmentCourses> departmentCoursesSet ;
 
     @OneToMany(mappedBy = "department")
     private List<Student> students;

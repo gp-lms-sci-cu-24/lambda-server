@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
+import java.util.Set;
 
 
 @Getter
@@ -32,6 +33,9 @@ public class Course {
 
     @Column(nullable = false)
     private Integer creditHours;
+
+    @OneToMany(mappedBy = "course")
+    private Set<DepartmentCourses> departmentCoursesSet ;
 
     @Override
     public final boolean equals(Object o) {
