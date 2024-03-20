@@ -12,8 +12,6 @@ public interface iStudentService {
 
     Optional<Student> getStudent(Long id);
 
-    Boolean isExsist(Long id);
-
     Student updateStudent(Long id, Student student);
 
     void deleteStudent(Long id);

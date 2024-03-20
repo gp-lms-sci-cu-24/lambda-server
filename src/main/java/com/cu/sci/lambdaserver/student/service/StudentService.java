@@ -36,11 +36,6 @@ public class StudentService implements iStudentService {
     }
 
     @Override
-    public Boolean isExsist(Long id) {
-        return studentRepository.existsById(id);
-    }
-
-    @Override
     public Student updateStudent(Long id, Student studentDetails) {
         return studentRepository.findById(id).map(exsistStudent -> {
             Optional.ofNullable(studentDetails.getGpa()).ifPresent(exsistStudent::setGpa);
