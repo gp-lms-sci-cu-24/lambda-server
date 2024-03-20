@@ -48,4 +48,10 @@ public class Student extends User {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department ;
+
+    @Builder
+    public Student(Long id, String userName, String password, String profilePicture) {
+        super(id, userName, password, profilePicture);
+    }
+
 }

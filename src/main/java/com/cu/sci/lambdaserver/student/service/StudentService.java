@@ -4,9 +4,11 @@ import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -22,8 +24,9 @@ public class StudentService implements iStudentService {
     }
 
     @Override
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll().stream().toList();
+    public Page<Student> getAllStudents(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return studentRepository.findAll(pageable);
     }
 
     @Override
@@ -32,22 +35,20 @@ public class StudentService implements iStudentService {
     }
 
     @Override
-    public Boolean isExsist(Long id) {
-        return studentRepository.existsById(id);
-    }
-
-    @Override
     public Student updateStudent(Long id, Student studentDetails) {
-        return studentRepository.findById(id).map(exsistStudent->{
+        return studentRepository.findById(id).map(exsistStudent -> {
             Optional.ofNullable(studentDetails.getGpa()).ifPresent(exsistStudent::setGpa);
             Optional.ofNullable(studentDetails.getCreditHours()).ifPresent(exsistStudent::setCreditHours);
             Optional.ofNullable(studentDetails.getLevel()).ifPresent(exsistStudent::setLevel);
-            return studentRepository.save(exsistStudent) ;
-        }).orElseThrow(()->new EntityNotFoundException("Department with ID " + id + " does not exist")) ;
+            return studentRepository.save(exsistStudent);
+        }).orElseThrow(() -> new EntityNotFoundException("Student with ID " + id + " does not exist"));
     }
 
     @Override
     public void deleteStudent(Long id) {
+        if (!studentRepository.existsById(id)) {
+            throw new EntityNotFoundException("Student with ID " + id + " does not exist");
+        }
         studentRepository.deleteById(id);
     }
 

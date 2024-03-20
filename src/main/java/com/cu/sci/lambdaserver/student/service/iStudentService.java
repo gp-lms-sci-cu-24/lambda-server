@@ -1,18 +1,16 @@
 package com.cu.sci.lambdaserver.student.service;
 
 import com.cu.sci.lambdaserver.student.Student;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface iStudentService {
     Student creatStudent(Student student);
 
-    List<Student> getAllStudents();
+    Page<Student> getAllStudents(Integer pageNo, Integer pageSize);
 
     Optional<Student> getStudent(Long id);
-
-    Boolean isExsist(Long id);
 
     Student updateStudent(Long id, Student student);
 
