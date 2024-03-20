@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.student;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import com.cu.sci.lambdaserver.student.service.iStudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api/students")
+@RequestMapping(path = "v1/api/students")
 @RequiredArgsConstructor
 public class StudentController {
     private final iMapper<Student, StudentDto> studentMapper;
@@ -26,9 +27,10 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<StudentDto> getAllStudents() {
-        List<Student> students = studentService.getAllStudents();
-        return students.stream().map(studentMapper::mapTo).collect(Collectors.toList());
+    public ResponseEntity getAllStudents(@RequestParam Integer pageNo , @RequestParam Integer pageSize) {
+        Page<Student> page = studentService.getAllStudents(pageNo,pageSize) ;
+        Page<StudentDto> dtoPage = page.map(studentMapper::mapTo) ;
+        return new ResponseEntity<>(dtoPage, HttpStatus.OK) ;
     }
 
     @GetMapping(path = "/{id}")

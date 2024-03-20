@@ -4,9 +4,11 @@ import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -22,8 +24,10 @@ public class StudentService implements iStudentService {
     }
 
     @Override
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll().stream().toList();
+    public Page<Student> getAllStudents(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Student> studentPage = studentRepository.findAll(pageable);
+        return studentPage;
     }
 
     @Override
