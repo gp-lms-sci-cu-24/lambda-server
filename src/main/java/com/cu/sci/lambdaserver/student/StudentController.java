@@ -1,16 +1,15 @@
 package com.cu.sci.lambdaserver.student;
 
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import com.cu.sci.lambdaserver.student.service.iStudentService;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "v1/api/students")
@@ -23,14 +22,14 @@ public class StudentController {
     public ResponseEntity<StudentDto> createStudent(@RequestBody StudentDto studentDto) {
         Student studentEntity = studentMapper.mapFrom(studentDto);
         Student savedStudent = studentService.creatStudent(studentEntity);
-        return new ResponseEntity(studentMapper.mapTo(savedStudent), HttpStatus.CREATED);
+        return new ResponseEntity<>(studentMapper.mapTo(savedStudent), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity getAllStudents(@RequestParam Integer pageNo , @RequestParam Integer pageSize) {
-        Page<Student> page = studentService.getAllStudents(pageNo,pageSize) ;
-        Page<StudentDto> dtoPage = page.map(studentMapper::mapTo) ;
-        return new ResponseEntity<>(dtoPage, HttpStatus.OK) ;
+    public ResponseEntity<Page<StudentDto>> getAllStudents(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+        Page<Student> page = studentService.getAllStudents(pageNo, pageSize);
+        Page<StudentDto> dtoPage = page.map(studentMapper::mapTo);
+        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
@@ -42,20 +41,22 @@ public class StudentController {
 
     @PatchMapping(path = "/{id}")
     public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody StudentDto studentDto) {
-        if (!studentService.isExsist(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            Student student = studentMapper.mapFrom(studentDto);
+            Student updatedStudent = studentService.updateStudent(id, student);
+            return new ResponseEntity<>(studentMapper.mapTo(updatedStudent), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        Student student = studentMapper.mapFrom(studentDto);
-        Student updatedStudent = studentService.updateStudent(id, student);
-        return new ResponseEntity<>(studentMapper.mapTo(updatedStudent), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity deletStudent(@PathVariable("id") Long id) {
-        if (!studentService.isExsist(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            studentService.deleteStudent(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        studentService.deleteStudent(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

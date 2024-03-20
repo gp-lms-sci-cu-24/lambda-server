@@ -42,16 +42,19 @@ public class StudentService implements iStudentService {
 
     @Override
     public Student updateStudent(Long id, Student studentDetails) {
-        return studentRepository.findById(id).map(exsistStudent->{
+        return studentRepository.findById(id).map(exsistStudent -> {
             Optional.ofNullable(studentDetails.getGpa()).ifPresent(exsistStudent::setGpa);
             Optional.ofNullable(studentDetails.getCreditHours()).ifPresent(exsistStudent::setCreditHours);
             Optional.ofNullable(studentDetails.getLevel()).ifPresent(exsistStudent::setLevel);
-            return studentRepository.save(exsistStudent) ;
-        }).orElseThrow(()->new EntityNotFoundException("Department with ID " + id + " does not exist")) ;
+            return studentRepository.save(exsistStudent);
+        }).orElseThrow(() -> new EntityNotFoundException("Student with ID " + id + " does not exist"));
     }
 
     @Override
     public void deleteStudent(Long id) {
+        if (!studentRepository.existsById(id)) {
+            throw new EntityNotFoundException("Student with ID " + id + " does not exist");
+        }
         studentRepository.deleteById(id);
     }
 
