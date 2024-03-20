@@ -8,6 +8,7 @@ import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +33,10 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DepartmentDto>> getDepartments(){
-        List<Department> departmentsList = departmentService.getAllDepartments() ;
-        List<DepartmentDto>departmentDtos = departmentsList.stream().map(departmentMapper::mapTo).collect(Collectors.toList());
-        return new ResponseEntity<>(departmentDtos,HttpStatus.OK) ;
+    public ResponseEntity<Page<DepartmentDto>> getDepartments(@RequestParam Integer pageNo , @RequestParam Integer pageSize){
+        Page<Department> departmentPage = departmentService.getAllDepartments(pageNo,pageSize) ;
+        Page<DepartmentDto> dtoPage =departmentPage.map(departmentMapper::mapTo) ;
+        return new ResponseEntity<>(dtoPage,HttpStatus.OK) ;
     }
 
     @GetMapping(path = "/{id}")

@@ -5,6 +5,9 @@ import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.student.Student;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +25,9 @@ public class DepartmentService implements iDepartmentService {
     }
 
     @Override
-    public List<Department> getAllDepartments() {
-        return departmentRepository.findAll().stream().toList() ;
+    public Page<Department> getAllDepartments(Integer pageNo,Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize) ;
+        return departmentRepository.findAll(pageable) ;
     }
 
     @Override
