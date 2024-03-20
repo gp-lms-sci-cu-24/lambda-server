@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
+import com.cu.sci.lambdaserver.student.Student;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,15 @@ public class DepartmentService implements iDepartmentService {
             Optional.ofNullable(department.getInfo()).ifPresent(exsistingDepartment::setInfo);
             return departmentRepository.save(exsistingDepartment) ;
         }).orElseThrow(()->new EntityNotFoundException("Department with ID " + id + " does not exist")) ;
+    }
+
+    @Override
+    public List<Student> getStudentsdepartment(Long id) {
+        return departmentRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Department with Id " + id + " does not exist"))
+                .getStudents()
+                .stream()
+                .toList();
     }
 
     @Override

@@ -2,6 +2,9 @@ package com.cu.sci.lambdaserver.department;
 
 
 import com.cu.sci.lambdaserver.department.services.DepartmentService;
+import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.student.StudentDto;
+import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("departments")
+@RequestMapping("v1/api/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
 
     private final DepartmentService departmentService;
     private final iMapper<Department, DepartmentDto> departmentMapper;
+    private final StudentMapper studentMapper ;
 
     @PostMapping
     public ResponseEntity createDepartment(@RequestBody DepartmentDto departmentDto){
@@ -41,6 +45,16 @@ public class DepartmentController {
             return new ResponseEntity<>(departmentMapper.mapTo(department),HttpStatus.FOUND) ;
         }catch (EntityNotFoundException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND) ;
+        }
+    }
+
+    @GetMapping(path = "/{id}/students")
+    public ResponseEntity getStudentsofDepartment(@PathVariable("id")Long id){
+        try {
+            List <StudentDto> students = departmentService.getStudentsdepartment(id).stream().map(studentMapper::mapTo).collect(Collectors.toList());
+            return new ResponseEntity(students,HttpStatus.OK) ;
+        }catch (EntityNotFoundException e){
+            return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND) ;
         }
     }
 
