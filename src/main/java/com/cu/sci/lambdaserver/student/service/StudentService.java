@@ -26,8 +26,7 @@ public class StudentService implements iStudentService {
     @Override
     public Page<Student> getAllStudents(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Student> studentPage = studentRepository.findAll(pageable);
-        return studentPage;
+        return studentRepository.findAll(pageable);
     }
 
     @Override
