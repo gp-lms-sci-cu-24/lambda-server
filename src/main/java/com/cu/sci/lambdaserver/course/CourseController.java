@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.course;
 
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class CourseController {
     }
 
     @PostMapping(path = "/add")
-    public void addCourse(@RequestBody CourseDto course) {
+    public void addCourse(@Valid @RequestBody CourseDto course) {
         courseService.addCourse(courseMapper.mapFrom(course));
     }
 
@@ -36,7 +37,7 @@ public class CourseController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public void updateCourse(@PathVariable(name = "id") Long courseId,
+    public void updateCourse(@Valid @PathVariable(name = "id") Long courseId,
                              @RequestParam(required = false) String name,
                              @RequestParam(required = false) String code,
                              @RequestParam(required = false) String info,
