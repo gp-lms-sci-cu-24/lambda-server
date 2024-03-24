@@ -7,7 +7,7 @@ import com.cu.sci.lambdaserver.classGroup.CourseClassGroup;
 import com.cu.sci.lambdaserver.courseClass.CourseClass;
 import com.cu.sci.lambdaserver.courseClass.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseClass.Semester;
-import com.cu.sci.lambdaserver.courseClass.State;
+import com.cu.sci.lambdaserver.utils.enums.State;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class CourseClassService implements iCourseClassService{
     public CourseClass saveCourseClass(CourseClass courseClass) {
         return courseClassRepository.save(courseClass);
     }
-
+    public Optional<CourseClass> getLatestClassByCourseId(Long id){ return courseClassRepository.getLatestClassByCourseId(id); }
 
     public boolean addGroup(ClassGroupDto classGroupDto, CourseClass courseClass, CourseClassGroup classGroup){
         Integer capacity = classGroupDto.getMaxCapacity();
@@ -71,11 +71,11 @@ public class CourseClassService implements iCourseClassService{
         if(actualCapacity == 0){
             return false;
         }
-        classGroup.setClassGroupId((long) (courseClass.getGroupNumberSeq() + 1) );
+        classGroup.setClassGroupId((long) (courseClass.getGroupNumber() + 1) );
         classGroup.setCourseClass(courseClass);
         classGroup.setMaxCapacity(actualCapacity);
 
-        courseClass.setGroupNumberSeq(courseClass.getGroupNumberSeq() + 1);
+        courseClass.setGroupNumber(courseClass.getGroupNumber() + 1);
         courseClass.setCapacitySoFar(courseClass.getCapacitySoFar() + actualCapacity);
 
         return true;

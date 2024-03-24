@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -14,14 +15,14 @@ import java.time.LocalDate;
 public class CourseClassDto {
     private Long courseClassId;
     private Long courseId;
-    private LocalDate publishDate;
+    private LocalDateTime publishDate;
     private String courseSemester;
     private String courseState;
     private Integer maxCapacity;
 
     private Integer numberOfStudentsRegistered = 0;
     private Integer capacitySoFar = 0;
-    private Integer groupNumberSeq = 0;
+    private Integer groupNumber = 0;
 
     // Getters and setters
     // You can also add constructors and other methods as needed

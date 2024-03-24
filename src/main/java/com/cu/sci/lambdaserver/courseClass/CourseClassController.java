@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.courseClass;
 
-import com.cu.sci.lambdaserver.classGroup.CourseClassGroupService;
 import com.cu.sci.lambdaserver.courseClass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseClass.mapper.iMapper;
 import com.cu.sci.lambdaserver.courseClass.service.CourseClassService;
@@ -8,8 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @RestController
@@ -17,16 +19,30 @@ import java.util.stream.Collectors;
 public class CourseClassController {
     private iMapper<CourseClass,CourseClassDto> courseClassMapper;
     private CourseClassService courseClassService;
-    private CourseClassGroupService courseClassGroupService;
     public CourseClassController(iMapper<CourseClass, CourseClassDto> courseClassMapper,
-                                 CourseClassService courseClassService, CourseClassGroupService courseClassGroupService) {
+                                 CourseClassService courseClassService) {
         this.courseClassMapper = courseClassMapper;
         this.courseClassService = courseClassService;
-        this.courseClassGroupService = courseClassGroupService;
     }
     @PostMapping
     public ResponseEntity<CourseClassDto> createCourseClass(@RequestBody CourseClassDto courseClassDto) {
         CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
+        AtomicInteger groupNumberSeq = new AtomicInteger(1);
+        courseClassService.getLatestClassByCourseId(courseClassDto.getCourseId() )
+            .ifPresent((courseClass)->{
+                if(LocalDateTime.now().getYear() == courseClass.getPublishDate().getYear()
+                && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester() ){
+                    groupNumberSeq.set(courseClass.getGroupNumber() + 1 );
+                }
+//                if(ChronoUnit.DAYS.between(courseClass.getPublishDate(), LocalDate.now() ) < 60){
+//                    groupNumberSeq.set(courseClass.getGroupNumberSeq() + 1 );
+//                }
+//                System.out.println(courseClass);
+//                System.out.println(groupNumberSeq.get() );
+            });
+
+//        return new ResponseEntity<>(HttpStatus.OK);
+        courseClassEntity.setGroupNumber(groupNumberSeq.get() );
         CourseClass savedCourseClass = courseClassService.createCourseClass(courseClassEntity);
         return new ResponseEntity<>(courseClassMapper.mapTo(savedCourseClass), HttpStatus.CREATED);
     }

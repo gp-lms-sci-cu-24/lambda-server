@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/groups")
+@RequestMapping("/deprecated/api/groups")
 public class CourseClassGroupController {
     private final CourseClassGroupService service;
 
@@ -45,7 +45,7 @@ public class CourseClassGroupController {
         return new ResponseEntity<>(cg, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGroup(@RequestBody ClassGroupDto group) {
         // check if the group exists, return a different http request when that happens
         service.deleteCourseClassGroup(group);
