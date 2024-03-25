@@ -1,5 +1,7 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.service;
 
+import com.cu.sci.lambdaserver.course.Course;
+import com.cu.sci.lambdaserver.course.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
