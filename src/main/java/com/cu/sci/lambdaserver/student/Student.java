@@ -3,16 +3,19 @@ package com.cu.sci.lambdaserver.student;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.enums.Level;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
 @SuperBuilder
 @Entity
 @Table(name = "students")
@@ -50,5 +53,11 @@ public class Student extends User {
     @JoinColumn(name = "department_id")
     private Department department ;
 
+    public Student() {
+        setRoles(List.of(Role.STUDENT));
+    }
 
+    public static StudentBuilder<?, ?> builder() {
+        return new StudentBuilderImpl().roles(List.of(Role.STUDENT));
+    }
 }

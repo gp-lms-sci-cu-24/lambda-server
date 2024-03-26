@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,7 +54,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY, targetClass = Role.class)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    private List<Role> roles;
+    private Collection<Role> roles;
 
     /**
      * Returns the authorities granted to the user.

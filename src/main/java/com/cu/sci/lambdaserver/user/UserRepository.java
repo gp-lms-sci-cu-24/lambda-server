@@ -18,5 +18,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
      * @param username the username of the user to be found.
      * @return an Optional containing the User object if found, or an empty Optional if not found.
      */
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameIgnoreCase(String username);
 }

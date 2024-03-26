@@ -32,7 +32,7 @@ public class UserService implements IUserService {
      */
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid Credentials"));
     }
 
