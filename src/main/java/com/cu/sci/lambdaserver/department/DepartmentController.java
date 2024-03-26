@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.department;
 
 
 import com.cu.sci.lambdaserver.department.services.DepartmentService;
+import com.cu.sci.lambdaserver.department.services.IDepartmentService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DepartmentController {
 
-    private final DepartmentService departmentService;
+    private final IDepartmentService departmentService;
     private final iMapper<Department, DepartmentDto> departmentMapper;
     private final StudentMapper studentMapper;
 

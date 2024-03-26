@@ -5,9 +5,8 @@ import com.cu.sci.lambdaserver.student.Student;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface iDepartmentService {
+public interface IDepartmentService {
     Department createDepartment (Department department) ;
 
     Page<Department> getAllDepartments(Integer pageNo , Integer pageSize) ;
