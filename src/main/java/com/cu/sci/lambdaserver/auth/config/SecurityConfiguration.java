@@ -42,7 +42,7 @@ public class SecurityConfiguration {
 
     private final IUserService userService;
 
-    private final static String[] WHITE_LIST_URL={"/health","/error"};
+    private final static String[] WHITE_LIST_URL={"/**","/health","/error"};
 
     @Bean
     @Order(1)

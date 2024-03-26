@@ -1,9 +1,10 @@
 package com.cu.sci.lambdaserver.courseClass.service;
 
-import com.cu.sci.lambdaserver.course.Course;
-import com.cu.sci.lambdaserver.course.CourseService;
+
 import com.cu.sci.lambdaserver.classGroup.dto.ClassGroupDto;
 import com.cu.sci.lambdaserver.classGroup.CourseClassGroup;
+import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.course.service.CourseService;
 import com.cu.sci.lambdaserver.courseClass.CourseClass;
 import com.cu.sci.lambdaserver.courseClass.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseClass.Semester;

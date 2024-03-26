@@ -1,5 +1,8 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.service;
 
+import com.cu.sci.lambdaserver.course.CourseRepository;
+import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.course.service.ICourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,7 @@ public class CourseService implements ICourseService {
         else
             throw new IllegalStateException("this course doesn't exist");
     }
+
 
     public void addCourse(Course course) {
         courseRepository.save(course);

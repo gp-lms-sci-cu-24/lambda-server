@@ -30,7 +30,7 @@ public class Department {
 
     private String image;
 
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String code;
 
     @OneToMany(mappedBy = "department")
