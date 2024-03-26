@@ -16,18 +16,32 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
+/**
+ * JwtConfig is a configuration class that provides beans for JWT encoding and decoding.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class JwtConfig {
 
+    // Security configuration properties
     private final SecurityConfigurationProperties securityProperties;
 
+    /**
+     * Provides a JwtDecoder bean for decoding JWTs with the public key from the security properties.
+     *
+     * @return a JwtDecoder
+     */
     @Bean
     @Primary
     public JwtDecoder jwtDecoder(){
         return NimbusJwtDecoder.withPublicKey(securityProperties.jwtAccess().rsaPublicKey()).build();
     }
 
+    /**
+     * Provides a JwtEncoder bean for encoding JWTs with the private key from the security properties.
+     *
+     * @return a JwtEncoder
+     */
     @Bean
     @Primary
     public JwtEncoder jwtEncoder(){
@@ -39,12 +53,22 @@ public class JwtConfig {
         return new NimbusJwtEncoder(jwkSource);
     }
 
+    /**
+     * Provides a JwtDecoder bean for decoding refresh JWTs with the public key from the security properties.
+     *
+     * @return a JwtDecoder
+     */
     @Bean
     @Qualifier("jwtRefreshDecoder")
     public JwtDecoder jwtRefreshDecoder(){
         return NimbusJwtDecoder.withPublicKey(securityProperties.jwtRefresh().rsaPublicKey()).build();
     }
 
+    /**
+     * Provides a JwtEncoder bean for encoding refresh JWTs with the private key from the security properties.
+     *
+     * @return a JwtEncoder
+     */
     @Bean
     @Qualifier("jwtRefreshEncoder")
     public JwtEncoder jwtRefreshEncoder(){

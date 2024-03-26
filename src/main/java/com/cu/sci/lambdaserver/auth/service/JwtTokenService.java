@@ -14,14 +14,30 @@ import java.time.Instant;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * JwtTokenService is a service class that implements the IJwtTokenService interface.
+ * It provides methods for generating JWT access and refresh tokens.
+ */
 @Service
 @RequiredArgsConstructor
-public class JwtTokenService {
+public class JwtTokenService implements IJwtTokenService {
+    // The JWT encoder for encoding JWTs
     private final JwtEncoder encoder;
+    // The JWT encoder for encoding refresh JWTs
     @Qualifier("jwtRefreshEncoder")
     private final JwtEncoder refreshEncoder;
+    // The security configuration properties
     private final SecurityConfigurationProperties securityProperties;
 
+    /**
+     * This method generates an access token for the given authentication.
+     * It creates a JWT claims set with the issuer, issued at time, expiration time, subject, and scope,
+     * and then encodes it into a JWT.
+     *
+     * @param authentication The Authentication object
+     * @return A string representing the access token
+     */
+    @Override
     public String generateAccessToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
@@ -37,9 +53,18 @@ public class JwtTokenService {
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
+
+    /**
+     * This method generates a refresh token for the given authentication.
+     * It creates a JWT claims set with the issuer, issued at time, expiration time, subject, and id,
+     * and then encodes it into a JWT.
+     *
+     * @param authentication The Authentication object
+     * @return A string representing the refresh token
+     */
+    @Override
     public String generateRefreshToken(Authentication authentication) {
         Instant now = Instant.now();
-
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")

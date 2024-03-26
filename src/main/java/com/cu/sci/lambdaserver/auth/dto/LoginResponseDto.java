@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
+/**
+ * LoginResponseDto is a record class that represents the data transfer object for a login response.
+ * It includes fields for the access token, refresh token, token type, and expiration time, all of which are validated for null constraints.
+ */
 @Builder
 public record LoginResponseDto(
         @JsonProperty("access_token")
@@ -12,6 +16,14 @@ public record LoginResponseDto(
 
         @JsonProperty("refresh_token")
         @NotNull
-        String refreshToken
+        String refreshToken,
+
+        @JsonProperty("token_type")
+        @NotNull
+        String tokenType,
+
+        @JsonProperty("expired_in")
+        @NotNull
+        Long expiredIn
 ) {
 }
