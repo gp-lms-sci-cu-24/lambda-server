@@ -1,7 +1,5 @@
 package com.cu.sci.lambdaserver.course;
 
-import com.cu.sci.lambdaserver.course.dto.CourseDto;
-import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
