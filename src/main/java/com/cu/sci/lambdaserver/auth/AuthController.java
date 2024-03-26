@@ -4,9 +4,11 @@ import com.cu.sci.lambdaserver.auth.dto.LoginRequestDto;
 import com.cu.sci.lambdaserver.auth.dto.LoginResponseDto;
 import com.cu.sci.lambdaserver.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
