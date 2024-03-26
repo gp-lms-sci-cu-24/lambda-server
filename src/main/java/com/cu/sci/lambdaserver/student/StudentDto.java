@@ -16,7 +16,7 @@ public class StudentDto {
 
     private Long id ;
 
-    private String username;
+    private String userName;
 
     private String password;
 

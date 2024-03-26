@@ -1,7 +1,10 @@
 package com.cu.sci.lambdaserver.student.service;
 
 import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.StudentRepository;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,13 +17,20 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class StudentService implements iStudentService {
+public class StudentService implements IStudentService {
 
     private final StudentRepository studentRepository;
+    private final iMapper<Student, StudentDto> studentMapper;
+    private final iMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
 
     @Override
-    public Student creatStudent(Student student) {
-        return studentRepository.save(student);
+    public StudentDto creatStudent(CreateStudentRequestDto studentDto) {
+
+
+        Student student = createStudentRequestDtoMapper.mapFrom(studentDto);
+        Student saveStudent = studentRepository.save(student) ;
+
+        return studentMapper.mapTo(saveStudent) ;
     }
 
     @Override
@@ -51,6 +61,4 @@ public class StudentService implements iStudentService {
         }
         studentRepository.deleteById(id);
     }
-
-
 }

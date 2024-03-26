@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.coursePrerequisties;
 
-import com.cu.sci.lambdaserver.course.Course;
+import com.cu.sci.lambdaserver.course.entites.Course;
 import jakarta.persistence.*;
 import lombok.*;
 

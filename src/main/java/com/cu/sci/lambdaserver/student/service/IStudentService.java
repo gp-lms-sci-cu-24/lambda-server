@@ -1,12 +1,14 @@
 package com.cu.sci.lambdaserver.student.service;
 
 import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
 
-public interface iStudentService {
-    Student creatStudent(Student student);
+public interface IStudentService {
+    StudentDto creatStudent(CreateStudentRequestDto student);
 
     Page<Student> getAllStudents(Integer pageNo, Integer pageSize);
 

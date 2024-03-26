@@ -38,8 +38,8 @@ public class CourseClassGroupService {
 
         // if this is a new group, get it a group number
         if(classGroup.getGroupNumber() == null){
-            classGroup.setGroupNumber(courseClass.getGroupNumberSeq() + 1 );
-            courseClass.setGroupNumberSeq(courseClass.getGroupNumberSeq() + 1);
+            classGroup.setGroupNumber(courseClass.getGroupNumber() + 1 );
+            courseClass.setGroupNumber(courseClass.getGroupNumber() + 1);
         }
         classGroup.setCourseClass(courseClass);
         classGroup.setMaxCapacity(actualCapacity);

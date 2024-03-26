@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.courseClass;
+package com.cu.sci.lambdaserver.utils.enums;
 
 import lombok.RequiredArgsConstructor;
 

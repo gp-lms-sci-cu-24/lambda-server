@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.department;
 
 
-import com.cu.sci.lambdaserver.course.DepartmentCourses;
+import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.student.Student;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,6 +29,9 @@ public class Department {
     private String info;
 
     private String image;
+
+    @Column(unique = true)
+    private String code;
 
     @OneToMany(mappedBy = "department")
     private Set<DepartmentCourses> departmentCoursesSet ;

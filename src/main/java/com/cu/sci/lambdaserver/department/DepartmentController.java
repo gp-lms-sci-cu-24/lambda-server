@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.department;
 
 
 import com.cu.sci.lambdaserver.department.services.DepartmentService;
-import com.cu.sci.lambdaserver.student.StudentDto;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;

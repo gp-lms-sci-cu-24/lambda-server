@@ -1,4 +1,8 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.service;
+
+import com.cu.sci.lambdaserver.course.Course;
+
+import com.cu.sci.lambdaserver.course.entites.Course;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
