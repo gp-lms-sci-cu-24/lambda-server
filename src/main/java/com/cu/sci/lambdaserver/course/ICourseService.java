@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.course;
 
+import com.cu.sci.lambdaserver.course.entites.Course;
+
 import java.util.List;
 
 public interface ICourseService {

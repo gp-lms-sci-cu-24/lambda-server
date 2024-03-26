@@ -1,6 +1,7 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.entites;
 
 
+import com.cu.sci.lambdaserver.course.DepartmentCoursesKey;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.persistence.*;

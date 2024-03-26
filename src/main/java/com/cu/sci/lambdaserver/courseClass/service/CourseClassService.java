@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.courseClass.service;
 
-import com.cu.sci.lambdaserver.course.Course;
+import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.CourseService;
 import com.cu.sci.lambdaserver.classGroup.dto.ClassGroupDto;
 import com.cu.sci.lambdaserver.classGroup.CourseClassGroup;
