@@ -1,57 +1,35 @@
 package com.cu.sci.lambdaserver.user;
 
-import org.springframework.http.HttpStatus;
+import com.cu.sci.lambdaserver.user.service.IUserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
 
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final IUserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
-        Optional<User> userOptional = userService.fetchUserById(id);
-        return userOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public User getUserById(@PathVariable Long id) {
+        return userService.loadUserByID(id);
     }
-    @GetMapping("")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.fetchAllUsers();
-        if (!users.isEmpty()) {
-            return ResponseEntity.ok(users); // Return HTTP 200 OK with users
-        } else {
-            return ResponseEntity.noContent().build(); // Return HTTP 204 No Content
-        }
+
+    @GetMapping
+    public ResponseEntity<Collection<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        try {
-            boolean deleted = userService.deleteUser(id);
-            if (deleted) {
-                return ResponseEntity.ok().build(); // Return HTTP 200 OK
-            } else {
-                return ResponseEntity.notFound().build(); // Return HTTP 404 Not Found
-            }
-        } catch (Exception e) {
-            // Log the error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return HTTP 500 Internal Server Error
-        }
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
+        return ResponseEntity.internalServerError().body("Not Implemented Yet!");
     }
-    @PostMapping("/save")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        try {
-            User savedUser = userService.saveUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser); // Return HTTP 201 Created with the saved user
-        } catch (Exception e) {
-            // Log the error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return HTTP 500 Internal Server Error
-        }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
+        return ResponseEntity.internalServerError().body("Not Implemented Yet!");
     }
 }
