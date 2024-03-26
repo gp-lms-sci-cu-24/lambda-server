@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.auth.config;
 
+import com.cu.sci.lambdaserver.user.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,12 +15,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -33,13 +31,16 @@ import java.util.List;
 @EnableWebSecurity
 @Slf4j
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfiguration {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
+
     private final AccessDeniedHandler accessDeniedHandler;
 
     @Qualifier("jwtRefreshDecoder")
     private final JwtDecoder jwtRefreshDecoder;
+
+    private final IUserService userService;
 
     private final static String[] WHITE_LIST_URL={"/health","/error"};
 
@@ -129,21 +130,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() {
         var authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(authProvider);
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(
-                User.builder()
-                        .username("bakar")
-                        .password(passwordEncoder().encode("password"))
-                        .authorities("read")
-                        .build()
-        );
-    }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
