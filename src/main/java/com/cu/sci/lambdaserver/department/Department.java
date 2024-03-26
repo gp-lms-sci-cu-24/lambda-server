@@ -30,6 +30,9 @@ public class Department {
 
     private String image;
 
+    @Column(unique = true)
+    private String code;
+
     @OneToMany(mappedBy = "department")
     private Set<DepartmentCourses> departmentCoursesSet ;
 

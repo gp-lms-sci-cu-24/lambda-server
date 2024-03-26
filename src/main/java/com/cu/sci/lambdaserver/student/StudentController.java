@@ -1,6 +1,8 @@
 package com.cu.sci.lambdaserver.student;
 
-import com.cu.sci.lambdaserver.student.service.iStudentService;
+import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.student.service.IStudentService;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "v1/api/students")
+@RequestMapping(path = "api/v1/students")
 @RequiredArgsConstructor
 public class StudentController {
     private final iMapper<Student, StudentDto> studentMapper;
-    private final iStudentService studentService;
+    private final IStudentService studentService;
 
     @PostMapping
-    public ResponseEntity<StudentDto> createStudent(@RequestBody StudentDto studentDto) {
-        Student studentEntity = studentMapper.mapFrom(studentDto);
-        Student savedStudent = studentService.creatStudent(studentEntity);
-        return new ResponseEntity<>(studentMapper.mapTo(savedStudent), HttpStatus.CREATED);
+    public ResponseEntity<StudentDto> createStudent(@RequestBody CreateStudentRequestDto studentDto) {
+       StudentDto student =  studentService.creatStudent(studentDto) ;
+       return new ResponseEntity<>(student,HttpStatus.CREATED) ;
     }
 
     @GetMapping
