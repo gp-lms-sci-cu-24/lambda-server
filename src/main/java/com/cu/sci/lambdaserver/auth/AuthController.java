@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
-        return authService.login(loginRequestDto);
+    @PostMapping
+    public LoginResponseDto signIn(@RequestBody LoginRequestDto loginRequestDto) {
+        return authService.signIn(loginRequestDto);
     }
 
     @PostMapping("/logout")
@@ -29,16 +29,6 @@ public class AuthController {
     @PostMapping("/refresh")
     public String refresh() {
         return "refresh";
-    }
-
-    @PostMapping("/register")
-    public String register() {
-        return "register";
-    }
-
-    @PostMapping("/forgot-password")
-    public String forgotPassword() {
-        return "forgot-password";
     }
 
 }

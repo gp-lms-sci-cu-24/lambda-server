@@ -33,7 +33,13 @@ public class CustomOAuth2AuthenticationEntryPoint implements AuthenticationEntry
             throws IOException {
         log.error(e.getLocalizedMessage(), e);
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String errorMessage = "Insufficient authentication details";
+        String errorMessage ;
+
+        if(Objects.nonNull(e.getLocalizedMessage()) && !e.getLocalizedMessage().isBlank())
+            errorMessage=e.getLocalizedMessage();
+        else
+             errorMessage = "Insufficient authentication details";
+
         Map<String, String> parameters = new LinkedHashMap<>();
 
         if (Objects.nonNull(realmName)) {
@@ -68,7 +74,7 @@ public class CustomOAuth2AuthenticationEntryPoint implements AuthenticationEntry
                 .computeWWWAuthenticateHeaderValue(parameters);
         response.addHeader("WWW-Authenticate", wwwAuthenticate);
         response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
         response.getWriter().write(message);
     }
 }

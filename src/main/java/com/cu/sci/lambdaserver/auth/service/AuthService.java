@@ -18,7 +18,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto signIn(LoginRequestDto loginRequestDto) {
 
         log.info("login request: {}", loginRequestDto);
 
