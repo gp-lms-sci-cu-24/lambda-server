@@ -2,47 +2,53 @@ package com.cu.sci.lambdaserver.student.dto;
 
 import com.cu.sci.lambdaserver.department.DepartmentDto;
 import com.cu.sci.lambdaserver.utils.enums.Level;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-public record CreateStudentRequestDto(
-
-        @NotNull(message = "user name cannot be null")
-        String username,
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateStudentRequestDto{
         @NotNull(message = "Password cannot be null")
-        String password,
+        private String password;
 
         @NotNull(message = "first name cannot be null")
-        String firstName,
+        private String firstName;
 
         @NotNull(message = "father name cannot be null")
-        String fatherName,
+        private String fatherName;
 
         @NotNull(message = "grand father name cannot be null")
-        String grandfatherName,
+        private String grandfatherName;
 
         @NotNull(message = "last name cannot be null")
-        String lastname,
+        private String lastname;
 
         @NotNull(message = "code cannot be null")
-        @Size(max = 7, message = "The student code must not exceed 7 numbers")
-        String code,
+        @Size(max = 7 , message = "The student code must not exceed 7 numbers")
+        private String code;
 
         @PositiveOrZero(message = "credithours must be positive")
-
-        Integer creditHours,
+        private Integer creditHours=0;
 
         @NotNull(message = "address cannot be null")
-        String address,
+        private String address;
 
-        Double gpa,
+        private Double gpa=0.0;
 
-        Level level,
+        private Level level=Level.LEVEL_1;
 
-        String joiningYear,
+        @JsonProperty("joining_year")
+        private String joiningYear;
 
-        String department_code
-) {
+        @JsonProperty("department_code")
+        private String departmentCode;
 }

@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.student.dto;
 
 import com.cu.sci.lambdaserver.department.DepartmentDto;
 import com.cu.sci.lambdaserver.utils.enums.Level;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -24,6 +25,7 @@ public class StudentDto {
     private String userName;
 
     @NotNull(message = "Password cannot be null")
+    @JsonIgnore()
     private String password;
 
     @NotNull(message = "first name cannot be null")

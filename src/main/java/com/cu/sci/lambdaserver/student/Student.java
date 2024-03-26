@@ -15,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @SuperBuilder
 @Entity
 @Table(name = "students")

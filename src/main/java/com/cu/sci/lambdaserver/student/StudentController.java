@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.service.IStudentService;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ public class StudentController {
     private final IStudentService studentService;
 
     @PostMapping
-    public ResponseEntity<StudentDto> createStudent(@RequestBody CreateStudentRequestDto studentDto) {
-       StudentDto student =  studentService.creatStudent(studentDto) ;
-       return new ResponseEntity<>(student,HttpStatus.CREATED) ;
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudentDto createStudent(@RequestBody @Valid CreateStudentRequestDto studentDto) {
+       return studentService.creatStudent(studentDto);
     }
 
     @GetMapping

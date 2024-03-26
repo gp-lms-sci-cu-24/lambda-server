@@ -18,4 +18,7 @@ public class DepartmentDto {
     private String info;
 
     private String image;
+
+    private String code;
+
 }
