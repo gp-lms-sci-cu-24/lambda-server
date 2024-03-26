@@ -4,10 +4,11 @@ import com.cu.sci.lambdaserver.auth.dto.LoginRequestDto;
 import com.cu.sci.lambdaserver.auth.dto.LoginResponseDto;
 import com.cu.sci.lambdaserver.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -27,8 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public String refresh() {
-        return "refresh";
+    public LoginResponseDto refresh(Principal principal,JwtAuthenticationToken token){
+        return authService.refresh(principal,token);
     }
 
 }

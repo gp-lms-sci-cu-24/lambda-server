@@ -44,7 +44,7 @@ public class SecurityConfig {
     @Qualifier("jwtRefreshDecoder")
     private final JwtDecoder jwtRefreshDecoder;
 
-    private final static String[] WHITE_LIST_URL={"/health",};
+    private final static String[] WHITE_LIST_URL={"/health","/error"};
 
     @Bean
     @Order(1)

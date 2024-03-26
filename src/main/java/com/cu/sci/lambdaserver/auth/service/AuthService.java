@@ -5,18 +5,27 @@ import com.cu.sci.lambdaserver.auth.dto.LoginRequestDto;
 import com.cu.sci.lambdaserver.auth.dto.LoginResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService {
+public class AuthService  {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
+
 
     public LoginResponseDto signIn(LoginRequestDto loginRequestDto) {
 
@@ -29,26 +38,25 @@ public class AuthService {
                 )
         );
 
+        final String refresh =jwtTokenService.generateRefreshToken(authentication);
 
         return LoginResponseDto.builder()
                 .accessToken(jwtTokenService.generateAccessToken(authentication))
-                .refreshToken("refresh")
+                .refreshToken(refresh)
                 .build();
     }
 
-    public String logout() {
+    public LoginResponseDto refresh(Principal principal, JwtAuthenticationToken jwtAuthenticationToken) {
+
+        String tokenId = jwtAuthenticationToken.getToken().getId();
+
+
+
+        return LoginResponseDto.builder().build();
+    }
+
+    public String signOut() {
         return "logout";
     }
 
-    public String refresh() {
-        return "refresh";
-    }
-
-    public String register() {
-        return "register";
-    }
-
-    public String forgotPassword() {
-        return "forgot-password";
-    }
 }
