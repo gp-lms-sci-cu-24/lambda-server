@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.courseClassTiming;
+package com.cu.sci.lambdaserver.courseclasstiming;
 
 import com.cu.sci.lambdaserver.courseClass.CourseClass;
 import com.cu.sci.lambdaserver.location.Location;
@@ -12,12 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "courseclass")
+@Table(name = "courseclasstiming")
 public class CourseClassTiming {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_seq")
-    @SequenceGenerator(name = "course_seq", sequenceName = "course_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "timing_seq")
+    @SequenceGenerator(name = "timing_seq", sequenceName = "timing_seq", allocationSize = 10)
     @Column(name = "id")
     private Long id;
 

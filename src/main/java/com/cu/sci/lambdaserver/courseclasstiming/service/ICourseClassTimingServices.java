@@ -1,17 +1,18 @@
-package com.cu.sci.lambdaserver.courseClassTiming;
+package com.cu.sci.lambdaserver.courseclasstiming.service;
+
+import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTiming;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ICourseClassTimingServices {
     CourseClassTiming addCourseClassTiming(CourseClassTiming courseClassTiming);
 
     List<CourseClassTiming> getAllCourseClassTiming();
 
-    Optional<CourseClassTiming> getCourseClassTimingById(Long id);
+    CourseClassTiming getCourseClassTimingById(Long id);
 
     CourseClassTiming updateCourseClassTiming(Long id, CourseClassTiming courseClassTiming);
 
     CourseClassTiming deleteCourseClassTiming(Long id);
-    
+
 }

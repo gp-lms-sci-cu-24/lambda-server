@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.courseClassTiming;
+package com.cu.sci.lambdaserver.courseclasstiming;
 
 import com.cu.sci.lambdaserver.courseClass.CourseClass;
 import com.cu.sci.lambdaserver.location.Location;
@@ -19,7 +19,7 @@ public class CourseClassTimingDto {
 
     private Long id;
 
-    @NotBlank(message = "course class should be defined to create schedule a timing")
+    //    @NotBlank(message = "course class should be defined to create schedule a timing")
     private CourseClass courseclass;
 
     private ClassType type;
@@ -28,11 +28,12 @@ public class CourseClassTimingDto {
     private String day;
 
 
-    @NotBlank(message = "start time is mandatory to know availability of location")
+    //    @NotBlank(message = "start time is mandatory to know availability of location")
     @Min(value = 0, message = "start time should be within 24hr format ")
     @Max(value = 24, message = "end time should be within 24hr format")
     private Long startTime;
-    @NotBlank(message = "end time is mandatory to know availability of location")
+
+    //    @NotBlank(message = "end time is mandatory to know availability of location")
     @Min(value = 0, message = "end time should be within 24hr format ")
     @Max(value = 24, message = "end time should be within 24hr format")
     private Long endTime;
