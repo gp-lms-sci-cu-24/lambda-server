@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.auth;
 import com.cu.sci.lambdaserver.auth.dto.LoginRequestDto;
 import com.cu.sci.lambdaserver.auth.dto.LoginResponseDto;
 import com.cu.sci.lambdaserver.auth.service.IAuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ public class AuthController {
      * @return A LoginResponseDto object containing the response of the login process
      */
     @PostMapping
-    public LoginResponseDto signIn(@RequestBody LoginRequestDto loginRequestDto) {
+    public LoginResponseDto signIn(@RequestBody @Valid LoginRequestDto loginRequestDto) {
         return authService.signIn(loginRequestDto);
     }
 
