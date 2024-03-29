@@ -19,5 +19,5 @@ public interface CoursePrerequisitesRepository extends JpaRepository<CoursePrere
             + ")"
             + " SELECT DISTINCT prerequisite_Id"
             + " FROM course_tree", nativeQuery = true)
-    List<Long> findDependenciesForCourse(Long courseId);
+    List<Long> getPrerequisite(Long courseId);
 }
