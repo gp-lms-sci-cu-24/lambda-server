@@ -51,7 +51,7 @@ public class Student extends User {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    private Department department ;
+    private Department department;
 
     public Student() {
         setRoles(List.of(Role.STUDENT));
