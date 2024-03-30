@@ -4,7 +4,6 @@ import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
-import com.cu.sci.lambdaserver.department.mapper.UpdateDepartmentMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -82,13 +82,10 @@ public class DepartmentService implements IDepartmentService {
         }
 
         // check update values
-        Optional<Department> foundedDepartmentBycode = departmentRepository
-                .findDepartmentByCodeIgnoreCase(departmentDto.getCode()) ;
-        Optional<Department> foundedDepartmentByname = departmentRepository
-                .findDepartmentByNameIgnoreCase(departmentDto.getName());
-        if(foundedDepartmentBycode.isPresent()||foundedDepartmentByname.isPresent()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "this values cannot be save");
+        if (Objects.equals(foundedDepartment.get().getCode(), departmentDto.getCode()) || Objects.equals(foundedDepartment.get().getName(), departmentDto.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Code or Name is used");
         }
+
 
         // update department and save it
         foundedDepartment.map(department -> {
