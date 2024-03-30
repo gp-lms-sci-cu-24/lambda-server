@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.department;
 
 
+import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
 import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
 import com.cu.sci.lambdaserver.student.mapper.UpdateStudentMapper;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/departments")
+@RequestMapping("api/v1/department")
 @RequiredArgsConstructor
 public class DepartmentController {
 
@@ -25,10 +26,9 @@ public class DepartmentController {
     private final UpdateStudentMapper updateStudentMapper;
 
     @PostMapping
-    public ResponseEntity createDepartment(@RequestBody DepartmentDto departmentDto) {
-        Department department = departmentMapper.mapFrom(departmentDto);
-        departmentService.createDepartment(department);
-        return new ResponseEntity(HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public DepartmentDto createDepartment(@RequestBody DepartmentDto departmentDto) {
+        return departmentService.createDepartment(departmentDto) ;
     }
 
     @GetMapping

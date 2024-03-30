@@ -1,13 +1,14 @@
 package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.department.Department;
+import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IDepartmentService {
-    Department createDepartment (Department department) ;
+    DepartmentDto createDepartment (DepartmentDto department) ;
 
     Page<Department> getAllDepartments(Integer pageNo , Integer pageSize) ;
 

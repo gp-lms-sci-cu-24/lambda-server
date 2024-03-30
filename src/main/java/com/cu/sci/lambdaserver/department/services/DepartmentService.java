@@ -2,13 +2,17 @@ package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
+import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +22,23 @@ import java.util.Optional;
 public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    private final iMapper<Department, DepartmentDto> departmentMapper;
 
     @Override
-    public Department createDepartment(Department department) {
-        return departmentRepository.save(department);
+    public DepartmentDto createDepartment(DepartmentDto department) {
+        // check if department if already exist
+        Optional<Department> foundedDepartmentBycode = departmentRepository
+                .findDepartmentByCodeIgnoreCase(department.getCode()) ;
+        Optional<Department> foundedDepartmentByname = departmentRepository
+                .findDepartmentByNameIgnoreCase(department.getName());
+        if(foundedDepartmentBycode.isPresent()||foundedDepartmentByname.isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Department is already exist.");
+        }
+
+        // convert dto to entity and save it to db
+        Department savedDepartment = departmentMapper.mapFrom(department) ;
+        return departmentMapper.mapTo(departmentRepository.save(savedDepartment)) ;
+
     }
 
     @Override

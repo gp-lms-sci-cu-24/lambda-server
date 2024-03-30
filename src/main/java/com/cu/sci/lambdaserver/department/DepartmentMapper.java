@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.department;
 
+import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

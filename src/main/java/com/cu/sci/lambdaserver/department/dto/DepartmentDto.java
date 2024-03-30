@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.department;
+package com.cu.sci.lambdaserver.department.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DepartmentDto {
-
-    private Long id;
 
     private String name;
 
