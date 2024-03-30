@@ -65,7 +65,12 @@ public class StudentService implements IStudentService {
     @Override
     public Page<StudentDto> getAllStudents(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return studentRepository.findAll(pageable).map(studentDtoiMapper::mapTo);
+        Page<Student> students = studentRepository.findAll(pageable) ;
+        //check if list empty
+        if (students.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return students.map(studentDtoiMapper::mapTo);
     }
 
     @Override
