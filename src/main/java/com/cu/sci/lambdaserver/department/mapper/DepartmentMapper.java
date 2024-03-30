@@ -1,5 +1,6 @@
-package com.cu.sci.lambdaserver.department;
+package com.cu.sci.lambdaserver.department.mapper;
 
+import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;

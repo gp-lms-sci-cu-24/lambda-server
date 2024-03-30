@@ -3,6 +3,8 @@ package com.cu.sci.lambdaserver.department.services;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
+import com.cu.sci.lambdaserver.department.mapper.UpdateDepartmentMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +25,7 @@ public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final iMapper<Department, DepartmentDto> departmentMapper;
+    private final iMapper<Department,UpdateDepartmentDto> updateDepartmentDtoiMapper ;
 
     @Override
     public DepartmentDto createDepartment(DepartmentDto department) {
@@ -42,15 +45,25 @@ public class DepartmentService implements IDepartmentService {
     }
 
     @Override
-    public Page<Department> getAllDepartments(Integer pageNo, Integer pageSize) {
+    public Page<DepartmentDto> getAllDepartments(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return departmentRepository.findAll(pageable);
+        Page<Department> departmentPage = departmentRepository.findAll(pageable);
+        //check if list empty
+        if (departmentPage.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return departmentPage.map(departmentMapper::mapTo);
     }
 
     @Override
-    public Department getDepartmentByid(Long id) {
-        return departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Department with ID " + id + " does not exist"));
+    public DepartmentDto getDepartment(String code) {
+        Optional<Department> department = departmentRepository
+                .findDepartmentByCodeIgnoreCase(code);
+        // check if department exist
+        if (department.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with this code");
+        }
+        return departmentMapper.mapTo(department.get());
     }
 
     @Override
@@ -60,15 +73,34 @@ public class DepartmentService implements IDepartmentService {
     }
 
     @Override
-    public Department updateDepartment(Long id, Department department) {
-        if (!departmentRepository.existsById(id)) {
-            throw new EntityNotFoundException("Department with ID " + id + " does not exist");
+    public UpdateDepartmentDto updateDepartment(String code, UpdateDepartmentDto departmentDto) {
+        // check if department found
+        Optional<Department> foundedDepartment = departmentRepository
+                .findDepartmentByCodeIgnoreCase(code);
+        if (foundedDepartment.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
         }
-        return departmentRepository.findById(id).map(exsistingDepartment -> {
-            Optional.ofNullable(department.getName()).ifPresent(exsistingDepartment::setName);
-            Optional.ofNullable(department.getInfo()).ifPresent(exsistingDepartment::setInfo);
-            return departmentRepository.save(exsistingDepartment);
-        }).orElseThrow(() -> new EntityNotFoundException("Department with ID " + id + " does not exist"));
+
+        // check update values
+        Optional<Department> foundedDepartmentBycode = departmentRepository
+                .findDepartmentByCodeIgnoreCase(departmentDto.getCode()) ;
+        Optional<Department> foundedDepartmentByname = departmentRepository
+                .findDepartmentByNameIgnoreCase(departmentDto.getName());
+        if(foundedDepartmentBycode.isPresent()||foundedDepartmentByname.isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "this values cannot be save");
+        }
+
+        // update department and save it
+        foundedDepartment.map(department -> {
+            Optional.ofNullable(departmentDto.getName()).ifPresent(department::setName);
+            Optional.ofNullable(departmentDto.getInfo()).ifPresent(department::setInfo);
+            Optional.ofNullable(departmentDto.getCode()).ifPresent(department::setCode);
+            return departmentRepository.save(department);
+        });
+
+        // convert saved department to dto
+        return updateDepartmentDtoiMapper.mapTo(foundedDepartment.get()) ;
+
     }
 
     @Override
@@ -81,10 +113,15 @@ public class DepartmentService implements IDepartmentService {
     }
 
     @Override
-    public void deleteDepartment(Long id) {
-        if (!departmentRepository.existsById(id)) {
-            throw new EntityNotFoundException("Department with ID " + id + " does not exist");
+    public void deleteDepartment(String code) {
+        // check if department found
+        Optional<Department> foundedDepartment = departmentRepository
+                .findDepartmentByCodeIgnoreCase(code);
+        if (foundedDepartment.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
         }
-        departmentRepository.deleteById(id);
+        // delete department by code
+        departmentRepository.delete(foundedDepartment.get());
     }
+
 }
