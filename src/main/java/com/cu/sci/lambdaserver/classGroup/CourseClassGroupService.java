@@ -1,8 +1,8 @@
 package com.cu.sci.lambdaserver.classGroup;
 
 import com.cu.sci.lambdaserver.classGroup.dto.ClassGroupDto;
-import com.cu.sci.lambdaserver.courseClass.CourseClass;
-import com.cu.sci.lambdaserver.courseClass.service.CourseClassService;
+import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

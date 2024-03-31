@@ -1,6 +1,7 @@
-package com.cu.sci.lambdaserver.courseClass;
+package com.cu.sci.lambdaserver.courseclass;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.enums.State;
 import jakarta.persistence.*;
 import lombok.*;

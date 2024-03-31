@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.courseclasstiming;
 
-import com.cu.sci.lambdaserver.courseClass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
 import jakarta.persistence.*;

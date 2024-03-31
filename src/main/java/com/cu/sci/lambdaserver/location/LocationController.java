@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "v1/api/locations")
+@RequestMapping(path = "v1/api/location")
 @RequiredArgsConstructor
 public class LocationController {
     private final LocationMapper locationMapper;

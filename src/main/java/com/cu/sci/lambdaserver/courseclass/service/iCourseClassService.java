@@ -1,6 +1,6 @@
-package com.cu.sci.lambdaserver.courseClass.service;
+package com.cu.sci.lambdaserver.courseclass.service;
 
-import com.cu.sci.lambdaserver.courseClass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import java.util.List;
 import java.util.Optional;
 public interface iCourseClassService {
