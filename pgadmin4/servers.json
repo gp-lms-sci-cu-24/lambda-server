@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "development": {
+            "Name": "development",
+            "Group": "Servers",
+            "Port": 5432,
+            "Username": "postgres",
+            "Host": "db",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "lambda-server"
+        }
+    }
+}

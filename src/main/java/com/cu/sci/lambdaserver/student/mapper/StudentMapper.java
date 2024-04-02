@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.student.mapper;
 
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
