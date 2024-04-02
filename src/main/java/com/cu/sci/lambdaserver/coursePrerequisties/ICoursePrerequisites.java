@@ -3,7 +3,7 @@ package com.cu.sci.lambdaserver.coursePrerequisties;
 import java.util.List;
 
 public interface ICoursePrerequisites {
-    void addDependencies(CoursePrerequisites coursePrerequisites);
+    void createPrerequisite(CoursePrerequisites coursePrerequisites);
 
-    List<Long> findDependenciesForCourse(Long id);
+    List<Long> getPrerequisite(Long id);
 }

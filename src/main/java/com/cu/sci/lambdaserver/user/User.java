@@ -31,7 +31,7 @@ public class User implements UserDetails {
     @SequenceGenerator(name = "user_seq", sequenceName = "user_seq", allocationSize = 10)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)

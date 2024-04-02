@@ -1,83 +1,53 @@
 package com.cu.sci.lambdaserver.department;
 
 
-import com.cu.sci.lambdaserver.department.services.DepartmentService;
+import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
-import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
-import jakarta.persistence.EntityNotFoundException;
+import com.cu.sci.lambdaserver.student.mapper.UpdateStudentMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("api/v1/departments")
+@RequestMapping("api/v1/department")
 @RequiredArgsConstructor
 public class DepartmentController {
 
     private final IDepartmentService departmentService;
-    private final iMapper<Department, DepartmentDto> departmentMapper;
-    private final StudentMapper studentMapper;
+    private final UpdateStudentMapper updateStudentMapper;
 
     @PostMapping
-    public ResponseEntity createDepartment(@RequestBody DepartmentDto departmentDto) {
-        Department department = departmentMapper.mapFrom(departmentDto);
-        departmentService.createDepartment(department);
-        return new ResponseEntity(HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public DepartmentDto createDepartment(@RequestBody @Valid DepartmentDto departmentDto) {
+        return departmentService.createDepartment(departmentDto) ;
     }
 
     @GetMapping
-    public ResponseEntity<Page<DepartmentDto>> getDepartments(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-        Page<Department> departmentPage = departmentService.getAllDepartments(pageNo, pageSize);
-        Page<DepartmentDto> dtoPage = departmentPage.map(departmentMapper::mapTo);
-        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Page<DepartmentDto> getDepartments(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+        return departmentService.getAllDepartments(pageNo, pageSize);
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity getDepartment(@PathVariable("id") long id) {
-        try {
-            Department department = departmentService.getDepartmentByid(id);
-            return new ResponseEntity<>(departmentMapper.mapTo(department), HttpStatus.FOUND);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @GetMapping(path = "/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    public DepartmentDto getDepartment(@PathVariable("code") String code) {
+        return departmentService.getDepartment(code);
     }
 
-    @GetMapping(path = "/{id}/students")
-    public ResponseEntity getStudentsofDepartment(@PathVariable("id") Long id) {
-        try {
-            List<StudentDto> students = departmentService.getStudentsdepartment(id).stream().map(studentMapper::mapTo).collect(Collectors.toList());
-            return new ResponseEntity(students, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+
+    @PatchMapping(path = "/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody  UpdateDepartmentDto departmentDto) {
+        return departmentService.updateDepartment(code, departmentDto);
     }
 
-    @PatchMapping(path = "/{id}")
-    public ResponseEntity updateDepartment(@PathVariable Long id, @RequestBody DepartmentDto departmentDto) {
-        try {
-            Department department = departmentMapper.mapFrom(departmentDto);
-            Department updatedDepartment = departmentService.updateDepartment(id, department);
-            return new ResponseEntity(departmentMapper.mapTo(updatedDepartment), HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteDepartment(@PathVariable Long id) {
-        try {
-            departmentService.deleteDepartment(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @DeleteMapping(path = "/{code}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDepartment(@PathVariable String code) {
+        departmentService.deleteDepartment(code);
     }
 
 }

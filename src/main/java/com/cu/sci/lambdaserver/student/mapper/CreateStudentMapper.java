@@ -2,7 +2,6 @@ package com.cu.sci.lambdaserver.student.mapper;
 
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,7 +14,7 @@ public class CreateStudentMapper implements iMapper<Student, CreateStudentReques
 
     @Override
     public CreateStudentRequestDto mapTo(Student student) {
-        return null;
+        return modelMapper.map(student, CreateStudentRequestDto.class);
     }
 
     @Override

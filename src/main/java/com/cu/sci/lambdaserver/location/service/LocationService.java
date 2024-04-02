@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.location.service;
 
-import com.cu.sci.lambdaserver.courseClass.CourseClass;
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

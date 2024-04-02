@@ -1,20 +1,18 @@
 package com.cu.sci.lambdaserver.student.service;
 
-import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
 import org.springframework.data.domain.Page;
-
-import java.util.Optional;
 
 public interface IStudentService {
     StudentDto creatStudent(CreateStudentRequestDto student);
 
-    Page<Student> getAllStudents(Integer pageNo, Integer pageSize);
+    Page<StudentDto> getAllStudents(Integer pageNo, Integer pageSize);
 
-    Optional<Student> getStudent(Long id);
+    StudentDto getStudent(String code);
 
-    Student updateStudent(Long id, Student student);
+    StudentDto updateStudent(String code, UpdateStudentDto updateStudentDto);
 
-    void deleteStudent(Long id);
+    void deleteStudent(String code);
 }

@@ -1,27 +1,25 @@
-package com.cu.sci.lambdaserver.courseClass.service;
+package com.cu.sci.lambdaserver.courseclass.service;
 
 
 import com.cu.sci.lambdaserver.classGroup.dto.ClassGroupDto;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.classGroup.CourseClassGroup;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.service.CourseService;
-import com.cu.sci.lambdaserver.courseClass.CourseClass;
-import com.cu.sci.lambdaserver.courseClass.CourseClassRepository;
-import com.cu.sci.lambdaserver.courseClass.Semester;
+import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.CourseClassRepository;
 import com.cu.sci.lambdaserver.utils.enums.State;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CourseClassService implements iCourseClassService{
-    private CourseClassRepository courseClassRepository;
-    private CourseService courseService;
-    public CourseClassService(CourseClassRepository courseClassRepository, CourseService courseService) {
-        this.courseClassRepository = courseClassRepository;
-        this.courseService = courseService;
-    }
+    private final CourseClassRepository courseClassRepository;
+    private final CourseService courseService;
     @Override
     public CourseClass createCourseClass(CourseClass courseClass) {
         return courseClassRepository.save(courseClass);
@@ -103,13 +101,13 @@ public class CourseClassService implements iCourseClassService{
 
         CourseClass courseClass1 = new CourseClass();
         courseClass1.setCourse(course1);
-        courseClass1.setCourseSemester(Semester.SPRING);
+        courseClass1.setCourseSemester(Semester.FIRST);
         courseClass1.setCourseState(State.ACTIVE);
         courseClass1.setMaxCapacity(50);
 
         CourseClass courseClass2 = new CourseClass();
         courseClass2.setCourse(course2);
-        courseClass2.setCourseSemester(Semester.SPRING);
+        courseClass2.setCourseSemester(Semester.SECOND);
         courseClass2.setCourseState(State.INACTIVE);
         courseClass2.setMaxCapacity(40);
 

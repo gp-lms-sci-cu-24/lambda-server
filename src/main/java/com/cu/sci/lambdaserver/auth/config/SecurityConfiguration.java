@@ -42,7 +42,14 @@ public class SecurityConfiguration {
 
     private final IUserService userService;
 
-    private final static String[] WHITE_LIST_URL={"/**","/health","/error"};
+    private final static String[] WHITE_LIST_URL = {
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-resources",
+            "/health", "/error"
+    };
 
     @Bean
     @Order(1)

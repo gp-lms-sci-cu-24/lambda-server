@@ -1,11 +1,10 @@
-package com.cu.sci.lambdaserver.courseClass.dto;
+package com.cu.sci.lambdaserver.courseclass.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -20,9 +19,9 @@ public class CourseClassDto {
     private String courseState;
     private Integer maxCapacity;
 
-    private Integer numberOfStudentsRegistered = 0;
-    private Integer capacitySoFar = 0;
-    private Integer groupNumber = 0;
+    private Integer numberOfStudentsRegistered;
+    private Integer capacitySoFar;
+    private Integer groupNumber;
 
     // Getters and setters
     // You can also add constructors and other methods as needed

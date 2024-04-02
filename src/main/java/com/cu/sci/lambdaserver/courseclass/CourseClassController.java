@@ -1,13 +1,14 @@
-package com.cu.sci.lambdaserver.courseClass;
+package com.cu.sci.lambdaserver.courseclass;
 
-import com.cu.sci.lambdaserver.courseClass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseClass.mapper.iMapper;
-import com.cu.sci.lambdaserver.courseClass.service.CourseClassService;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.mapper.IMapper;
+import com.cu.sci.lambdaserver.courseclass.mapper.IMapperV2;
+import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,15 +16,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/classes")
+@RequestMapping("/v1/api/class")
+@RequiredArgsConstructor
 public class CourseClassController {
-    private iMapper<CourseClass,CourseClassDto> courseClassMapper;
-    private CourseClassService courseClassService;
-    public CourseClassController(iMapper<CourseClass, CourseClassDto> courseClassMapper,
-                                 CourseClassService courseClassService) {
-        this.courseClassMapper = courseClassMapper;
-        this.courseClassService = courseClassService;
-    }
+    private final IMapper<CourseClass,CourseClassDto> courseClassMapper;
+    private final IMapperV2<CourseClass,CourseClassDto> courseClassMapperV2;
+    private final CourseClassService courseClassService;
     @PostMapping
     public ResponseEntity<CourseClassDto> createCourseClass(@RequestBody CourseClassDto courseClassDto) {
         CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
@@ -34,14 +32,7 @@ public class CourseClassController {
                 && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester() ){
                     groupNumberSeq.set(courseClass.getGroupNumber() + 1 );
                 }
-//                if(ChronoUnit.DAYS.between(courseClass.getPublishDate(), LocalDate.now() ) < 60){
-//                    groupNumberSeq.set(courseClass.getGroupNumberSeq() + 1 );
-//                }
-//                System.out.println(courseClass);
-//                System.out.println(groupNumberSeq.get() );
             });
-
-//        return new ResponseEntity<>(HttpStatus.OK);
         courseClassEntity.setGroupNumber(groupNumberSeq.get() );
         CourseClass savedCourseClass = courseClassService.createCourseClass(courseClassEntity);
         return new ResponseEntity<>(courseClassMapper.mapTo(savedCourseClass), HttpStatus.CREATED);
@@ -58,15 +49,14 @@ public class CourseClassController {
         return courseClassOptional.map(courseClass -> new ResponseEntity<>(courseClassMapper.mapTo(courseClass), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @PatchMapping("/{id}")
-    public ResponseEntity<CourseClassDto> updateCourseClass(@PathVariable Long id, @RequestBody CourseClassDto courseClassDto) {
-        if (!courseClassService.isCourseClassExists(id) ) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
-        CourseClass updatedCourseClass = courseClassService.updateCourseClass(id, courseClassEntity);
-
+    @PatchMapping
+    public ResponseEntity<CourseClassDto> updateCourseClass(@RequestBody CourseClassDto courseClassDto) {
+        Long id = courseClassDto.getCourseClassId();
+        CourseClass presentCourseClass = courseClassService.getCourseClassById(id).orElse(null);
+        if(presentCourseClass == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        System.out.println(presentCourseClass);
+        CourseClass updatedCourseClass = courseClassService.saveCourseClass(courseClassMapperV2.update(courseClassDto,presentCourseClass) );
+        System.out.println(updatedCourseClass);
         return new ResponseEntity<>(courseClassMapper.mapTo(updatedCourseClass), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

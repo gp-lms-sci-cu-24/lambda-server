@@ -45,7 +45,7 @@ public class CustomOAuth2AuthenticationEntryPoint implements AuthenticationEntry
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
             throws IOException {
         // Log the error message
-        log.error(e.getLocalizedMessage(), e);
+        log.error(e.getLocalizedMessage());
 
         // Set the default status and error message
         HttpStatus status = HttpStatus.UNAUTHORIZED;

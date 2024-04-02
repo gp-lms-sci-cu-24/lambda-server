@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.classGroup;
 
-import com.cu.sci.lambdaserver.courseClass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import jakarta.persistence.*;
 import lombok.*;
 
