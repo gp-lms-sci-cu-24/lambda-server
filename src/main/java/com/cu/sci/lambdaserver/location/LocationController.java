@@ -44,7 +44,9 @@ public class LocationController {
     public ResponseEntity<LocationDto> updateLocation(@RequestBody LocationDto locationDto) {
         try {
             Location location = locationMapper.mapFrom(locationDto);
+            System.out.println(locationService.getLocation(locationDto.getLocationId() ) );
             Location updatedLocation = locationService.updateLocation(locationDto.getLocationId(), location);
+            System.out.println(updatedLocation);
             return new ResponseEntity<>(locationMapper.mapTo(updatedLocation), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);

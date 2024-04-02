@@ -36,7 +36,7 @@ public class ProfessorService implements IProfessorService {
     @Override
     public Professor updateProfessor(Long id, Professor professorDetails) {
         return professorRepository.findById(id).map(existingProfessor -> {
-            existingProfessor.getUser().setId(professorDetails.getUser().getId() );
+//            existingProfessor.getUser().setId(professorDetails.getUser().getId() );
             return professorRepository.save(existingProfessor);
         }).orElseThrow(() -> new EntityNotFoundException("Location with ID " + id + " does not exist"));
     }
