@@ -35,7 +35,7 @@ public class AuthService implements IAuthService {
     @Override
     public LoginResponseDto signIn(LoginRequestDto loginRequestDto) {
 
-        log.info("login request: {}", loginRequestDto);
+        log.info("login request: (username:{})", loginRequestDto.username());
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
