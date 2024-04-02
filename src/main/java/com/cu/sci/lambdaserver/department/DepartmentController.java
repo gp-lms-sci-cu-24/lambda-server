@@ -1,0 +1,53 @@
+package com.cu.sci.lambdaserver.department;
+
+
+import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
+import com.cu.sci.lambdaserver.department.services.IDepartmentService;
+import com.cu.sci.lambdaserver.student.mapper.UpdateStudentMapper;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api/v1/department")
+@RequiredArgsConstructor
+public class DepartmentController {
+
+    private final IDepartmentService departmentService;
+    private final UpdateStudentMapper updateStudentMapper;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public DepartmentDto createDepartment(@RequestBody @Valid DepartmentDto departmentDto) {
+        return departmentService.createDepartment(departmentDto) ;
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Page<DepartmentDto> getDepartments(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+        return departmentService.getAllDepartments(pageNo, pageSize);
+    }
+
+    @GetMapping(path = "/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    public DepartmentDto getDepartment(@PathVariable("code") String code) {
+        return departmentService.getDepartment(code);
+    }
+
+
+    @PatchMapping(path = "/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody  UpdateDepartmentDto departmentDto) {
+        return departmentService.updateDepartment(code, departmentDto);
+    }
+
+    @DeleteMapping(path = "/{code}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDepartment(@PathVariable String code) {
+        departmentService.deleteDepartment(code);
+    }
+
+}
