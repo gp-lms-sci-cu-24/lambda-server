@@ -1,0 +1,12 @@
+# Ignore all files in the root directory
+*
+# Include the src directory
+!src/
+# Include the pom.xml file
+!pom.xml
+# include the .mvn directory
+!.mvn
+!mvnw
+
+# Exclude the target directory and its contents
+target/
