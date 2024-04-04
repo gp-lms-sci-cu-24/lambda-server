@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.course;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
+import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.service.CourseService;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
@@ -33,8 +34,8 @@ public class CourseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDto createCourse(@Valid @RequestBody CourseDto course) {
-        return courseMapper.mapTo(courseService.createCourse(courseMapper.mapFrom(course)));
+    public CourseDto createCourse(@Valid @RequestBody CreateCourseDto course) {
+        return courseService.createCourse(course);
     }
 
     @DeleteMapping("/{id}")
