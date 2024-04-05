@@ -1,10 +1,10 @@
 package com.cu.sci.lambdaserver.department;
 
 
+import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
-import com.cu.sci.lambdaserver.student.mapper.UpdateStudentMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class DepartmentController {
 
     private final IDepartmentService departmentService;
-    private final UpdateStudentMapper updateStudentMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,6 +47,12 @@ public class DepartmentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDepartment(@PathVariable String code) {
         departmentService.deleteDepartment(code);
+    }
+
+    @GetMapping(path = "/{code}/courses")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CreateCourseDto> getDepartmentCourses(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return departmentService.getDepartmentCourses(code, pageNo, pageSize);
     }
 
 }

@@ -1,14 +1,14 @@
 package com.cu.sci.lambdaserver.department.services;
 
+import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
-import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -66,11 +66,6 @@ public class DepartmentService implements IDepartmentService {
         return departmentMapper.mapTo(department.get());
     }
 
-    @Override
-    public Department getDepartmentByname(String name) {
-        return departmentRepository.findDepartmentByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Department with Name " + name + " does not exist"));
-    }
 
     @Override
     public UpdateDepartmentDto updateDepartment(String code, UpdateDepartmentDto departmentDto) {
@@ -100,14 +95,6 @@ public class DepartmentService implements IDepartmentService {
 
     }
 
-    @Override
-    public List<Student> getStudentsdepartment(Long id) {
-        return departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Department with Id " + id + " does not exist"))
-                .getStudents()
-                .stream()
-                .toList();
-    }
 
     @Override
     public void deleteDepartment(String code) {
@@ -120,5 +107,35 @@ public class DepartmentService implements IDepartmentService {
         // delete department by code
         departmentRepository.delete(foundedDepartment.get());
     }
+
+    @Override
+    public Page<CreateCourseDto> getDepartmentCourses(String code, Integer pageNo, Integer pageSize) {
+        // check if department found
+        Optional<Department> foundedDepartment = departmentRepository
+                .findDepartmentByCodeIgnoreCase(code);
+        if (foundedDepartment.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
+        }
+
+        // get courses of department
+        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCoursesSet().stream().map(departmentCourses -> {
+            CreateCourseDto createCourseDto = new CreateCourseDto();
+            createCourseDto.setCode(departmentCourses.getCourse().getCode());
+            createCourseDto.setName(departmentCourses.getCourse().getName());
+            createCourseDto.setInfo(departmentCourses.getCourse().getInfo());
+            createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
+            createCourseDto.setSemester(departmentCourses.getSemester());
+            createCourseDto.setMandatory(departmentCourses.getMandatory());
+            return createCourseDto;
+        }).toList();
+
+        // convert list to page
+        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseDtoList.size());
+
+        return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
+
+    }
+
 
 }

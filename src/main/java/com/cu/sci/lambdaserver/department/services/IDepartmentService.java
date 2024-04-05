@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.department.services;
 
+import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
@@ -15,11 +17,10 @@ public interface IDepartmentService {
 
     DepartmentDto getDepartment(String code) ;
 
-    Department getDepartmentByname(String name) ;
-
     UpdateDepartmentDto updateDepartment(String code , UpdateDepartmentDto department) ;
 
-    List<Student> getStudentsdepartment(Long id) ;
-
     void deleteDepartment(String code) ;
+
+    Page<CreateCourseDto> getDepartmentCourses(String code , Integer pageNo , Integer pageSize) ;
+
 }
