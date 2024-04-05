@@ -95,7 +95,7 @@ public class SecurityConfiguration {
     @Order(3)
     public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/api/*/auth/**")
+                .securityMatcher("/api/*/auth")
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
