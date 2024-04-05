@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -128,6 +129,7 @@ public class DepartmentService implements IDepartmentService {
             createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
             createCourseDto.setSemester(departmentCourses.getSemester());
             createCourseDto.setMandatory(departmentCourses.getMandatory());
+            createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCoursesSet().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
             return createCourseDto;
         }).toList();
 
@@ -159,6 +161,7 @@ public class DepartmentService implements IDepartmentService {
                     createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
                     createCourseDto.setSemester(departmentCourses.getSemester());
                     createCourseDto.setMandatory(departmentCourses.getMandatory());
+                    createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCoursesSet().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
                     return createCourseDto;
                 }).toList();
 
