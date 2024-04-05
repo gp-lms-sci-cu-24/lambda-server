@@ -1,13 +1,16 @@
-package com.cu.sci.lambdaserver.auth.config;
+package com.cu.sci.lambdaserver.auth.properties;
 
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
- * SecurityConfigurationProperties is a record class that holds the properties for security configuration.
+ * This class holds the properties for security configuration.
  * It includes the properties for JWT access and JWT refresh.
+ * It is annotated with @ConfigurationProperties to indicate that it's a source of configuration properties.
+ * The prefix "security" is used to map the properties.
  */
 @ConfigurationProperties(prefix = "security")
 public record SecurityConfigurationProperties(
@@ -16,6 +19,9 @@ public record SecurityConfigurationProperties(
         JwtProperties jwtAccess,
         @NotNull
         @NestedConfigurationProperty
-        JwtProperties jwtRefresh
+        JwtProperties jwtRefresh,
+
+        @DefaultValue("refresh_auth")
+        String refreshCookie
         ) {
 }

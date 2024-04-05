@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.auth.service;
 
-import com.cu.sci.lambdaserver.auth.config.SecurityConfigurationProperties;
+import com.cu.sci.lambdaserver.auth.properties.SecurityConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;

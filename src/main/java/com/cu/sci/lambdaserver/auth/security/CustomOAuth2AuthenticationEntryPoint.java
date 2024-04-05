@@ -1,5 +1,6 @@
-package com.cu.sci.lambdaserver.auth.config;
+package com.cu.sci.lambdaserver.auth.security;
 
+import com.cu.sci.lambdaserver.auth.utils.WWWAuthenticateHeaderBuilder;
 import com.cu.sci.lambdaserver.utils.exception.RestErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

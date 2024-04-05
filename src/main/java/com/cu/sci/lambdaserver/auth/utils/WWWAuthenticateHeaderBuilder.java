@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.auth.config;
+package com.cu.sci.lambdaserver.auth.utils;
 
 import java.util.Map;
 import java.util.StringJoiner;

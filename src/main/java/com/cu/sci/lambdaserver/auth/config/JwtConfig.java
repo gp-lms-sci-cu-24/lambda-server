@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.auth.config;
 
+import com.cu.sci.lambdaserver.auth.properties.SecurityConfigurationProperties;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;

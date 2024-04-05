@@ -1,5 +1,6 @@
-package com.cu.sci.lambdaserver.auth.config;
+package com.cu.sci.lambdaserver.auth.security;
 
+import com.cu.sci.lambdaserver.auth.utils.WWWAuthenticateHeaderBuilder;
 import com.cu.sci.lambdaserver.utils.exception.RestErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,7 +43,7 @@ public class CustomOAuth2AccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e)
             throws IOException {
         // Log the error message
-        log.error(e.getLocalizedMessage(), e);
+        log.error(e.getLocalizedMessage());
 
         // Prepare a map to hold the parameters for the WWW-Authenticate header
         Map<String, String> parameters = new LinkedHashMap<>();

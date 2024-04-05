@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.auth.config;
+package com.cu.sci.lambdaserver.auth.properties;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
