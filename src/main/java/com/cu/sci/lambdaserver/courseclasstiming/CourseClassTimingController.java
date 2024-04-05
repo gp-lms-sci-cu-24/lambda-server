@@ -1,50 +1,54 @@
 package com.cu.sci.lambdaserver.courseclasstiming;
 
-import com.cu.sci.lambdaserver.courseclasstiming.service.CourseClassTimingServices;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingInDto;
+import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingOutDto;
+import com.cu.sci.lambdaserver.courseclasstiming.service.CourseClassTimingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(path = "api/v1/courseTiming")
+@RequiredArgsConstructor
 public class CourseClassTimingController {
-    private CourseClassTimingServices courseClassTimingServices;
-    private iMapper<CourseClassTiming, CourseClassTimingDto> Mapper;
+    private CourseClassTimingService courseClassTimingService;
 
+    @Autowired
+    public CourseClassTimingController(CourseClassTimingService courseClassTimingService) {
+        this.courseClassTimingService = courseClassTimingService;
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseClassTimingDto> getCourseClassTiming() {
-        return courseClassTimingServices.getAllCourseClassTiming().stream().map(Mapper::mapTo).collect(Collectors.toList());
+    public List<CourseClassTimingOutDto> getCourseClassTiming() {
+        return courseClassTimingService.getAllCourseClassTiming();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseClassTimingDto createCourseClassTiming(@Valid @RequestBody CourseClassTimingDto courseClassTimingDto) {
-        return Mapper.mapTo(courseClassTimingServices.addCourseClassTiming(Mapper.mapFrom(courseClassTimingDto)));
+    public CourseClassTimingOutDto createCourseClassTiming(@Valid @RequestBody CourseClassTimingInDto courseClassTimingInDto) {
+        return courseClassTimingService.addCourseClassTiming(courseClassTimingInDto);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseClassTimingDto getCourseClassTimingById(@PathVariable Long id) {
-        return Mapper.mapTo(courseClassTimingServices.getCourseClassTimingById(id));
+    public CourseClassTimingOutDto getCourseClassTimingById(@PathVariable Long id) {
+        return courseClassTimingService.getCourseClassTimingById(id);
     }
 
     @PutMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
-    public CourseClassTimingDto updateCourseClassTiming(@PathVariable Long id, @RequestBody CourseClassTimingDto courseClassTimingDto) {
-        return Mapper.mapTo(courseClassTimingServices.updateCourseClassTiming(id, Mapper.mapFrom(courseClassTimingDto)));
+    public CourseClassTimingOutDto updateCourseClassTiming(@PathVariable Long id, @RequestBody CourseClassTimingInDto courseClassTimingInDto) {
+        return courseClassTimingService.updateCourseClassTiming(id, courseClassTimingInDto);
     }
 
     @DeleteMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
-    public CourseClassTimingDto deleteCourseClassTiming(@PathVariable Long id) {
-        return Mapper.mapTo(courseClassTimingServices.deleteCourseClassTiming(id));
+    public CourseClassTimingOutDto deleteCourseClassTiming(@PathVariable Long id) {
+        return courseClassTimingService.deleteCourseClassTiming(id);
     }
 }
