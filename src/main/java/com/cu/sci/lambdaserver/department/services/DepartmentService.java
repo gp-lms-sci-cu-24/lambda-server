@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -108,6 +109,7 @@ public class DepartmentService implements IDepartmentService {
         departmentRepository.delete(foundedDepartment.get());
     }
 
+
     @Override
     public Page<CreateCourseDto> getDepartmentCourses(String code, Integer pageNo, Integer pageSize) {
         // check if department found
@@ -128,6 +130,37 @@ public class DepartmentService implements IDepartmentService {
             createCourseDto.setMandatory(departmentCourses.getMandatory());
             return createCourseDto;
         }).toList();
+
+        // convert list to page
+        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseDtoList.size());
+
+        return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
+
+    }
+
+
+    @Override
+    public Page<CreateCourseDto> getCourseDepartmentbySemster(String code, Integer pageNo, Integer pageSize, Semester semester) {
+        // check if department found
+        Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
+        if (foundedDepartment.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
+        }
+
+        // get courses of department by semester
+        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCoursesSet().stream()
+                .filter(departmentCourses -> departmentCourses.getSemester().equals(semester))
+                .map(departmentCourses -> {
+                    CreateCourseDto createCourseDto = new CreateCourseDto();
+                    createCourseDto.setCode(departmentCourses.getCourse().getCode());
+                    createCourseDto.setName(departmentCourses.getCourse().getName());
+                    createCourseDto.setInfo(departmentCourses.getCourse().getInfo());
+                    createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
+                    createCourseDto.setSemester(departmentCourses.getSemester());
+                    createCourseDto.setMandatory(departmentCourses.getMandatory());
+                    return createCourseDto;
+                }).toList();
 
         // convert list to page
         int start = (int) PageRequest.of(pageNo, pageSize).getOffset();

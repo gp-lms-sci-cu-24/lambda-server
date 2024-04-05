@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,4 +56,10 @@ public class DepartmentController {
         return departmentService.getDepartmentCourses(code, pageNo, pageSize);
     }
 
+
+    @GetMapping(path = "/{code}/courses/semester")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CreateCourseDto> getCourseDepartmentbySemster(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
+        return departmentService.getCourseDepartmentbySemster(code, pageNo, pageSize, semester);
+    }
 }
