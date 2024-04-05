@@ -2,28 +2,28 @@ package com.cu.sci.lambdaserver.professor;
 
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Getter
 @Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@ToString(callSuper = true)
+@SuperBuilder
 @Entity
 @Table(name = "professors")
-public class Professor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+public class Professor extends User{
     private Long professorId;
+    public Professor() {
+        setRoles(List.of(Role.TEACHER));
+    }
 
-    @OneToOne
-    @JoinColumn(name = "id")
-    private User user;
-
+    public static Professor.ProfessorBuilder<?, ?> builder() {
+        return new Professor.ProfessorBuilderImpl().roles(List.of(Role.TEACHER));
+    }
 //    @OneToMany
 //    @JoinColumn(name = "id")
 //    private List<Department> department;
