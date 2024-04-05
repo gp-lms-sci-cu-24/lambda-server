@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.auth.config;
 
+import com.cu.sci.lambdaserver.auth.security.CookieBearerTokenResolver;
 import com.cu.sci.lambdaserver.user.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -37,19 +39,21 @@ public class SecurityConfiguration {
 
     private final AccessDeniedHandler accessDeniedHandler;
 
-    @Qualifier("jwtRefreshDecoder")
-    private final JwtDecoder jwtRefreshDecoder;
-
-    private final IUserService userService;
-
     private final static String[] WHITE_LIST_URL = {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/swagger-resources",
-            "/health", "/error"
+            "/health",
+            "/error",
     };
+
+    @Qualifier("jwtRefreshDecoder")
+    private final JwtDecoder jwtRefreshDecoder;
+
+    private final IUserService userService;
+    private final CookieBearerTokenResolver cookieBearerTokenResolver;
 
     @Bean
     @Order(1)
@@ -69,18 +73,20 @@ public class SecurityConfiguration {
     @Order(2)
     public SecurityFilterChain refreshTokenFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/api/*/auth/refresh")
+                .securityMatcher("/api/*/auth/refresh", "/api/*/auth/signOut")
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().permitAll()
+                        authorize.anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2->oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtRefreshDecoder))
+                        .bearerTokenResolver(cookieBearerTokenResolver)
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
+                .logout(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex->ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
@@ -118,9 +124,11 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2->oauth2
                         .jwt(Customizer.withDefaults())
+                        .bearerTokenResolver(defaultBearerTokenResolver())
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
+                .logout(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex->ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
@@ -143,11 +151,16 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public DefaultBearerTokenResolver defaultBearerTokenResolver() {
+        return new DefaultBearerTokenResolver();
+    }
+
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET","POST"));
-        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**",configuration);
         return source;
