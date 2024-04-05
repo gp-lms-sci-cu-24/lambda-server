@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.course.service;
 
+import com.cu.sci.lambdaserver.course.dto.CourseDto;
+import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 
 import java.util.List;
@@ -9,7 +11,7 @@ public interface ICourseService {
 
     Course getCourse(Long courseId);
 
-    Course createCourse(Course course);
+    CourseDto createCourse(CreateCourseDto createCourseDto) ;
 
     Course deleteCourse(Long courseId);
 

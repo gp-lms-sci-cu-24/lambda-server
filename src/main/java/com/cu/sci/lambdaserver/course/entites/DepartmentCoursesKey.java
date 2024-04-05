@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.entites;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -14,7 +14,7 @@ public class RestErrorHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<RestErrorResponse> handleStatusException(ResponseStatusException ex, WebRequest request) {
-        log.error(ex.getReason(), ex);
+//        log.error(ex.getReason(), ex);
         return RestErrorResponse.builder()
                 .exception(ex)
                 .path(request.getDescription(false).substring(4))

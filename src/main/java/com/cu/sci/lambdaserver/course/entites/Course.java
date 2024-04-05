@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.course.entites;
 
+import com.cu.sci.lambdaserver.coursePrerequisties.CoursePrerequisites;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -10,12 +11,11 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="courses")
+@Table(name = "courses")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_seq")
@@ -35,7 +35,10 @@ public class Course {
     private Integer creditHours;
 
     @OneToMany(mappedBy = "course")
-    private Set<DepartmentCourses> departmentCoursesSet ;
+    private Set<DepartmentCourses> departmentCoursesSet;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<CoursePrerequisites> coursePrerequisites;
 
     @Override
     public final boolean equals(Object o) {
