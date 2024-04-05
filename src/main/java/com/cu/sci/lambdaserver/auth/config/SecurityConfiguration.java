@@ -35,10 +35,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final AuthenticationEntryPoint authenticationEntryPoint;
-
-    private final AccessDeniedHandler accessDeniedHandler;
-
     private final static String[] WHITE_LIST_URL = {
             "/swagger-ui.html",
             "/swagger-ui/**",
@@ -48,7 +44,8 @@ public class SecurityConfiguration {
             "/health",
             "/error",
     };
-
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
     @Qualifier("jwtRefreshDecoder")
     private final JwtDecoder jwtRefreshDecoder;
 
@@ -80,19 +77,20 @@ public class SecurityConfiguration {
                         authorize.anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2->oauth2
+                .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtRefreshDecoder))
                         .bearerTokenResolver(cookieBearerTokenResolver)
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
                 .logout(AbstractHttpConfigurer::disable)
-                .exceptionHandling(ex->ex
+                .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
                 .build();
     }
+
     @Bean
     @Order(3)
     public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
@@ -105,9 +103,9 @@ public class SecurityConfiguration {
                 )
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex->ex
-                                    .authenticationEntryPoint(authenticationEntryPoint)
-                                    .accessDeniedHandler(accessDeniedHandler)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .build();
     }
@@ -122,14 +120,14 @@ public class SecurityConfiguration {
                         authorize.anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2->oauth2
+                .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults())
                         .bearerTokenResolver(defaultBearerTokenResolver())
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
                 .logout(AbstractHttpConfigurer::disable)
-                .exceptionHandling(ex->ex
+                .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
@@ -162,7 +160,7 @@ public class SecurityConfiguration {
         configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

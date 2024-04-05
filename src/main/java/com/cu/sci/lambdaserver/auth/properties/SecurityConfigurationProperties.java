@@ -23,5 +23,5 @@ public record SecurityConfigurationProperties(
 
         @DefaultValue("refresh_auth")
         String refreshCookie
-        ) {
+) {
 }

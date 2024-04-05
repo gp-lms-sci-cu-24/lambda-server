@@ -12,7 +12,7 @@ import java.time.Duration;
  * JwtProperties is a record class that holds the properties for a JWT.
  * It includes the RSA public key, RSA private key, and the expired duration.
  */
-public record JwtProperties (
+public record JwtProperties(
         @NotNull
         @NotBlank
         RSAPublicKey rsaPublicKey,

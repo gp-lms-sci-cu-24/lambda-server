@@ -34,7 +34,7 @@ public class JwtConfig {
      */
     @Bean
     @Primary
-    public JwtDecoder jwtDecoder(){
+    public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(securityProperties.jwtAccess().rsaPublicKey()).build();
     }
 
@@ -45,7 +45,7 @@ public class JwtConfig {
      */
     @Bean
     @Primary
-    public JwtEncoder jwtEncoder(){
+    public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey
                 .Builder(securityProperties.jwtAccess().rsaPublicKey())
                 .privateKey(securityProperties.jwtAccess().rsaPrivateKey())
@@ -61,7 +61,7 @@ public class JwtConfig {
      */
     @Bean
     @Qualifier("jwtRefreshDecoder")
-    public JwtDecoder jwtRefreshDecoder(){
+    public JwtDecoder jwtRefreshDecoder() {
         return NimbusJwtDecoder.withPublicKey(securityProperties.jwtRefresh().rsaPublicKey()).build();
     }
 
@@ -72,7 +72,7 @@ public class JwtConfig {
      */
     @Bean
     @Qualifier("jwtRefreshEncoder")
-    public JwtEncoder jwtRefreshEncoder(){
+    public JwtEncoder jwtRefreshEncoder() {
         JWK jwk = new RSAKey
                 .Builder(securityProperties.jwtRefresh().rsaPublicKey())
                 .privateKey(securityProperties.jwtRefresh().rsaPrivateKey())
