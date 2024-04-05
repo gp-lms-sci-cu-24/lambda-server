@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -35,10 +36,10 @@ public class JwtTokenService implements IJwtTokenService {
      * and then encodes it into a JWT.
      *
      * @param authentication The Authentication object
-     * @return A string representing the access token
+     * @return A Jwt object representing the access token
      */
     @Override
-    public String generateAccessToken(Authentication authentication) {
+    public Jwt generateAccessToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -51,7 +52,7 @@ public class JwtTokenService implements IJwtTokenService {
                 .subject(authentication.getName())
                 .claim("scope", scope)
                 .build();
-        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return this.encoder.encode(JwtEncoderParameters.from(claims));
     }
 
     /**
@@ -60,10 +61,10 @@ public class JwtTokenService implements IJwtTokenService {
      * and then encodes it into a JWT.
      *
      * @param authentication The Authentication object
-     * @return A string representing the refresh token
+     * @return A Jwt object representing the refresh token
      */
     @Override
-    public String generateRefreshToken(Authentication authentication) {
+    public Jwt generateRefreshToken(Authentication authentication) {
         Instant now = Instant.now();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -73,6 +74,6 @@ public class JwtTokenService implements IJwtTokenService {
                 .subject(authentication.getName())
                 .id(UUID.randomUUID().toString())
                 .build();
-        return this.refreshEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return this.refreshEncoder.encode(JwtEncoderParameters.from(claims));
     }
 }
