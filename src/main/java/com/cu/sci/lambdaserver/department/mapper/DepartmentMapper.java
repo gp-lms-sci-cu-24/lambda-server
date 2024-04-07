@@ -24,4 +24,9 @@ public class DepartmentMapper implements iMapper<Department, DepartmentDto> {
     public Department mapFrom(DepartmentDto departmentDto) {
         return modelMapper.map(departmentDto, Department.class);
     }
+
+    @Override
+    public Department update(DepartmentDto departmentDto, Department department) {
+        return null;
+    }
 }

@@ -22,4 +22,9 @@ public class OutDtoMapper implements iMapper<CourseClassTiming, CourseClassTimin
     public CourseClassTiming mapFrom(CourseClassTimingOutDto courseClassTimingOutDto) {
         return modelMapper.map(courseClassTimingOutDto, CourseClassTiming.class);
     }
+
+    @Override
+    public CourseClassTiming update(CourseClassTimingOutDto courseClassTimingOutDto, CourseClassTiming courseClassTiming) {
+        return null;
+    }
 }

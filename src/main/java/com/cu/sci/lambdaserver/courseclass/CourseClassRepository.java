@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface CourseClassRepository extends JpaRepository<CourseClass, Long> {
     // You can add custom query methods here if needed
     // change date attribute to date time
-    @Query(value = "SELECT * FROM course_classes WHERE id = :courseId " +
+    @Query(value = "SELECT * FROM course_classes WHERE course_id = :courseId " +
             "AND publish_date = (select MAX(publish_date) from course_classes) " +
             "ORDER BY course_class_id desc limit 1", nativeQuery = true)
     Optional<CourseClass> getLatestClassByCourseId(@Param("courseId") Long courseId);

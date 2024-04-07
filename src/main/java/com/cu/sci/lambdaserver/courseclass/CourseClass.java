@@ -22,14 +22,15 @@ public class CourseClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseClassId;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "course_id")
     private Course course;
     @CreationTimestamp
     private LocalDateTime publishDate;
     @Enumerated(EnumType.STRING)
     private Semester courseSemester;
     @Enumerated(EnumType.STRING)
-    private State courseState;
+    @Builder.Default
+    private State courseState = State.INACTIVE;
     private Integer maxCapacity;
 
     @Builder.Default
@@ -37,7 +38,7 @@ public class CourseClass {
     private Integer capacitySoFar;
     @Builder.Default
     @Column(name = "group_number_seq")
-    private Integer groupNumber = 0;
+    private Integer groupNumber = -1;
 
 // later refer to admin and professor entities
 //    private String adminId;

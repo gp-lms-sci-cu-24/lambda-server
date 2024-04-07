@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CourseClassService implements iCourseClassService{
+public class CourseClassService implements ICourseClassService {
     private final CourseClassRepository courseClassRepository;
     private final CourseService courseService;
     @Override
