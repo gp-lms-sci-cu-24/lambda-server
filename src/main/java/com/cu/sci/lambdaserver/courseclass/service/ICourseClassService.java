@@ -1,6 +1,8 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
 import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+
 import java.util.List;
 import java.util.Optional;
 public interface ICourseClassService {
@@ -12,7 +14,7 @@ public interface ICourseClassService {
 
     boolean isCourseClassExists(Long id);
 
-    CourseClass updateCourseClass(Long id, CourseClass courseClass);
+    CourseClass updateCourseClass(CourseClassDto courseClassDto);
 
     void deleteCourseClass(Long id);
 }

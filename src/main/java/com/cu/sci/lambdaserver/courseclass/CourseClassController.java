@@ -2,8 +2,7 @@ package com.cu.sci.lambdaserver.courseclass;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassInDto;
-import com.cu.sci.lambdaserver.courseclass.mapper.IMapper;
-import com.cu.sci.lambdaserver.courseclass.mapper.IMapperV2;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/api/class")
 @RequiredArgsConstructor
 public class CourseClassController {
-    private final IMapper<CourseClass,CourseClassDto> courseClassMapper;
-    private final IMapperV2<CourseClass,CourseClassDto> courseClassMapperV2;
+    private final CourseClassMapper courseClassMapper;
     private final CourseClassService courseClassService;
     @PostMapping
     public ResponseEntity<CourseClassDto> createCourseClass(@Validated(CourseClassInDto.CreateValidation.class) @RequestBody CourseClassDto courseClassDto) {
@@ -57,12 +55,7 @@ public class CourseClassController {
     }
     @PatchMapping
     public ResponseEntity<CourseClassDto> updateCourseClass(@Validated(CourseClassInDto.UpdateValidation.class) @RequestBody CourseClassDto courseClassDto) {
-        Long id = courseClassDto.getCourseClassId();
-        CourseClass presentCourseClass = courseClassService.getCourseClassById(id).orElse(null);
-        if(presentCourseClass == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        System.out.println(presentCourseClass);
-        CourseClass updatedCourseClass = courseClassService.saveCourseClass(courseClassMapperV2.update(courseClassDto,presentCourseClass) );
-        System.out.println(updatedCourseClass);
+        CourseClass updatedCourseClass = courseClassService.updateCourseClass(courseClassDto);
         return new ResponseEntity<>(courseClassMapper.mapTo(updatedCourseClass), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")

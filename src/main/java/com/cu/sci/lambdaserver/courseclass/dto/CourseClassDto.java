@@ -31,14 +31,14 @@ public class CourseClassDto {
     private String courseState;
 
     @NotNull(groups = {CourseClassInDto.CreateValidation.class}, message = "Max Capacity cannot be null during creation")
-    @Null(groups = {CourseClassInDto.UpdateValidation.class}, message = "Max Capacity must be null during update")
+//    @Null(groups = {CourseClassInDto.UpdateValidation.class}, message = "Max Capacity must be null during update")
     private Integer maxCapacity;
 
-    @Null(groups = {CourseClassInDto.CreateValidation.class, CourseClassInDto.UpdateValidation.class}, message = "Number of Students must be null during creation and update")
-    private Integer numberOfStudentsRegistered;
+//    @Null(groups = {CourseClassInDto.CreateValidation.class, CourseClassInDto.UpdateValidation.class}, message = "Number of Students must be null during creation and update")
+//    private Integer numberOfStudentsRegistered;
 
-    @Null(groups = {CourseClassInDto.CreateValidation.class, CourseClassInDto.UpdateValidation.class}, message = "Group Number must be null during creation and update")
-    private Integer groupNumber;
+//    @Null(groups = {CourseClassInDto.CreateValidation.class, CourseClassInDto.UpdateValidation.class}, message = "Group Number must be null during creation and update")
+//    private Integer groupNumber;
 
     // Getters and setters
     // You can also add constructors and other methods as needed

@@ -2,11 +2,12 @@ package com.cu.sci.lambdaserver.courseclass.mapper;
 
 import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CourseClassMapper implements IMapper<CourseClass, CourseClassDto> {
+public class CourseClassMapper implements iMapper<CourseClass, CourseClassDto> {
     private final ModelMapper modelMapper;
 
     public CourseClassMapper(ModelMapper modelMapper) {
@@ -19,5 +20,10 @@ public class CourseClassMapper implements IMapper<CourseClass, CourseClassDto> {
     @Override
     public CourseClass mapFrom(CourseClassDto courseClassDto) {
         return modelMapper.map(courseClassDto, CourseClass.class);
+    }
+    @Override
+    public CourseClass update(CourseClassDto courseClassDto, CourseClass courseClass) {
+        modelMapper.map(courseClassDto, courseClass);
+        return courseClass;
     }
 }
