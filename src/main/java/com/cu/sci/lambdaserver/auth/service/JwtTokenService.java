@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * JwtTokenService is a service class that implements the IJwtTokenService interface.
@@ -41,9 +40,8 @@ public class JwtTokenService implements IJwtTokenService {
     @Override
     public Jwt generateAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        String scope = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        String[] scope = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).toArray(String[]::new);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
