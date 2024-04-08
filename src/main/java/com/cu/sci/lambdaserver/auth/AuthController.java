@@ -36,4 +36,10 @@ public class AuthController {
     public ResponseEntity<SignOutResponseDto> signOut(JwtAuthenticationToken token, @RequestAttribute ClientInfoDto clientInfo) {
         return authService.signOut(token, clientInfo);
     }
+
+    @GetMapping("/health")
+    public SignOutResponseDto securedHealth() {
+        return SignOutResponseDto.builder().message("You are authed").build();
+    }
+
 }
