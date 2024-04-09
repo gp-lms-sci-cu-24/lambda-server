@@ -48,10 +48,9 @@ public class CourseClassController {
                 , HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<CourseClassDto> getCourseClassById(@PathVariable Long id) {
-        Optional<CourseClass> courseClassOptional = courseClassService.getCourseClassById(id);
-        return courseClassOptional.map(courseClass -> new ResponseEntity<>(courseClassMapper.mapTo(courseClass), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public CourseClassDto getCourseClassById(@PathVariable Long id) {
+        return courseClassMapper.mapTo(courseClassService.getCourseClassById(id) );
     }
     @PatchMapping
     public ResponseEntity<CourseClassDto> updateCourseClass(@Validated(CourseClassInDto.UpdateValidation.class) @RequestBody CourseClassDto courseClassDto) {

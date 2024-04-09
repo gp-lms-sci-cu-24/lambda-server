@@ -1,6 +1,9 @@
 package com.cu.sci.lambdaserver.courseclass;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTiming;
+import com.cu.sci.lambdaserver.courseregister.CourseRegister;
+import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.enums.State;
 import jakarta.persistence.*;
@@ -8,6 +11,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -40,7 +44,8 @@ public class CourseClass {
     @Column(name = "group_number_seq")
     private Integer groupNumber = -1;
 
-// later refer to admin and professor entities
-//    private String adminId;
-//    private String professorId;
+    @OneToMany(mappedBy = "courseClass")
+    Collection<CourseRegister> courseRegisters;
+    @OneToMany(mappedBy = "courseClass")
+    Collection<TimingRegister> courseClassTimings;
 }
