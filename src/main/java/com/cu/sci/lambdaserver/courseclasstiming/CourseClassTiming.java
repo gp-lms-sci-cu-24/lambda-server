@@ -2,9 +2,12 @@ package com.cu.sci.lambdaserver.courseclasstiming;
 
 import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.location.Location;
+import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -21,9 +24,6 @@ public class CourseClassTiming {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    private CourseClass courseclass;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "class_type")
     private ClassType type;
@@ -39,4 +39,7 @@ public class CourseClassTiming {
 
     @ManyToOne
     private Location location;
+
+    @OneToMany(mappedBy = "courseClassTiming")
+    Collection<TimingRegister> courseClassTimings;
 }

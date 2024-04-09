@@ -10,7 +10,7 @@ public interface ICourseClassService {
 
     List<CourseClass> getAllCourseClasses();
 
-    Optional<CourseClass> getCourseClassById(Long id);
+    CourseClass getCourseClassById(Long id);
 
     boolean isCourseClassExists(Long id);
 

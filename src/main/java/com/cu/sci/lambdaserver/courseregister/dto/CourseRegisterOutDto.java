@@ -1,7 +1,9 @@
 package com.cu.sci.lambdaserver.courseregister.dto;
 
 import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.enums.Rate;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -15,8 +17,8 @@ import lombok.*;
 public class CourseRegisterOutDto {
 
     private Long courseRegisterId;
-//    private CourseClass courseClass;
-//    private Student student;
+    private CourseClassDto courseClass;
+    private StudentDto student;
     private Long grade;
 
     private Rate courseRate;

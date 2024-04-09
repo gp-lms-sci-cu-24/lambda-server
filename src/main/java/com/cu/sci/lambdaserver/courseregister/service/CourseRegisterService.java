@@ -41,8 +41,7 @@ public class CourseRegisterService implements ICourseRegisterService {
         Long courseClassId = courseRegisterInDto.getCourseClassId();
         Student student = studentRepository.findByCode(studentCode)
             .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code") );
-        CourseClass courseClass = courseClassService.getCourseClassById(courseClassId)
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this code") );
+        CourseClass courseClass = courseClassService.getCourseClassById(courseClassId);
 
         CourseRegister courseRegister = new CourseRegister();
         courseRegister.setCourseClass(courseClass);

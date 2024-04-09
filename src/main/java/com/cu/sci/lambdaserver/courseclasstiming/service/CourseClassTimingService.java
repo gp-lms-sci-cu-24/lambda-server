@@ -60,10 +60,6 @@ public class CourseClassTimingService implements ICourseClassTimingService {
         if (location.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "location not found with this id " + courseClassTimingInDto.getLocationId());
 
-        Optional<CourseClass> courseClass = courseClassRepository.findById(courseClassTimingInDto.getCourseClassId());
-        if (courseClass.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id " + courseClassTimingInDto.getCourseClassId());
-
         List<CourseClassTiming> collision = getCollsionList(
                 location.get(),
                 courseClassTimingInDto.getDay(),
@@ -72,7 +68,7 @@ public class CourseClassTimingService implements ICourseClassTimingService {
         );
         if (!collision.isEmpty())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "this class will make collision with " + buildConflictError(collision));
-        CourseClassTiming courseClassTiming = inDtoMapper.mapTo(courseClassTimingInDto, location.get(), courseClass.get());
+        CourseClassTiming courseClassTiming = inDtoMapper.mapTo(courseClassTimingInDto, location.get(), null);
         courseClassTimingRepository.save(courseClassTiming);
         return outDtoMapper.mapTo(courseClassTiming);
     }
@@ -100,9 +96,6 @@ public class CourseClassTimingService implements ICourseClassTimingService {
         if (location.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "location not found with this id " + newCourseClassTiming.getLocationId());
 
-        Optional<CourseClass> courseClass = courseClassRepository.findById(newCourseClassTiming.getCourseClassId());
-        if (courseClass.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id " + newCourseClassTiming.getCourseClassId());
 
         List<CourseClassTiming> collision = getCollsionList(
                 location.get(),
@@ -114,7 +107,6 @@ public class CourseClassTimingService implements ICourseClassTimingService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "this new timing  will make collision with " + buildConflictError(collision));
 
         courseClassTiming.setLocation(location.get());
-        courseClassTiming.setCourseclass(courseClass.get());
         courseClassTiming.setStartTime(newCourseClassTiming.getStartTime());
         courseClassTiming.setEndTime(newCourseClassTiming.getEndTime());
         courseClassTiming.setDay(newCourseClassTiming.getDay());

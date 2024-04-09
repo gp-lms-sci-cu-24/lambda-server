@@ -13,7 +13,6 @@ public class InDtoMapper {
 
     public CourseClassTiming mapTo(CourseClassTimingInDto courseClassTimingInDto, Location location, CourseClass courseClass) {
         return CourseClassTiming.builder().location(location)
-                .courseclass(courseClass)
                 .day(courseClassTimingInDto.getDay())
                 .startTime(courseClassTimingInDto.getStartTime())
                 .endTime(courseClassTimingInDto.getEndTime())
@@ -22,8 +21,7 @@ public class InDtoMapper {
     }
 
     public CourseClassTimingInDto mapFrom(CourseClassTiming courseClassTiming) {
-        return CourseClassTimingInDto.builder().
-                courseClassId(courseClassTiming.getCourseclass().getCourseClassId())
+        return CourseClassTimingInDto.builder()
                 .day(courseClassTiming.getDay())
                 .endTime(courseClassTiming.getEndTime())
                 .startTime(courseClassTiming.getStartTime())

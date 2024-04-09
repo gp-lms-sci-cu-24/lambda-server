@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CourseClassTimingOutDto {
     private Long id;
 
-    private CourseClass courseClass;
+//    private CourseClass courseClass;
 
     private ClassType type;
 
