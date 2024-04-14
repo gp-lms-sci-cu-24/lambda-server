@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.student.Student;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -34,10 +35,10 @@ public class Department {
     private String code;
 
     @OneToMany(mappedBy = "department")
-    private Set<DepartmentCourses> departmentCoursesSet ;
+    private Collection<DepartmentCourses> departmentCoursesSet ;
 
     @OneToMany(mappedBy = "department")
-    private List<Student> students;
+    private Collection<Student> students;
 
 
 }

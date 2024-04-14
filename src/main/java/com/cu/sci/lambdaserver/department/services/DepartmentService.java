@@ -3,8 +3,11 @@ package com.cu.sci.lambdaserver.department.services;
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
+import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
+import com.cu.sci.lambdaserver.student.Student;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,10 +31,12 @@ public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final iMapper<Department, DepartmentDto> departmentMapper;
+    private final iMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
     private final iMapper<Department,UpdateDepartmentDto> updateDepartmentDtoiMapper ;
+    private final iMapper<Student, StudentDto> studentDtoiMapper;
 
     @Override
-    public DepartmentDto createDepartment(DepartmentDto department) {
+    public DepartmentDto createDepartment(CreateDepartmentDto department) {
         // check if department if already exist
         Optional<Department> foundedDepartmentBycode = departmentRepository
                 .findDepartmentByCodeIgnoreCase(department.getCode()) ;
@@ -41,7 +47,7 @@ public class DepartmentService implements IDepartmentService {
         }
 
         // convert dto to entity and save it to db
-        Department savedDepartment = departmentMapper.mapFrom(department) ;
+        Department savedDepartment = createDepartmentDtoiMapper.mapFrom(department) ;
         return departmentMapper.mapTo(departmentRepository.save(savedDepartment)) ;
 
     }
@@ -171,6 +177,24 @@ public class DepartmentService implements IDepartmentService {
 
         return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
 
+    }
+
+    @Override
+    public Page<StudentDto> getDepartmentStudents(String code) {
+        //check if department found
+        Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
+        if (foundedDepartment.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
+        }
+
+        // get students of department
+        List<StudentDto> studentDtoList = foundedDepartment.get().getStudents().stream().map(studentDtoiMapper::mapTo).toList();
+        if(studentDtoList.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No students found in this department");
+        }
+
+        // convert list to page
+        return new PageImpl<>(studentDtoList, PageRequest.of(0, studentDtoList.size()), studentDtoList.size());
     }
 
 
