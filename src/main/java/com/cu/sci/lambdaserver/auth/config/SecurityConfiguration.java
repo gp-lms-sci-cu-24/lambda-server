@@ -2,12 +2,15 @@ package com.cu.sci.lambdaserver.auth.config;
 
 import com.cu.sci.lambdaserver.auth.security.CookieBearerTokenResolver;
 import com.cu.sci.lambdaserver.user.service.IUserService;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +21,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -51,6 +55,7 @@ public class SecurityConfiguration {
 
     private final IUserService userService;
     private final CookieBearerTokenResolver cookieBearerTokenResolver;
+    private final Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter;
 
     @Bean
     @Order(1)
@@ -78,7 +83,7 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtRefreshDecoder))
+                        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtRefreshDecoder).jwtAuthenticationConverter(jwtAuthenticationConverter))
                         .bearerTokenResolver(cookieBearerTokenResolver)
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
@@ -117,11 +122,14 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated()
+                        /*Add multiple roles instead of user to reduce edited files */
+                        authorize.anyRequest().hasAnyRole(Role.ADMIN.toString(), Role.PROFESSOR.toString(), Role.STUDENT.toString(), Role.STAFF.toString(), Role.SUPER_ADMIN.toString(), Role.USER.toString())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults())
+                        .jwt(jwtConfigurer ->
+                                jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)
+                        )
                         .bearerTokenResolver(defaultBearerTokenResolver())
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)

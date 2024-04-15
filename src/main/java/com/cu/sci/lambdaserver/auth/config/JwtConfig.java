@@ -12,10 +12,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+
+import java.util.Collection;
 
 /**
  * JwtConfig is a configuration class that provides beans for JWT encoding and decoding.
@@ -23,6 +27,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class JwtConfig {
+    private static final String AUTHORITY_PREFIX = "ROLE_";
+
+    private static final String CLAIM_ROLES = "roles";
 
     // Security configuration properties
     private final SecurityConfigurationProperties securityProperties;
@@ -81,4 +88,31 @@ public class JwtConfig {
         return new NimbusJwtEncoder(jwkSource);
     }
 
+
+    /**
+     * This method provides a converter for JWT to AbstractAuthenticationToken.
+     * It sets the JwtGrantedAuthoritiesConverter to the JwtAuthenticationConverter.
+     *
+     * @return Converter<Jwt, AbstractAuthenticationToken> This returns a converter for JWT to AbstractAuthenticationToken.
+     */
+    @Bean
+    protected Converter<Jwt, AbstractAuthenticationToken> getJwtAuthenticationConverter() {
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(getJwtGrantedAuthoritiesConverter());
+        return jwtAuthenticationConverter;
+    }
+
+    /**
+     * This method provides a converter for JWT to a collection of GrantedAuthority.
+     * It sets the authority prefix and authorities claim name to the JwtGrantedAuthoritiesConverter.
+     *
+     * @return Converter<Jwt, Collection < GrantedAuthority>> This returns a converter for JWT to a collection of GrantedAuthority.
+     */
+    @Bean
+    protected Converter<Jwt, Collection<GrantedAuthority>> getJwtGrantedAuthoritiesConverter() {
+        JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+        converter.setAuthorityPrefix(AUTHORITY_PREFIX);
+        converter.setAuthoritiesClaimName(CLAIM_ROLES);
+        return converter;
+    }
 }

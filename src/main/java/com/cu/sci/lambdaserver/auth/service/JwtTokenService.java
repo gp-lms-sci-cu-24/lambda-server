@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -40,15 +41,14 @@ public class JwtTokenService implements IJwtTokenService {
     @Override
     public Jwt generateAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        String[] scope = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).toArray(String[]::new);
 
+        String[] roles = getRoles(authentication);
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(securityProperties.jwtAccess().expiredDuration()))
                 .subject(authentication.getName())
-                .claim("scope", scope)
+                .claim("roles", roles)
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims));
     }
@@ -65,13 +65,27 @@ public class JwtTokenService implements IJwtTokenService {
     public Jwt generateRefreshToken(Authentication authentication) {
         Instant now = Instant.now();
 
+        String[] roles = getRoles(authentication);
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(securityProperties.jwtRefresh().expiredDuration()))
                 .subject(authentication.getName())
                 .id(UUID.randomUUID().toString())
+                .claim("roles", roles)
                 .build();
         return this.refreshEncoder.encode(JwtEncoderParameters.from(claims));
+    }
+
+    private String[] getRoles(Authentication authentication) {
+        if (authentication instanceof JwtAuthenticationToken) {
+            return authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::toString)
+                    .map(s -> s.replace("ROLE_", ""))
+                    .toArray(String[]::new);
+        }
+
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::toString).toArray(String[]::new);
     }
 }
