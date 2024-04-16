@@ -48,6 +48,9 @@ public class Student extends User {
     @Enumerated(EnumType.STRING)
     private Level level;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender ;
+
     private String joiningYear;
 
     @ManyToOne
