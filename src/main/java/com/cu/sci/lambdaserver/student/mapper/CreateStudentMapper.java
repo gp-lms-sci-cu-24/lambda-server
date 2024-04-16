@@ -21,4 +21,9 @@ public class CreateStudentMapper implements iMapper<Student, CreateStudentReques
     public Student mapFrom(CreateStudentRequestDto createStudentRequestDto) {
         return modelMapper.map(createStudentRequestDto,Student.class);
     }
+
+    @Override
+    public Student update(CreateStudentRequestDto createStudentRequestDto, Student student) {
+        return null;
+    }
 }

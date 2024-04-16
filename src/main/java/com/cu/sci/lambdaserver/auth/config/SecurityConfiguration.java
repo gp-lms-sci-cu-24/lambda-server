@@ -40,6 +40,7 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private final static String[] WHITE_LIST_URL = {
+            "/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",

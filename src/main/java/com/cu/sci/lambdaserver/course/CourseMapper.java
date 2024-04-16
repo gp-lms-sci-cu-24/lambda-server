@@ -23,5 +23,10 @@ public class CourseMapper implements iMapper<Course, CourseDto> {
     public Course mapFrom(CourseDto courseDto) {
         return modelMapper.map(courseDto, Course.class);
     }
+
+    @Override
+    public Course update(CourseDto courseDto, Course course) {
+        return null;
+    }
 }
 

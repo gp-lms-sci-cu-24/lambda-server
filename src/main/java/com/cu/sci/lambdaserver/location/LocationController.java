@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.location;
 
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
-import com.cu.sci.lambdaserver.location.service.iLocationService;
+import com.cu.sci.lambdaserver.location.service.ILocationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LocationController {
     private final LocationMapper locationMapper;
-    private final iLocationService locationService;
+    private final ILocationService locationService;
 
     @PostMapping
     public ResponseEntity<LocationDto> createLocation(@RequestBody LocationDto locationDto) {
@@ -44,7 +44,9 @@ public class LocationController {
     public ResponseEntity<LocationDto> updateLocation(@RequestBody LocationDto locationDto) {
         try {
             Location location = locationMapper.mapFrom(locationDto);
+            System.out.println(locationService.getLocation(locationDto.getLocationId() ) );
             Location updatedLocation = locationService.updateLocation(locationDto.getLocationId(), location);
+            System.out.println(updatedLocation);
             return new ResponseEntity<>(locationMapper.mapTo(updatedLocation), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);

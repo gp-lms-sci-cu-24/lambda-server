@@ -10,12 +10,11 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="courses")
+@Table(name = "courses")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_seq")
@@ -34,8 +33,11 @@ public class Course {
     @Column(nullable = false)
     private Integer creditHours;
 
-    @OneToMany(mappedBy = "course")
-    private Set<DepartmentCourses> departmentCoursesSet ;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<DepartmentCourses> departmentCoursesSet;
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    private Set<Course> coursePrerequisites;
 
     @Override
     public final boolean equals(Object o) {
@@ -52,4 +54,41 @@ public class Course {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
+    //[
+    //    {
+    //        "id": 1,
+    //        "name": "number 2",
+    //        "code": "comp494",
+    //        "info": "computer science",
+    //        "creditHours": 3
+    //    },
+    //    {
+    //        "id": 2,
+    //        "name": "number 1",
+    //        "code": "comp493",
+    //        "info": "computer science",
+    //        "creditHours": 3
+    //    },
+    //    {
+    //        "id": 12,
+    //        "name": "number 3",
+    //        "code": "comp495",
+    //        "info": "computer science",
+    //        "creditHours": 3
+    //    },
+    //    {
+    //        "id": 13,
+    //        "name": "number 4",
+    //        "code": "comp496",
+    //        "info": "computer science",
+    //        "creditHours": 3
+    //    },
+    //    {
+    //        "id": 14,
+    //        "name": "number 5",
+    //        "code": "comp497",
+    //        "info": "computer science",
+    //        "creditHours": 3
+    //    }
+    //]
 }

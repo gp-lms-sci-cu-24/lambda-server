@@ -28,4 +28,6 @@ public class CourseDto {
     @Max(value = 7, message = "creditHours should be less than 7")
     private Integer creditHours;
 
+//    private Set<DepartmentCoursesDto> departmentCoursesSet;
+
 }

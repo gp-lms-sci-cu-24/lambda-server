@@ -20,4 +20,9 @@ public class StudentMapper implements iMapper<Student, StudentDto> {
     public Student mapFrom(StudentDto studentDto) {
         return modelMapper.map(studentDto, Student.class);
     }
+
+    @Override
+    public Student update(StudentDto studentDto, Student student) {
+        return null;
+    }
 }

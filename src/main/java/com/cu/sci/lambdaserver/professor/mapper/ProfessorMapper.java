@@ -21,4 +21,9 @@ public class ProfessorMapper implements iMapper<Professor, ProfessorDto> {
     public Professor mapFrom(ProfessorDto professorDto) {
         return modelMapper.map(professorDto, Professor.class);
     }
+
+    @Override
+    public Professor update(ProfessorDto professorDto, Professor professor) {
+        return null;
+    }
 }

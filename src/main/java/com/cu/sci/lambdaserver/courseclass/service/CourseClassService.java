@@ -1,24 +1,24 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
 
-import com.cu.sci.lambdaserver.classGroup.dto.ClassGroupDto;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
-import com.cu.sci.lambdaserver.classGroup.CourseClassGroup;
-import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.service.CourseService;
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
-import com.cu.sci.lambdaserver.courseclass.CourseClassRepository;
-import com.cu.sci.lambdaserver.utils.enums.State;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CourseClassService implements iCourseClassService{
+public class CourseClassService implements ICourseClassService {
     private final CourseClassRepository courseClassRepository;
+    private final CourseClassMapper courseClassMapper;
     private final CourseService courseService;
     @Override
     public CourseClass createCourseClass(CourseClass courseClass) {
@@ -31,8 +31,9 @@ public class CourseClassService implements iCourseClassService{
     }
 
     @Override
-    public Optional<CourseClass> getCourseClassById(Long id) {
-        return courseClassRepository.findById(id);
+    public CourseClass getCourseClassById(Long id) {
+        return courseClassRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id") );
     }
 
     @Override
@@ -40,12 +41,12 @@ public class CourseClassService implements iCourseClassService{
         return courseClassRepository.existsById(id);
     }
     @Override
-    public CourseClass updateCourseClass(Long id, CourseClass courseClassDetails) {
+    public CourseClass updateCourseClass(CourseClassDto courseClassDto) {
         // make sure that the courseClass exist
+        Long id = courseClassDto.getCourseClassId();
         CourseClass courseClass = courseClassRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CourseClass Not Found With This Id " + id) );
-        // update how?
-
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id") );
+        courseClassMapper.update(courseClassDto,courseClass );
         return courseClassRepository.save(courseClass);
     }
     @Override
@@ -58,64 +59,5 @@ public class CourseClassService implements iCourseClassService{
         return courseClassRepository.save(courseClass);
     }
     public Optional<CourseClass> getLatestClassByCourseId(Long id){ return courseClassRepository.getLatestClassByCourseId(id); }
-
-    public boolean addGroup(ClassGroupDto classGroupDto, CourseClass courseClass, CourseClassGroup classGroup){
-        Integer capacity = classGroupDto.getMaxCapacity();
-        Boolean exact = classGroupDto.getIsExact();
-
-        if(exact && courseClass.getCapacitySoFar() + capacity > courseClass.getMaxCapacity() ){
-            return false;
-        }
-        Integer actualCapacity=Math.min(capacity, courseClass.getMaxCapacity() - courseClass.getCapacitySoFar() );
-        if(actualCapacity == 0){
-            return false;
-        }
-        classGroup.setClassGroupId((long) (courseClass.getGroupNumber() + 1) );
-        classGroup.setCourseClass(courseClass);
-        classGroup.setMaxCapacity(actualCapacity);
-
-        courseClass.setGroupNumber(courseClass.getGroupNumber() + 1);
-        courseClass.setCapacitySoFar(courseClass.getCapacitySoFar() + actualCapacity);
-
-        return true;
-    }
-    public boolean deleteGroup(ClassGroupDto classGroupDto, CourseClass courseClass, CourseClassGroup classGroup){
-
-        courseClass.setNumberOfStudentsRegistered(courseClass.getNumberOfStudentsRegistered()
-                - classGroup.getNumberOfStudentsRegistered() );
-
-        courseClass.setCapacitySoFar(courseClass.getCapacitySoFar()
-                - classGroup.getMaxCapacity() );
-
-        return true;
-    }
-    public void init() {
-//        Course course1 = courseService.getCourseById(1L).get();
-//        Course course2 = courseService.getCourseById(2L).get();
-        // Create Course instances
-        Course course1 = new Course();
-        course1.setId(1L);
-
-        Course course2 = new Course();
-        course2.setId(2L);
-
-        CourseClass courseClass1 = new CourseClass();
-        courseClass1.setCourse(course1);
-        courseClass1.setCourseSemester(Semester.FIRST);
-        courseClass1.setCourseState(State.ACTIVE);
-        courseClass1.setMaxCapacity(50);
-
-        CourseClass courseClass2 = new CourseClass();
-        courseClass2.setCourse(course2);
-        courseClass2.setCourseSemester(Semester.SECOND);
-        courseClass2.setCourseState(State.INACTIVE);
-        courseClass2.setMaxCapacity(40);
-
-        courseClassRepository.saveAll(List.of(courseClass1, courseClass2) );
-        System.out.println("printing all course classes in db on start of application");
-        courseClassRepository.findAll().forEach(user -> {
-            System.out.println(user.toString() );
-        });
-    }
 
 }

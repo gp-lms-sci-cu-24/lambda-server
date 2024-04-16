@@ -23,4 +23,9 @@ public class UpdateDepartmentMapper implements iMapper<Department, UpdateDepartm
     public Department mapFrom(UpdateDepartmentDto updateDepartmentDto) {
         return modelMapper.map(updateDepartmentDto, Department.class);
     }
+
+    @Override
+    public Department update(UpdateDepartmentDto updateDepartmentDto, Department department) {
+        return null;
+    }
 }
