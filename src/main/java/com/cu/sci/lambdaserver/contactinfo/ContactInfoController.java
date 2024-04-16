@@ -13,15 +13,15 @@ public class ContactInfoController {
 
     private final ContactInfoService contactInfoService;
 
-    @GetMapping
+    @GetMapping(path = "/{userName}")
     @ResponseStatus(HttpStatus.OK)
-    public ContactInfoDto getContactInfo(String userName) {
+    public ContactInfoDto getContactInfo(@PathVariable String userName) {
         return contactInfoService.getContactInfo(userName);
     }
 
-    @PutMapping
+    @PutMapping(path = "/{userName}")
     @ResponseStatus(HttpStatus.OK)
-    public ContactInfoDto updateContactInfo(String userName, ContactInfoDto contactInfo) {
+    public ContactInfoDto updateContactInfo(@PathVariable String userName, @RequestBody ContactInfoDto contactInfo) {
         return contactInfoService.updateContactInfo(userName, contactInfo);
     }
 
