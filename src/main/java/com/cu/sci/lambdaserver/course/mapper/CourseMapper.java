@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.course;
+package com.cu.sci.lambdaserver.course.mapper;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;

@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
@@ -81,7 +82,7 @@ public interface IDepartmentService {
      * @param pageSize The size of the page to retrieve.
      * @return A page of courses.
      */
-    Page<CreateCourseDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize);
+    Page<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize);
 
     /**
      * Retrieves the courses of a department for a specific semester.
@@ -92,5 +93,5 @@ public interface IDepartmentService {
      * @param semester The semester to retrieve courses for.
      * @return A page of courses.
      */
-    Page<CreateCourseDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester);
+    Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester);
 }
