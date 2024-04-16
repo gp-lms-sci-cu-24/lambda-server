@@ -8,7 +8,7 @@ import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
 import com.cu.sci.lambdaserver.user.UserRepository;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,9 +30,9 @@ public class StudentService implements IStudentService {
 
     private final StudentRepository studentRepository;
     private final DepartmentRepository departmentRepository;
-    private final iMapper<Student, UpdateStudentDto> studentMapper;
-    private final iMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
-    private final iMapper<Student, StudentDto> studentDtoiMapper;
+    private final IMapper<Student, UpdateStudentDto> studentMapper;
+    private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
+    private final IMapper<Student, StudentDto> studentDtoiMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override

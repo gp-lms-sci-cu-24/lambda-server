@@ -2,14 +2,14 @@ package com.cu.sci.lambdaserver.timingregister.mapper;
 
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.timingregister.dto.TimingRegisterInDto;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class TimingRegisterInDtoMapper implements iMapper<TimingRegister, TimingRegisterInDto> {
+public class TimingRegisterInDtoMapper implements IMapper<TimingRegister, TimingRegisterInDto> {
     private final ModelMapper modelMapper;
 
     @Override

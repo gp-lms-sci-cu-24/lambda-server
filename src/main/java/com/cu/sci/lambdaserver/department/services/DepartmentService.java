@@ -9,7 +9,7 @@ import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
 public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final iMapper<Department, DepartmentDto> departmentMapper;
-    private final iMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
-    private final iMapper<Department, UpdateDepartmentDto> updateDepartmentDtoiMapper;
-    private final iMapper<Student, StudentDto> studentDtoiMapper;
+    private final IMapper<Department, DepartmentDto> departmentMapper;
+    private final IMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
+    private final IMapper<Department, UpdateDepartmentDto> updateDepartmentDtoiMapper;
+    private final IMapper<Student, StudentDto> studentDtoiMapper;
 
     @Override
     public DepartmentDto createDepartment(CreateDepartmentDto department) {
@@ -126,7 +126,7 @@ public class DepartmentService implements IDepartmentService {
         }
 
         // get courses of department
-        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCoursesSet().stream().map(departmentCourses -> {
+        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCourses().stream().map(departmentCourses -> {
             CreateCourseDto createCourseDto = new CreateCourseDto();
             createCourseDto.setCode(departmentCourses.getCourse().getCode());
             createCourseDto.setName(departmentCourses.getCourse().getName());
@@ -134,7 +134,7 @@ public class DepartmentService implements IDepartmentService {
             createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
             createCourseDto.setSemester(departmentCourses.getSemester());
             createCourseDto.setMandatory(departmentCourses.getMandatory());
-            createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCoursesSet().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
+            createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCourses().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
             return createCourseDto;
         }).toList();
 
@@ -156,7 +156,7 @@ public class DepartmentService implements IDepartmentService {
         }
 
         // get courses of department by semester
-        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCoursesSet().stream()
+        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCourses().stream()
                 .filter(departmentCourses -> departmentCourses.getSemester().equals(semester))
                 .map(departmentCourses -> {
                     CreateCourseDto createCourseDto = new CreateCourseDto();
@@ -166,7 +166,7 @@ public class DepartmentService implements IDepartmentService {
                     createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
                     createCourseDto.setSemester(departmentCourses.getSemester());
                     createCourseDto.setMandatory(departmentCourses.getMandatory());
-                    createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCoursesSet().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
+                    createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCourses().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
                     return createCourseDto;
                 }).toList();
 

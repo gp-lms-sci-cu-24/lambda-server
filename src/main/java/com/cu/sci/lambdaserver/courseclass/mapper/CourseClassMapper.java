@@ -2,12 +2,12 @@ package com.cu.sci.lambdaserver.courseclass.mapper;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CourseClassMapper implements iMapper<CourseClass, CourseClassDto> {
+public class CourseClassMapper implements IMapper<CourseClass, CourseClassDto> {
     private final ModelMapper modelMapper;
 
     public CourseClassMapper(ModelMapper modelMapper) {

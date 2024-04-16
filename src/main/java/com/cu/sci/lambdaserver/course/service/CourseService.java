@@ -9,7 +9,7 @@ import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.course.repositries.DepartmentCoursesRepository;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
     private final DepartmentRepository departmentRepository;
     private final DepartmentCoursesRepository departmentCoursesRepository;
-    private final iMapper<Course, CourseDto> courseMapper;
+    private final IMapper<Course, CourseDto> courseMapper;
 
     public List<Course> getCourses() {
         return courseRepository.findAll();

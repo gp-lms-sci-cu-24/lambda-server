@@ -4,7 +4,7 @@ import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.service.CourseService;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
-    private final iMapper<Course, CourseDto> courseMapper;
+    private final IMapper<Course, CourseDto> courseMapper;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
