@@ -19,7 +19,7 @@ public class ContactInfo {
     @SequenceGenerator(name = "contact_info_seq", sequenceName = "contact_info_seq", allocationSize = 10)
     private Long id ;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user ;
 
