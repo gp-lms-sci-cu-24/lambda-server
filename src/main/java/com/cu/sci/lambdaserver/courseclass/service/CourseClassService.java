@@ -1,14 +1,11 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
 
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
-import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.service.CourseService;
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
-import com.cu.sci.lambdaserver.courseclass.CourseClassRepository;
-import com.cu.sci.lambdaserver.utils.enums.State;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

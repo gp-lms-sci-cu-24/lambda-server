@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.courseclasstiming.dto;
+package com.cu.sci.lambdaserver.courseclass.dto;
 
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
 import jakarta.validation.constraints.Max;

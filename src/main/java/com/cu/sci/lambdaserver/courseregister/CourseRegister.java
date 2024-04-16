@@ -1,8 +1,7 @@
 package com.cu.sci.lambdaserver.courseregister;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.student.Student;
-import com.cu.sci.lambdaserver.utils.enums.Rate;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

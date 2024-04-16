@@ -1,7 +1,7 @@
-package com.cu.sci.lambdaserver.courseclasstiming.service;
+package com.cu.sci.lambdaserver.courseclass.service;
 
-import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingInDto;
-import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingOutDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
 
 import java.util.List;
 

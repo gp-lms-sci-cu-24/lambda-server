@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.courseclass.mapper;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

@@ -1,13 +1,12 @@
-package com.cu.sci.lambdaserver.courseclasstiming.service;
+package com.cu.sci.lambdaserver.courseclass.service;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
-import com.cu.sci.lambdaserver.courseclass.CourseClassRepository;
-import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTiming;
-import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTimingRepository;
-import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingInDto;
-import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingOutDto;
-import com.cu.sci.lambdaserver.courseclasstiming.mapper.InDtoMapper;
-import com.cu.sci.lambdaserver.courseclasstiming.mapper.OutDtoMapper;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
+import com.cu.sci.lambdaserver.courseclass.mapper.TimingInDtoMapper;
+import com.cu.sci.lambdaserver.courseclass.mapper.TimingOutDtoMapper;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassTimingRepository;
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
 import jakarta.validation.Valid;
@@ -26,8 +25,8 @@ public class CourseClassTimingService implements ICourseClassTimingService {
     private final CourseClassTimingRepository courseClassTimingRepository;
     private final LocationRepository locationRepository;
     private final CourseClassRepository courseClassRepository;
-    private final InDtoMapper inDtoMapper;
-    private final OutDtoMapper outDtoMapper;
+    private final TimingInDtoMapper timingInDtoMapper;
+    private final TimingOutDtoMapper timingOutDtoMapper;
 
     private List<CourseClassTiming> getCollsionList(Location location, String day, Long startTime, Long endTime) {
         return courseClassTimingRepository.findByLocationAndDayAndStartTimeLessThanAndEndTimeGreaterThan(
@@ -68,21 +67,21 @@ public class CourseClassTimingService implements ICourseClassTimingService {
         );
         if (!collision.isEmpty())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "this class will make collision with " + buildConflictError(collision));
-        CourseClassTiming courseClassTiming = inDtoMapper.mapTo(courseClassTimingInDto, location.get(), null);
+        CourseClassTiming courseClassTiming = timingInDtoMapper.mapTo(courseClassTimingInDto, location.get(), null);
         courseClassTimingRepository.save(courseClassTiming);
-        return outDtoMapper.mapTo(courseClassTiming);
+        return timingOutDtoMapper.mapTo(courseClassTiming);
     }
 
     @Override
     public List<CourseClassTimingOutDto> getAllCourseClassTiming() {
-        return courseClassTimingRepository.findAll().stream().map(outDtoMapper::mapTo).collect(Collectors.toList());
+        return courseClassTimingRepository.findAll().stream().map(timingOutDtoMapper::mapTo).collect(Collectors.toList());
     }
 
     @Override
     public CourseClassTimingOutDto getCourseClassTimingById(Long id) {
         Optional<CourseClassTiming> courseClassTiming = courseClassTimingRepository.findById(id);
         if (courseClassTiming.isPresent())
-            return outDtoMapper.mapTo(courseClassTiming.get());
+            return timingOutDtoMapper.mapTo(courseClassTiming.get());
         else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " class timing not found ");
     }
@@ -111,14 +110,14 @@ public class CourseClassTimingService implements ICourseClassTimingService {
         courseClassTiming.setEndTime(newCourseClassTiming.getEndTime());
         courseClassTiming.setDay(newCourseClassTiming.getDay());
         courseClassTiming.setType(newCourseClassTiming.getType());
-        return outDtoMapper.mapTo(courseClassTimingRepository.save(courseClassTiming));
+        return timingOutDtoMapper.mapTo(courseClassTimingRepository.save(courseClassTiming));
     }
 
     @Override
     public CourseClassTimingOutDto deleteCourseClassTiming(Long id) {
         CourseClassTiming courseClassTiming = courseClassTimingRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass Not Found With This Id " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "timing Not Found With This Id " + id));
         courseClassTimingRepository.deleteById(id);
-        return outDtoMapper.mapTo(courseClassTiming);
+        return timingOutDtoMapper.mapTo(courseClassTiming);
     }
 }

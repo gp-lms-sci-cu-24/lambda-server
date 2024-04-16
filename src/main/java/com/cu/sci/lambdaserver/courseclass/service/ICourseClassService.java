@@ -1,10 +1,10 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 
 import java.util.List;
-import java.util.Optional;
+
 public interface ICourseClassService {
     CourseClass createCourseClass(CourseClass courseClass);
 

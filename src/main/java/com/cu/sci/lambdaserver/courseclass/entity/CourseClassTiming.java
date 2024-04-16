@@ -1,6 +1,5 @@
-package com.cu.sci.lambdaserver.courseclasstiming;
+package com.cu.sci.lambdaserver.courseclass.entity;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
