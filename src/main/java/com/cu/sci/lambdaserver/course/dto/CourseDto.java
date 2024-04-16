@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.course.dto;
 
-import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Builder
 @Data
@@ -31,6 +28,6 @@ public class CourseDto {
     @Max(value = 7, message = "creditHours should be less than 7")
     private Integer creditHours;
 
-    private Set<DepartmentCoursesDto> departmentCoursesSet;
+//    private Set<DepartmentCoursesDto> departmentCoursesSet;
 
 }

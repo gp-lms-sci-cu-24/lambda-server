@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,5 +50,23 @@ public class CourseController {
     public CourseDto updateCourse(@Valid @PathVariable(name = "id") Long courseId,
                                   @Valid @RequestBody CourseDto course) {
         return courseMapper.mapTo(courseService.updateCourse(courseId, courseMapper.mapFrom(course)));
+    }
+
+    @PostMapping("/{id}/prerequisites/{prerequisite}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseDto addPrerequisite(@PathVariable(name = "id") Long courseId, @PathVariable(name = "prerequisite") Long prerequisiteId) {
+        return courseMapper.mapTo(courseService.addPrerequisite(courseId, prerequisiteId));
+    }
+
+    @GetMapping("/{id}/prerequisites")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<CourseDto> getPrerequisite(@PathVariable(name = "id") Long courseId) {
+        return courseService.getPrerequisite(courseId).stream().map(courseMapper::mapTo).collect(Collectors.toSet());
+    }
+
+    @GetMapping("/{id}/prerequisites/all")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<CourseDto> getAllPrerequisite(@PathVariable(name = "id") Long courseId) {
+        return courseService.getAllPrerequisites(courseId).stream().map(courseMapper::mapTo).collect(Collectors.toSet());
     }
 }

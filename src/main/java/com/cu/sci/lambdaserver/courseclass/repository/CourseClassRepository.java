@@ -1,5 +1,6 @@
-package com.cu.sci.lambdaserver.courseclass;
+package com.cu.sci.lambdaserver.courseclass.repository;
 
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

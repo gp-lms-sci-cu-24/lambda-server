@@ -1,15 +1,15 @@
-package com.cu.sci.lambdaserver.courseclasstiming.mapper;
+package com.cu.sci.lambdaserver.courseclass.mapper;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
-import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTiming;
-import com.cu.sci.lambdaserver.courseclasstiming.dto.CourseClassTimingInDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
 import com.cu.sci.lambdaserver.location.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class InDtoMapper {
+public class TimingInDtoMapper {
 
     public CourseClassTiming mapTo(CourseClassTimingInDto courseClassTimingInDto, Location location, CourseClass courseClass) {
         return CourseClassTiming.builder().location(location)
