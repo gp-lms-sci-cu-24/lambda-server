@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.student.dto;
 
+import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
@@ -50,6 +51,9 @@ public class CreateStudentRequestDto{
 
         @JsonProperty("joining_year")
         private String joiningYear;
+
+        @NotBlank
+        private Gender gender ;
 
         @JsonProperty("department_code")
         private String departmentCode;
