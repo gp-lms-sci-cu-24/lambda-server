@@ -1,7 +1,6 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
 
-import com.cu.sci.lambdaserver.course.service.CourseService;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class CourseClassService implements ICourseClassService {
     private final CourseClassRepository courseClassRepository;
     private final CourseClassMapper courseClassMapper;
-    private final CourseService courseService;
 
     @Override
     public CourseClass createCourseClass(CourseClass courseClass) {

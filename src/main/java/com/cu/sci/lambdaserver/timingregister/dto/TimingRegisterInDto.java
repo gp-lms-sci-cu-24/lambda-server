@@ -27,6 +27,4 @@ public class TimingRegisterInDto {
     public interface CreateValidation {
     }
 
-    public interface NoValidation {
-    }
 }

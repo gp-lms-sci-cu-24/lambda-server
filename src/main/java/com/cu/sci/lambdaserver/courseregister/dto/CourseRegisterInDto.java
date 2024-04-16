@@ -36,6 +36,4 @@ public class CourseRegisterInDto {
     public interface CreateValidation {
     }
 
-    public interface NoValidation {
-    }
 }

@@ -25,11 +25,6 @@ public class CourseClassDto {
 //    @Null(groups = {CourseClassInDto.UpdateValidation.class}, message = "Max Capacity must be null during update")
     private Integer maxCapacity;
 
-    public interface UpdateValidation {
-    }
-
-    public interface CreateValidation {
-    }
 
 //    @Null(groups = {CourseClassInDto.CreateValidation.class, CourseClassInDto.UpdateValidation.class}, message = "Number of Students must be null during creation and update")
 //    private Integer numberOfStudentsRegistered;

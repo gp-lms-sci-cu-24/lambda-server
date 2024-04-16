@@ -32,10 +32,10 @@ public class Department {
     @Column(unique = true, nullable = false)
     private String code;
 
-    @OneToMany(mappedBy = "department")
-    private Collection<DepartmentCourses> departmentCoursesSet;
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private Collection<DepartmentCourses> departmentCourses;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private Collection<Student> students;
 
 

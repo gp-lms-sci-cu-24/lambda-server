@@ -27,6 +27,4 @@ public class ProfessorDto {
     public interface CreateValidation {
     }
 
-    public interface NoValidation {
-    }
 }

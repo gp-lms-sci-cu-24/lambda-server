@@ -121,6 +121,7 @@ CREATE TABLE students
     address          VARCHAR(255),
     gpa              DOUBLE PRECISION DEFAULT 0,
     level            VARCHAR(255),
+    gender VARCHAR(255),
     joining_year     VARCHAR(255),
     department_id    BIGINT,
     CONSTRAINT pk_students PRIMARY KEY (id)
