@@ -77,6 +77,12 @@ public class JwtTokenService implements IJwtTokenService {
         return this.refreshEncoder.encode(JwtEncoderParameters.from(claims));
     }
 
+    /**
+     * This class is an implementation of the IAuthenticationFacade interface.
+     * It provides methods to get the authentication and the authenticated user.
+     * It is annotated with @Component to indicate that it's a Spring Bean.
+     * It is annotated with @RequiredArgsConstructor to generate a constructor with required fields, in this case, IUserService.
+     */
     private String[] getRoles(Authentication authentication) {
         if (authentication instanceof JwtAuthenticationToken) {
             return authentication.getAuthorities().stream()
