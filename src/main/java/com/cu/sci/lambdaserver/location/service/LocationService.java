@@ -2,12 +2,16 @@ package com.cu.sci.lambdaserver.location.service;
 
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.cu.sci.lambdaserver.location.dto.LocationDto;
+import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -16,38 +20,83 @@ import java.util.Optional;
 public class LocationService implements ILocationService {
 
     private final LocationRepository locationRepository;
+    private final LocationMapper locationMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Location createLocation(Location location) {
-        return locationRepository.save(location);
+    public LocationDto createLocation(LocationDto locationDto) {
+        Location location = locationRepository.save(locationMapper.mapFrom(locationDto));
+        return locationMapper.mapTo(location);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Page<Location> getAllLocations(Integer pageNo, Integer pageSize) {
+    public Page<LocationDto> getAllLocations(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return locationRepository.findAll(pageable);
+        Page<Location> locations = locationRepository.findAll(pageable);
+        //check if list empty
+        if (locations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return locations.map(locationMapper::mapTo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<Location> getLocation(Long id) {
-        return locationRepository.findById(id);
+    public LocationDto getLocationById(Long id) {
+        Location location = locationRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Location with ID " + id + " does not exist")
+                );
+
+        return locationMapper.mapTo(location);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Location updateLocation(Long id, Location locationDetails) {
-        return locationRepository.findById(id).map(existingLocation -> {
+    public LocationDto updateLocationById(Long id, LocationDto locationDetails) {
+        Optional<Location> location = locationRepository.findById(id);
+
+        if (location.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Location with ID " + id + " does not exist");
+        }
+
+        Location updatedLocation = location.map(existingLocation -> {
             existingLocation.setPath(locationDetails.getPath());
             existingLocation.setMaxCapacity(locationDetails.getMaxCapacity());
             existingLocation.setInfo(locationDetails.getInfo());
             return locationRepository.save(existingLocation);
-        }).orElseThrow(() -> new EntityNotFoundException("Location with ID " + id + " does not exist"));
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        return locationMapper.mapTo(updatedLocation);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void deleteLocation(Long id) {
-        if (!locationRepository.existsById(id)) {
-            throw new EntityNotFoundException("Location with ID " + id + " does not exist");
-        }
-        locationRepository.deleteById(id);
+    public MessageResponse deleteLocationById(Long id) {
+        Location location = locationRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Location with ID " + id + " does not exist")
+                );
+
+        locationRepository.delete(location);
+
+        return new MessageResponse("Location with ID " + id + " has been deleted");
     }
 }
