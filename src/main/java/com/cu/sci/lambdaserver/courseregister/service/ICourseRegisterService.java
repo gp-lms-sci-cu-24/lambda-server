@@ -4,8 +4,6 @@ import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import org.springframework.data.domain.Page;
 
-import java.util.Optional;
-
 public interface ICourseRegisterService {
     CourseRegister createCourseRegister(CourseRegisterInDto courseRegisterInDto);
 

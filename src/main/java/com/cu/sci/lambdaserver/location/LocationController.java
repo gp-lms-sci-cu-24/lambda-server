@@ -25,6 +25,7 @@ public class LocationController {
         Location savedLocation = locationService.createLocation(locationEntity);
         return new ResponseEntity<>(locationMapper.mapTo(savedLocation), HttpStatus.CREATED);
     }
+
     @GetMapping
     public ResponseEntity<Page<LocationDto>> getAllLocations(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         Page<Location> page = locationService.getAllLocations(pageNo, pageSize);
@@ -39,19 +40,20 @@ public class LocationController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-//    @PatchMapping(path = "/{id}")
+    //    @PatchMapping(path = "/{id}")
     @PatchMapping
     public ResponseEntity<LocationDto> updateLocation(@RequestBody LocationDto locationDto) {
         try {
             Location location = locationMapper.mapFrom(locationDto);
-            System.out.println(locationService.getLocation(locationDto.getLocationId() ) );
-            Location updatedLocation = locationService.updateLocation(locationDto.getLocationId(), location);
+            System.out.println(locationService.getLocation(locationDto.getId()));
+            Location updatedLocation = locationService.updateLocation(locationDto.getId(), location);
             System.out.println(updatedLocation);
             return new ResponseEntity<>(locationMapper.mapTo(updatedLocation), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<String> deleteLocation(@PathVariable("id") Long id) {
         try {

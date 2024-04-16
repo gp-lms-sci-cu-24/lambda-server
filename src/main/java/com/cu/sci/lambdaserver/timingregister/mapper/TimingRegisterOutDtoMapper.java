@@ -11,10 +11,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TimingRegisterOutDtoMapper implements iMapper<TimingRegister, TimingRegisterOutDto> {
     private final ModelMapper modelMapper;
+
     @Override
     public TimingRegisterOutDto mapTo(TimingRegister timingRegister) {
         return modelMapper.map(timingRegister, TimingRegisterOutDto.class);
     }
+
     @Override
     public TimingRegister mapFrom(TimingRegisterOutDto courseRegisterInDto) {
         return modelMapper.map(courseRegisterInDto, TimingRegister.class);

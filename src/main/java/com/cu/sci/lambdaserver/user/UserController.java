@@ -23,6 +23,7 @@ public class UserController {
     public ResponseEntity<Collection<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
         return ResponseEntity.internalServerError().body("Not Implemented Yet!");

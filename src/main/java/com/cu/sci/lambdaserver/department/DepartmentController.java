@@ -14,8 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-
 @RestController
 @RequestMapping("api/v1/department")
 @RequiredArgsConstructor
@@ -26,7 +24,7 @@ public class DepartmentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DepartmentDto createDepartment(@RequestBody @Valid CreateDepartmentDto departmentDto) {
-        return departmentService.createDepartment(departmentDto) ;
+        return departmentService.createDepartment(departmentDto);
     }
 
     @GetMapping
@@ -44,7 +42,7 @@ public class DepartmentController {
 
     @PatchMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
-    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody  UpdateDepartmentDto departmentDto) {
+    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody UpdateDepartmentDto departmentDto) {
         return departmentService.updateDepartment(code, departmentDto);
     }
 
@@ -61,10 +59,10 @@ public class DepartmentController {
     }
 
 
-    @GetMapping(path = "/{code}/courses",params = "details=true")
+    @GetMapping(path = "/{code}/courses", params = "details=true")
     @ResponseStatus(HttpStatus.OK)
-    public Page<CreateCourseDto> getCourseDepartmentbySemster(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
-        return departmentService.getCourseDepartmentbySemster(code, pageNo, pageSize, semester);
+    public Page<CreateCourseDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
+        return departmentService.getCourseDepartmentBySemester(code, pageNo, pageSize, semester);
     }
 
     @GetMapping(path = "/{code}/students")

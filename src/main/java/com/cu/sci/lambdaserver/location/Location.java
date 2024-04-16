@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.location;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,12 +14,12 @@ import lombok.*;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long locationId;
+    private Long id;
 
     @Column(nullable = false)
-    private String locationPath;
+    private String path;
 
-    private String locationInfo;
+    private String info;
 
     @Column(nullable = false)
     private Integer maxCapacity;

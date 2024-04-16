@@ -4,5 +4,5 @@ public enum ClassType {
     THEORETICAL_LECTURE,
     TRAINING_SECTION,
     LABORATORY_SECTION
-    
+
 }

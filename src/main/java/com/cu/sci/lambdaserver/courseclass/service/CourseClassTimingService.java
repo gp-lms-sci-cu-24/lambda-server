@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class CourseClassTimingService implements ICourseClassTimingService {
     private final TimingInDtoMapper timingInDtoMapper;
     private final TimingOutDtoMapper timingOutDtoMapper;
 
-    private List<CourseClassTiming> getCollsionList(Location location, String day, Long startTime, Long endTime) {
+    private List<CourseClassTiming> getCollsionList(Location location, DayOfWeek day, Long startTime, Long endTime) {
         return courseClassTimingRepository.findByLocationAndDayAndStartTimeLessThanAndEndTimeGreaterThan(
                 location,
                 day,

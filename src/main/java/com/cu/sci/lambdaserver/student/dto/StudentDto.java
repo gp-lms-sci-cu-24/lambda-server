@@ -34,5 +34,5 @@ public class StudentDto {
 
     private String joiningYear;
 
-    private DepartmentDto department ;
+    private DepartmentDto department;
 }

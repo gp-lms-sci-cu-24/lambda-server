@@ -6,14 +6,17 @@ import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
 @Component
 @RequiredArgsConstructor
 public class TimingRegisterInDtoMapper implements iMapper<TimingRegister, TimingRegisterInDto> {
     private final ModelMapper modelMapper;
+
     @Override
     public TimingRegisterInDto mapTo(TimingRegister timingRegister) {
         return modelMapper.map(timingRegister, TimingRegisterInDto.class);
     }
+
     @Override
     public TimingRegister mapFrom(TimingRegisterInDto timingRegisterInDto) {
         return modelMapper.map(timingRegisterInDto, TimingRegister.class);

@@ -19,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,23 +31,23 @@ public class DepartmentService implements IDepartmentService {
     private final DepartmentRepository departmentRepository;
     private final iMapper<Department, DepartmentDto> departmentMapper;
     private final iMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
-    private final iMapper<Department,UpdateDepartmentDto> updateDepartmentDtoiMapper ;
+    private final iMapper<Department, UpdateDepartmentDto> updateDepartmentDtoiMapper;
     private final iMapper<Student, StudentDto> studentDtoiMapper;
 
     @Override
     public DepartmentDto createDepartment(CreateDepartmentDto department) {
-        // check if department if already exist
-        Optional<Department> foundedDepartmentBycode = departmentRepository
-                .findDepartmentByCodeIgnoreCase(department.getCode()) ;
-        Optional<Department> foundedDepartmentByname = departmentRepository
+        // check if department is already exist
+        Optional<Department> foundedDepartmentByCode = departmentRepository
+                .findDepartmentByCodeIgnoreCase(department.getCode());
+        Optional<Department> foundedDepartmentByName = departmentRepository
                 .findDepartmentByNameIgnoreCase(department.getName());
-        if(foundedDepartmentBycode.isPresent()||foundedDepartmentByname.isPresent()){
+        if (foundedDepartmentByCode.isPresent() || foundedDepartmentByName.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Department is already exist.");
         }
 
         // convert dto to entity and save it to db
-        Department savedDepartment = createDepartmentDtoiMapper.mapFrom(department) ;
-        return departmentMapper.mapTo(departmentRepository.save(savedDepartment)) ;
+        Department savedDepartment = createDepartmentDtoiMapper.mapFrom(department);
+        return departmentMapper.mapTo(departmentRepository.save(savedDepartment));
 
     }
 
@@ -96,7 +98,7 @@ public class DepartmentService implements IDepartmentService {
         });
 
         // convert saved department to dto
-        return updateDepartmentDtoiMapper.mapTo(foundedDepartment.get()) ;
+        return updateDepartmentDtoiMapper.mapTo(foundedDepartment.get());
 
     }
 
@@ -146,7 +148,7 @@ public class DepartmentService implements IDepartmentService {
 
 
     @Override
-    public Page<CreateCourseDto> getCourseDepartmentbySemster(String code, Integer pageNo, Integer pageSize, Semester semester) {
+    public Page<CreateCourseDto> getCourseDepartmentBySemester(String code, Integer pageNo, Integer pageSize, Semester semester) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
@@ -191,7 +193,7 @@ public class DepartmentService implements IDepartmentService {
                 .map(studentDtoiMapper::mapTo)
                 .toList();
 
-        if(StudentDtoList.isEmpty()){
+        if (StudentDtoList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No students found in this department");
         }
 

@@ -20,6 +20,7 @@ public class CourseClassService implements ICourseClassService {
     private final CourseClassRepository courseClassRepository;
     private final CourseClassMapper courseClassMapper;
     private final CourseService courseService;
+
     @Override
     public CourseClass createCourseClass(CourseClass courseClass) {
         return courseClassRepository.save(courseClass);
@@ -33,22 +34,24 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public CourseClass getCourseClassById(Long id) {
         return courseClassRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id") );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id"));
     }
 
     @Override
     public boolean isCourseClassExists(Long id) {
         return courseClassRepository.existsById(id);
     }
+
     @Override
     public CourseClass updateCourseClass(CourseClassDto courseClassDto) {
         // make sure that the courseClass exist
         Long id = courseClassDto.getCourseClassId();
         CourseClass courseClass = courseClassRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id") );
-        courseClassMapper.update(courseClassDto,courseClass );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id"));
+        courseClassMapper.update(courseClassDto, courseClass);
         return courseClassRepository.save(courseClass);
     }
+
     @Override
     public void deleteCourseClass(Long id) {
         courseClassRepository.deleteById(id);
@@ -58,6 +61,9 @@ public class CourseClassService implements ICourseClassService {
     public CourseClass saveCourseClass(CourseClass courseClass) {
         return courseClassRepository.save(courseClass);
     }
-    public Optional<CourseClass> getLatestClassByCourseId(Long id){ return courseClassRepository.getLatestClassByCourseId(id); }
+
+    public Optional<CourseClass> getLatestClassByCourseId(Long id) {
+        return courseClassRepository.getLatestClassByCourseId(id);
+    }
 
 }

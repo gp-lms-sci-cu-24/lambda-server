@@ -1,8 +1,8 @@
 package com.cu.sci.lambdaserver.courseclass.mapper;
 
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
 import com.cu.sci.lambdaserver.location.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class TimingInDtoMapper {
                 .day(courseClassTiming.getDay())
                 .endTime(courseClassTiming.getEndTime())
                 .startTime(courseClassTiming.getStartTime())
-                .locationId(courseClassTiming.getLocation().getLocationId())
+                .locationId(courseClassTiming.getLocation().getId())
                 .type(courseClassTiming.getType())
                 .build();
     }

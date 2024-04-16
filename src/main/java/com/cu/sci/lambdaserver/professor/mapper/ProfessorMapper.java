@@ -5,9 +5,11 @@ import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
 @Component
 public class ProfessorMapper implements iMapper<Professor, ProfessorDto> {
     private final ModelMapper modelMapper;
+
     public ProfessorMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }

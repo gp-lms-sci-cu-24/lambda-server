@@ -13,14 +13,17 @@ public class CourseClassMapper implements iMapper<CourseClass, CourseClassDto> {
     public CourseClassMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
+
     @Override
     public CourseClassDto mapTo(CourseClass courseClass) {
         return modelMapper.map(courseClass, CourseClassDto.class);
     }
+
     @Override
     public CourseClass mapFrom(CourseClassDto courseClassDto) {
         return modelMapper.map(courseClassDto, CourseClass.class);
     }
+
     @Override
     public CourseClass update(CourseClassDto courseClassDto, CourseClass courseClass) {
         modelMapper.map(courseClassDto, courseClass);

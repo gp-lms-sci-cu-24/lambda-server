@@ -21,6 +21,12 @@ import java.util.Collection;
 @Entity
 @Table(name = "course_classes")
 public class CourseClass {
+    @OneToMany(mappedBy = "courseClass")
+    @ToString.Exclude
+    Collection<CourseRegister> courseRegisters;
+    @OneToMany(mappedBy = "courseClass")
+    @ToString.Exclude
+    Collection<TimingRegister> courseClassTimings;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseClassId;
@@ -35,16 +41,10 @@ public class CourseClass {
     @Builder.Default
     private State courseState = State.INACTIVE;
     private Integer maxCapacity;
-
     @Builder.Default
     private Integer numberOfStudentsRegistered = 0;
     private Integer capacitySoFar;
     @Builder.Default
     @Column(name = "group_number_seq")
     private Integer groupNumber = -1;
-
-    @OneToMany(mappedBy = "courseClass")
-    Collection<CourseRegister> courseRegisters;
-    @OneToMany(mappedBy = "courseClass")
-    Collection<TimingRegister> courseClassTimings;
 }

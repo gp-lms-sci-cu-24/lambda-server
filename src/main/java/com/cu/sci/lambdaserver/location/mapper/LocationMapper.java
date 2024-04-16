@@ -5,9 +5,11 @@ import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
 @Component
 public class LocationMapper implements iMapper<Location, LocationDto> {
     private final ModelMapper modelMapper;
+
     public LocationMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }

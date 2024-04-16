@@ -37,7 +37,7 @@ public interface IAuthService {
      *
      * @param jwtAuthenticationToken This is the first parameter to signOut method which includes the JWT authentication token.
      * @param clientInfo             This is the second parameter to signOut method which includes the client information.
-     * @return ResponseEntity<SignOutResponseDto> This returns the response entity with the sign out response data transfer object.
+     * @return ResponseEntity<SignOutResponseDto> This returns the response entity with the sign-out response data transfer object.
      */
     ResponseEntity<SignOutResponseDto> signOut(JwtAuthenticationToken jwtAuthenticationToken, ClientInfoDto clientInfo);
 }

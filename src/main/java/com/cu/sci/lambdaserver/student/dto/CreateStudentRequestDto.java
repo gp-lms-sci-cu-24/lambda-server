@@ -15,43 +15,43 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateStudentRequestDto{
-        @NotNull(message = "Password cannot be null")
-        private String password;
+public class CreateStudentRequestDto {
+    @NotNull(message = "Password cannot be null")
+    private String password;
 
-        @NotNull(message = "first name cannot be null")
-        private String firstName;
+    @NotNull(message = "first name cannot be null")
+    private String firstName;
 
-        @NotNull(message = "father name cannot be null")
-        private String fatherName;
+    @NotNull(message = "father name cannot be null")
+    private String fatherName;
 
-        @NotNull(message = "grand father name cannot be null")
-        private String grandfatherName;
+    @NotNull(message = "grand father name cannot be null")
+    private String grandfatherName;
 
-        @NotNull(message = "last name cannot be null")
-        private String lastname;
+    @NotNull(message = "last name cannot be null")
+    private String lastname;
 
-        @NotNull(message = "code cannot be null")
-        @Size(max = 7, min = 7, message = "The student code must not exceed 7 numbers")
-        private String code;
+    @NotNull(message = "code cannot be null")
+    @Size(max = 7, min = 7, message = "The student code must not exceed 7 numbers")
+    private String code;
 
-        @PositiveOrZero(message = "credithours must be positive")
-        @Max(value = 146, message = "credit hours do not exceed 164 hours")
-        @JsonProperty("credit_hours")
-        private Integer creditHours=0;
+    @PositiveOrZero(message = "credit hours must be positive")
+    @Max(value = 146, message = "credit hours do not exceed 164 hours")
+    @JsonProperty("credit_hours")
+    private Integer creditHours = 0;
 
-        @NotNull(message = "address cannot be null")
-        private String address;
+    @NotNull(message = "address cannot be null")
+    private String address;
 
-        @PositiveOrZero(message = "address cannot be null")
-        @Max(value = 4, message = "gpa do not exceed 4.0")
-        private Double gpa=0.0;
+    @PositiveOrZero(message = "address cannot be null")
+    @Max(value = 4, message = "gpa do not exceed 4.0")
+    private Double gpa = 0.0;
 
-        private Level level=Level.LEVEL_1;
+    private Level level = Level.LEVEL_1;
 
-        @JsonProperty("joining_year")
-        private String joiningYear;
+    @JsonProperty("joining_year")
+    private String joiningYear;
 
-        @JsonProperty("department_code")
-        private String departmentCode;
+    @JsonProperty("department_code")
+    private String departmentCode;
 }

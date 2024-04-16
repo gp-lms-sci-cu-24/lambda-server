@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class CourseClassTimingInDto {
     private ClassType type;
 
     @NotBlank(message = "day is mandatory to know availability of location")
-    private String day;
+    private DayOfWeek day;
 
 
     //    @NotBlank(message = "start time is mandatory to know availability of location")

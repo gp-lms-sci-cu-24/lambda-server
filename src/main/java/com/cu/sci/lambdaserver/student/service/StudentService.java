@@ -44,8 +44,8 @@ public class StudentService implements IStudentService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "department not found with this code");
         }
 
-        Optional<Student> findedStudentByCode = studentRepository.findByCode(studentDto.getCode());
-        if (findedStudentByCode.isPresent()) {
+        Optional<Student> foundedStudentByCode = studentRepository.findByCode(studentDto.getCode());
+        if (foundedStudentByCode.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Code is already exist.");
         }
 
@@ -65,7 +65,7 @@ public class StudentService implements IStudentService {
     @Override
     public Page<StudentDto> getAllStudents(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Student> students = studentRepository.findAll(pageable) ;
+        Page<Student> students = studentRepository.findAll(pageable);
         //check if list empty
         if (students.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);

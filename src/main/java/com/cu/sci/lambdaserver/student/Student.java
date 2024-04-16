@@ -2,7 +2,6 @@ package com.cu.sci.lambdaserver.student;
 
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
-import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import jakarta.persistence.*;

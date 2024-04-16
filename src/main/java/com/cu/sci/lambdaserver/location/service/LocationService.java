@@ -36,9 +36,9 @@ public class LocationService implements ILocationService {
     @Override
     public Location updateLocation(Long id, Location locationDetails) {
         return locationRepository.findById(id).map(existingLocation -> {
-            existingLocation.setLocationPath(locationDetails.getLocationPath());
+            existingLocation.setPath(locationDetails.getPath());
             existingLocation.setMaxCapacity(locationDetails.getMaxCapacity());
-            existingLocation.setLocationInfo(locationDetails.getLocationInfo());
+            existingLocation.setInfo(locationDetails.getInfo());
             return locationRepository.save(existingLocation);
         }).orElseThrow(() -> new EntityNotFoundException("Location with ID " + id + " does not exist"));
     }

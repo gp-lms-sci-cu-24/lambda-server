@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -31,11 +29,11 @@ public class Department {
 
     private String image;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String code;
 
     @OneToMany(mappedBy = "department")
-    private Collection<DepartmentCourses> departmentCoursesSet ;
+    private Collection<DepartmentCourses> departmentCoursesSet;
 
     @OneToMany(mappedBy = "department")
     private Collection<Student> students;

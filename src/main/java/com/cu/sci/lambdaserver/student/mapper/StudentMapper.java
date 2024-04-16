@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StudentMapper implements iMapper<Student, StudentDto> {
     private final ModelMapper modelMapper;
+
     @Override
     public StudentDto mapTo(Student student) {
         return modelMapper.map(student, StudentDto.class);
