@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.department;
 
 
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
@@ -54,18 +55,18 @@ public class DepartmentController {
 
     @GetMapping(path = "/{code}/courses")
     @ResponseStatus(HttpStatus.OK)
-    public Page<CreateCourseDto> getDepartmentCourses(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+    public Page<DepartmentCoursesCollectingDto> getDepartmentCourses(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
         return departmentService.getDepartmentCoursesByCode(code, pageNo, pageSize);
     }
 
 
     @GetMapping(path = "/{code}/courses", params = "details=true")
     @ResponseStatus(HttpStatus.OK)
-    public Page<CreateCourseDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
+    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
         return departmentService.getCourseDepartmentByCodeAndSemester(code, pageNo, pageSize, semester);
     }
 
-    @GetMapping(path = "/{code}/students", params = "details=true")
+    @GetMapping(path = "/{code}/students")
     @ResponseStatus(HttpStatus.OK)
     public Page<StudentDto> getDepartmentStudents(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
         return departmentService.getDepartmentStudentsByCode(code, pageNo, pageSize);

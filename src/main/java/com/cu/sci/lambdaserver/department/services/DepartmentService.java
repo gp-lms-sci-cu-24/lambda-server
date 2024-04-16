@@ -1,6 +1,8 @@
 package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
+import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
@@ -40,6 +42,7 @@ public class DepartmentService implements IDepartmentService {
     private final IMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
     private final IMapper<Department, UpdateDepartmentDto> updateDepartmentDtoiMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
+    private final IMapper<DepartmentCourses, DepartmentCoursesCollectingDto> departmentCoursesCollectingMapper;
 
     /**
      * {@inheritDoc}
@@ -146,7 +149,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<CreateCourseDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize) {
+    public Page<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
@@ -156,23 +159,15 @@ public class DepartmentService implements IDepartmentService {
 
         /* @TODO: Fight with person who write this*/
         // get courses of department
-        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCourses().stream().map(departmentCourses -> {
-            CreateCourseDto createCourseDto = new CreateCourseDto();
-            createCourseDto.setCode(departmentCourses.getCourse().getCode());
-            createCourseDto.setName(departmentCourses.getCourse().getName());
-            createCourseDto.setInfo(departmentCourses.getCourse().getInfo());
-            createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
-            createCourseDto.setSemester(departmentCourses.getSemester());
-            createCourseDto.setMandatory(departmentCourses.getMandatory());
-            createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCourses().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
-            return createCourseDto;
-        }).toList();
+        List<DepartmentCoursesCollectingDto> courseList = foundedDepartment.get().getDepartmentCourses().stream()
+                .map(departmentCoursesCollectingMapper::mapTo)
+                .toList();
 
         // convert list to page
         int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseDtoList.size());
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseList.size());
 
-        return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
+        return new PageImpl<>(courseList.subList(start, end), PageRequest.of(pageNo, pageSize), courseList.size());
 
     }
 
@@ -181,7 +176,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<CreateCourseDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester) {
+    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
@@ -190,25 +185,15 @@ public class DepartmentService implements IDepartmentService {
 
         /* @TODO: Fight with person who write this*/
         // get courses of department by semester
-        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCourses().stream()
+        List<DepartmentCoursesCollectingDto> courseList = foundedDepartment.get().getDepartmentCourses().stream()
                 .filter(departmentCourses -> departmentCourses.getSemester().equals(semester))
-                .map(departmentCourses -> {
-                    CreateCourseDto createCourseDto = new CreateCourseDto();
-                    createCourseDto.setCode(departmentCourses.getCourse().getCode());
-                    createCourseDto.setName(departmentCourses.getCourse().getName());
-                    createCourseDto.setInfo(departmentCourses.getCourse().getInfo());
-                    createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
-                    createCourseDto.setSemester(departmentCourses.getSemester());
-                    createCourseDto.setMandatory(departmentCourses.getMandatory());
-                    createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCourses().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
-                    return createCourseDto;
-                }).toList();
+                .map(departmentCoursesCollectingMapper::mapTo).toList();
 
         // convert list to page
         int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseDtoList.size());
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseList.size());
 
-        return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
+        return new PageImpl<>(courseList.subList(start, end), PageRequest.of(pageNo, pageSize), courseList.size());
 
     }
 
@@ -237,6 +222,8 @@ public class DepartmentService implements IDepartmentService {
         }
 
         // convert list to page
-        return new PageImpl<>(StudentDtoList, PageRequest.of(0, StudentDtoList.size()), StudentDtoList.size());
+        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), StudentDtoList.size());
+        return new PageImpl<>(StudentDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), StudentDtoList.size());
     }
 }
