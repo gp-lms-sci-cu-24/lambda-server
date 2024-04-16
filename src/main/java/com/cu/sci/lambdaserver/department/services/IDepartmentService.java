@@ -9,25 +9,88 @@ import com.cu.sci.lambdaserver.utils.enums.Semester;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+/**
+ * This interface provides the contract for the Department Service.
+ */
 public interface IDepartmentService {
+
+    /**
+     * Creates a new department.
+     * This method is secured with Spring Security's @PreAuthorize annotation, which restricts access to users with 'ADMIN' role.
+     *
+     * @param department The department to be created.
+     * @return The created department.
+     */
     @PreAuthorize("hasRole('ADMIN')")
     DepartmentDto createDepartment(CreateDepartmentDto department);
 
+    /**
+     * Updates an existing department.
+     * This method is secured with Spring Security's @PreAuthorize annotation, which restricts access to users with 'ADMIN' role.
+     *
+     * @param code       The code of the department to be updated.
+     * @param department The updated department details.
+     * @return The updated department.
+     */
     @PreAuthorize("hasRole('ADMIN')")
-    UpdateDepartmentDto updateDepartment(String code, UpdateDepartmentDto department);
+    UpdateDepartmentDto updateDepartmentByCode(String code, UpdateDepartmentDto department);
 
+    /**
+     * Deletes a department.
+     * This method is secured with Spring Security's @PreAuthorize annotation, which restricts access to users with 'ADMIN' role.
+     *
+     * @param code The code of the department to be deleted.
+     */
     @PreAuthorize("hasRole('ADMIN')")
-    void deleteDepartment(String code);
+    void deleteDepartmentByCode(String code);
 
+    /**
+     * Retrieves the students of a specific department.
+     * This method is secured with Spring Security's @PreAuthorize annotation, which restricts access to users with 'ADMIN' or 'STUDENT_AFFAIR' roles.
+     *
+     * @param code     The code of the department whose students are to be retrieved.
+     * @param pageNo   The page number to retrieve. This is used for pagination purposes.
+     * @param pageSize The size of the page to retrieve. This is also used for pagination purposes.
+     * @return A Page object containing StudentDto objects. Each StudentDto represents a student in the specified department.
+     */
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT_AFFAIR')")
-    Page<StudentDto> getDepartmentStudents(String code);
+    Page<StudentDto> getDepartmentStudentsByCode(String code, Integer pageNo, Integer pageSize);
 
-
+    /**
+     * Retrieves all departments.
+     *
+     * @param pageNo   The page number to retrieve.
+     * @param pageSize The size of the page to retrieve.
+     * @return A page of departments.
+     */
     Page<DepartmentDto> getAllDepartments(Integer pageNo, Integer pageSize);
 
-    DepartmentDto getDepartment(String code);
+    /**
+     * Retrieves a department.
+     *
+     * @param code The code of the department to retrieve.
+     * @return The retrieved department.
+     */
+    DepartmentDto getDepartmentByCode(String code);
 
-    Page<CreateCourseDto> getDepartmentCourses(String code, Integer pageNo, Integer pageSize);
+    /**
+     * Retrieves the courses of a department.
+     *
+     * @param code     The code of the department.
+     * @param pageNo   The page number to retrieve.
+     * @param pageSize The size of the page to retrieve.
+     * @return A page of courses.
+     */
+    Page<CreateCourseDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize);
 
-    Page<CreateCourseDto> getCourseDepartmentBySemester(String code, Integer pageNo, Integer pageSize, Semester semester);
+    /**
+     * Retrieves the courses of a department for a specific semester.
+     *
+     * @param code     The code of the department.
+     * @param pageNo   The page number to retrieve.
+     * @param pageSize The size of the page to retrieve.
+     * @param semester The semester to retrieve courses for.
+     * @return A page of courses.
+     */
+    Page<CreateCourseDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester);
 }

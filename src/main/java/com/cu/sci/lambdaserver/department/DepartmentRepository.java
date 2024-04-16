@@ -10,5 +10,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, P
 
     Optional<Department> findDepartmentByCodeIgnoreCase(String code);
 
+    Boolean existsByCodeIgnoreCase(String code);
 
+    Boolean existsByNameIgnoreCase(String name);
 }

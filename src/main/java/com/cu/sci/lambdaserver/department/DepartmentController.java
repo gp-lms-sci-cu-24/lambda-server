@@ -36,38 +36,38 @@ public class DepartmentController {
     @GetMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     public DepartmentDto getDepartment(@PathVariable("code") String code) {
-        return departmentService.getDepartment(code);
+        return departmentService.getDepartmentByCode(code);
     }
 
 
     @PatchMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody UpdateDepartmentDto departmentDto) {
-        return departmentService.updateDepartment(code, departmentDto);
+        return departmentService.updateDepartmentByCode(code, departmentDto);
     }
 
     @DeleteMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDepartment(@PathVariable String code) {
-        departmentService.deleteDepartment(code);
+        departmentService.deleteDepartmentByCode(code);
     }
 
     @GetMapping(path = "/{code}/courses")
     @ResponseStatus(HttpStatus.OK)
     public Page<CreateCourseDto> getDepartmentCourses(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
-        return departmentService.getDepartmentCourses(code, pageNo, pageSize);
+        return departmentService.getDepartmentCoursesByCode(code, pageNo, pageSize);
     }
 
 
     @GetMapping(path = "/{code}/courses", params = "details=true")
     @ResponseStatus(HttpStatus.OK)
     public Page<CreateCourseDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
-        return departmentService.getCourseDepartmentBySemester(code, pageNo, pageSize, semester);
+        return departmentService.getCourseDepartmentByCodeAndSemester(code, pageNo, pageSize, semester);
     }
 
-    @GetMapping(path = "/{code}/students")
+    @GetMapping(path = "/{code}/students", params = "details=true")
     @ResponseStatus(HttpStatus.OK)
-    public Page<StudentDto> getDepartmentStudents(@PathVariable String code) {
-        return departmentService.getDepartmentStudents(code);
+    public Page<StudentDto> getDepartmentStudents(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return departmentService.getDepartmentStudentsByCode(code, pageNo, pageSize);
     }
 }
