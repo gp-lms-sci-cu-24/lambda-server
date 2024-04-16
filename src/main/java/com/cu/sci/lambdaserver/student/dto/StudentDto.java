@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.student.dto;
 
 
-import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
+
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
