@@ -3,10 +3,12 @@ package com.cu.sci.lambdaserver.utils.enums;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
+    USER,
     SUPER_ADMIN,
     ADMIN,
     STUDENT,
-    TEACHER,
+    PROFESSOR,
+    STUDENT_AFFAIR,
     STAFF;
 
     @Override

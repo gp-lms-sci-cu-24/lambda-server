@@ -1,62 +1,47 @@
 package com.cu.sci.lambdaserver.location;
 
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
-import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
-import com.cu.sci.lambdaserver.location.service.iLocationService;
-import jakarta.persistence.EntityNotFoundException;
+import com.cu.sci.lambdaserver.location.service.ILocationService;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
-@RequestMapping(path = "v1/api/location")
+@RequestMapping(path = "api/v1//location")
 @RequiredArgsConstructor
 public class LocationController {
-    private final LocationMapper locationMapper;
-    private final iLocationService locationService;
+
+    private final ILocationService locationService;
 
     @PostMapping
-    public ResponseEntity<LocationDto> createLocation(@RequestBody LocationDto locationDto) {
-        Location locationEntity = locationMapper.mapFrom(locationDto);
-        Location savedLocation = locationService.createLocation(locationEntity);
-        return new ResponseEntity<>(locationMapper.mapTo(savedLocation), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public LocationDto createLocation(@RequestBody LocationDto locationDto) {
+        return locationService.createLocation(locationDto);
     }
-    @GetMapping
-    public ResponseEntity<Page<LocationDto>> getAllLocations(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-        Page<Location> page = locationService.getAllLocations(pageNo, pageSize);
-        Page<LocationDto> dtoPage = page.map(locationMapper::mapTo);
-        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
+
+    @GetMapping(params = "details=true")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<LocationDto> getAllLocations(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return locationService.getAllLocations(pageNo, pageSize);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<LocationDto> getLocation(@PathVariable Long id) {
-        Optional<Location> foundLocation = locationService.getLocation(id);
-        return foundLocation.map(location -> new ResponseEntity<>(locationMapper.mapTo(location), HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public LocationDto getLocation(@PathVariable Long id) {
+        return locationService.getLocationById(id);
     }
 
-//    @PatchMapping(path = "/{id}")
     @PatchMapping
-    public ResponseEntity<LocationDto> updateLocation(@RequestBody LocationDto locationDto) {
-        try {
-            Location location = locationMapper.mapFrom(locationDto);
-            Location updatedLocation = locationService.updateLocation(locationDto.getLocationId(), location);
-            return new ResponseEntity<>(locationMapper.mapTo(updatedLocation), HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public LocationDto updateLocation(@RequestBody LocationDto locationDto) {
+        return locationService.updateLocationById(locationDto.getId(), locationDto);
     }
+
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<String> deleteLocation(@PathVariable("id") Long id) {
-        try {
-            locationService.deleteLocation(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse deleteLocation(@PathVariable("id") Long id) {
+        return locationService.deleteLocationById(id);
     }
 }

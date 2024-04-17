@@ -1,10 +1,14 @@
 package com.cu.sci.lambdaserver.department;
 
 
+import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
+import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
-import com.cu.sci.lambdaserver.student.mapper.UpdateStudentMapper;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,12 +21,11 @@ import org.springframework.web.bind.annotation.*;
 public class DepartmentController {
 
     private final IDepartmentService departmentService;
-    private final UpdateStudentMapper updateStudentMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DepartmentDto createDepartment(@RequestBody @Valid DepartmentDto departmentDto) {
-        return departmentService.createDepartment(departmentDto) ;
+    public DepartmentDto createDepartment(@RequestBody @Valid CreateDepartmentDto departmentDto) {
+        return departmentService.createDepartment(departmentDto);
     }
 
     @GetMapping
@@ -34,20 +37,38 @@ public class DepartmentController {
     @GetMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     public DepartmentDto getDepartment(@PathVariable("code") String code) {
-        return departmentService.getDepartment(code);
+        return departmentService.getDepartmentByCode(code);
     }
 
 
     @PatchMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
-    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody  UpdateDepartmentDto departmentDto) {
-        return departmentService.updateDepartment(code, departmentDto);
+    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody UpdateDepartmentDto departmentDto) {
+        return departmentService.updateDepartmentByCode(code, departmentDto);
     }
 
     @DeleteMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDepartment(@PathVariable String code) {
-        departmentService.deleteDepartment(code);
+        departmentService.deleteDepartmentByCode(code);
     }
 
+    @GetMapping(path = "/{code}/courses")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<DepartmentCoursesCollectingDto> getDepartmentCourses(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return departmentService.getDepartmentCoursesByCode(code, pageNo, pageSize);
+    }
+
+
+    @GetMapping(path = "/{code}/courses", params = "details=true")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
+        return departmentService.getCourseDepartmentByCodeAndSemester(code, pageNo, pageSize, semester);
+    }
+
+    @GetMapping(path = "/{code}/students")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<StudentDto> getDepartmentStudents(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return departmentService.getDepartmentStudentsByCode(code, pageNo, pageSize);
+    }
 }

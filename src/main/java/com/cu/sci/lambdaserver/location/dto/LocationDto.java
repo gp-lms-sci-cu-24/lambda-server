@@ -1,9 +1,5 @@
 package com.cu.sci.lambdaserver.location.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LocationDto {
-    private Long locationId;
+    private Long id;
 
-    private String locationPath;
+    private String path;
 
-    private String locationInfo;
+    private String info;
 
     private Integer maxCapacity;
 }

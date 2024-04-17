@@ -6,8 +6,7 @@ import com.cu.sci.lambdaserver.student.Student;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -30,14 +29,14 @@ public class Department {
 
     private String image;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String code;
 
-    @OneToMany(mappedBy = "department")
-    private Set<DepartmentCourses> departmentCoursesSet ;
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private Collection<DepartmentCourses> departmentCourses;
 
-    @OneToMany(mappedBy = "department")
-    private List<Student> students;
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private Collection<Student> students;
 
 
 }

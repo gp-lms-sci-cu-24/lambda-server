@@ -1,18 +1,19 @@
 package com.cu.sci.lambdaserver.auth.service;
 
-import com.cu.sci.lambdaserver.auth.config.SecurityConfigurationProperties;
+import com.cu.sci.lambdaserver.auth.properties.SecurityConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * JwtTokenService is a service class that implements the IJwtTokenService interface.
@@ -35,23 +36,21 @@ public class JwtTokenService implements IJwtTokenService {
      * and then encodes it into a JWT.
      *
      * @param authentication The Authentication object
-     * @return A string representing the access token
+     * @return A Jwt object representing the access token
      */
     @Override
-    public String generateAccessToken(Authentication authentication) {
+    public Jwt generateAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        String scope = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
 
+        String[] roles = getRoles(authentication);
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(securityProperties.jwtAccess().expiredDuration()))
                 .subject(authentication.getName())
-                .claim("scope", scope)
+                .claim("roles", roles)
                 .build();
-        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return this.encoder.encode(JwtEncoderParameters.from(claims));
     }
 
     /**
@@ -60,19 +59,39 @@ public class JwtTokenService implements IJwtTokenService {
      * and then encodes it into a JWT.
      *
      * @param authentication The Authentication object
-     * @return A string representing the refresh token
+     * @return A Jwt object representing the refresh token
      */
     @Override
-    public String generateRefreshToken(Authentication authentication) {
+    public Jwt generateRefreshToken(Authentication authentication) {
         Instant now = Instant.now();
 
+        String[] roles = getRoles(authentication);
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(securityProperties.jwtRefresh().expiredDuration()))
                 .subject(authentication.getName())
                 .id(UUID.randomUUID().toString())
+                .claim("roles", roles)
                 .build();
-        return this.refreshEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return this.refreshEncoder.encode(JwtEncoderParameters.from(claims));
+    }
+
+    /**
+     * This class is an implementation of the IAuthenticationFacade interface.
+     * It provides methods to get the authentication and the authenticated user.
+     * It is annotated with @Component to indicate that it's a Spring Bean.
+     * It is annotated with @RequiredArgsConstructor to generate a constructor with required fields, in this case, IUserService.
+     */
+    private String[] getRoles(Authentication authentication) {
+        if (authentication instanceof JwtAuthenticationToken) {
+            return authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::toString)
+                    .map(s -> s.replace("ROLE_", ""))
+                    .toArray(String[]::new);
+        }
+
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::toString).toArray(String[]::new);
     }
 }

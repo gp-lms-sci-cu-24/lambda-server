@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.student;
 
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import jakarta.persistence.*;
@@ -48,6 +49,9 @@ public class Student extends User {
     private Level level;
 
     private String joiningYear;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @ManyToOne
     @JoinColumn(name = "department_id")

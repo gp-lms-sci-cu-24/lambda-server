@@ -1,17 +1,22 @@
 package com.cu.sci.lambdaserver.courseclass;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.mapper.IMapper;
-import com.cu.sci.lambdaserver.courseclass.mapper.IMapperV2;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassInDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
+import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -19,63 +24,85 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/api/class")
 @RequiredArgsConstructor
 public class CourseClassController {
-    private final IMapper<CourseClass,CourseClassDto> courseClassMapper;
-    private final IMapperV2<CourseClass,CourseClassDto> courseClassMapperV2;
+    private final CourseClassMapper courseClassMapper;
     private final CourseClassService courseClassService;
+    private final CourseClassTimingService courseClassTimingService;
+
     @PostMapping
-    public ResponseEntity<CourseClassDto> createCourseClass(@RequestBody CourseClassDto courseClassDto) {
+    public ResponseEntity<CourseClassDto> createCourseClass(@Validated(CourseClassInDto.CreateValidation.class) @RequestBody CourseClassDto courseClassDto) {
         CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
+        System.out.println(courseClassEntity);
         AtomicInteger groupNumberSeq = new AtomicInteger(1);
-        courseClassService.getLatestClassByCourseId(courseClassDto.getCourseId() )
-            .ifPresent((courseClass)->{
-                if(LocalDateTime.now().getYear() == courseClass.getPublishDate().getYear()
-                && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester() ){
-                    groupNumberSeq.set(courseClass.getGroupNumber() + 1 );
-                }
-            });
-        courseClassEntity.setGroupNumber(groupNumberSeq.get() );
+
+        courseClassService.getLatestClassByCourseId(courseClassDto.getCourseId())
+                .ifPresent((courseClass) -> {
+                    if (LocalDateTime.now().getYear() == courseClass.getPublishDate().getYear()
+                            && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester()) {
+                        groupNumberSeq.set(courseClass.getGroupNumber() + 1);
+                    }
+                });
+
+        courseClassEntity.setGroupNumber(groupNumberSeq.get());
         CourseClass savedCourseClass = courseClassService.createCourseClass(courseClassEntity);
+        System.out.println(courseClassEntity);
         return new ResponseEntity<>(courseClassMapper.mapTo(savedCourseClass), HttpStatus.CREATED);
     }
+
     @GetMapping
     public ResponseEntity<List<CourseClassDto>> getAllCourseClasses() {
         List<CourseClass> courseClasses = courseClassService.getAllCourseClasses();
         return new ResponseEntity<>(courseClasses.stream().map(courseClassMapper::mapTo).collect(Collectors.toList())
                 , HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<CourseClassDto> getCourseClassById(@PathVariable Long id) {
-        Optional<CourseClass> courseClassOptional = courseClassService.getCourseClassById(id);
-        return courseClassOptional.map(courseClass -> new ResponseEntity<>(courseClassMapper.mapTo(courseClass), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public CourseClassDto getCourseClassById(@PathVariable Long id) {
+        return courseClassMapper.mapTo(courseClassService.getCourseClassById(id));
     }
+
     @PatchMapping
-    public ResponseEntity<CourseClassDto> updateCourseClass(@RequestBody CourseClassDto courseClassDto) {
-        Long id = courseClassDto.getCourseClassId();
-        CourseClass presentCourseClass = courseClassService.getCourseClassById(id).orElse(null);
-        if(presentCourseClass == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        System.out.println(presentCourseClass);
-        CourseClass updatedCourseClass = courseClassService.saveCourseClass(courseClassMapperV2.update(courseClassDto,presentCourseClass) );
-        System.out.println(updatedCourseClass);
+    public ResponseEntity<CourseClassDto> updateCourseClass(@Validated(CourseClassInDto.UpdateValidation.class) @RequestBody CourseClassDto courseClassDto) {
+        CourseClass updatedCourseClass = courseClassService.updateCourseClass(courseClassDto);
         return new ResponseEntity<>(courseClassMapper.mapTo(updatedCourseClass), HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCourseClass(@PathVariable Long id) {
-        if (!courseClassService.isCourseClassExists(id) ) {
+        if (!courseClassService.isCourseClassExists(id)) {
             return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
         }
         courseClassService.deleteCourseClass(id);
-        return new ResponseEntity<>("The record was deleted succesfully", HttpStatus.NO_CONTENT);
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<CourseClass> updateCourseClass(@PathVariable Long id, @RequestBody CourseClass courseClass) {
-        CourseClass updatedCourseClass = courseClassService.updateCourseClass(id, courseClass);
-        return new ResponseEntity<>(updatedCourseClass, HttpStatus.OK);
+        return new ResponseEntity<>("The record was deleted successfully", HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/init")
-    public ResponseEntity<String> initializeCourseClasses() {
-        courseClassService.init();
-        return new ResponseEntity<String>("inited succesfully", HttpStatus.OK);
+    @GetMapping("/timing")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CourseClassTimingOutDto> getCourseClassTiming() {
+        return courseClassTimingService.getAllCourseClassTiming();
+    }
+
+    @PostMapping("/timing")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseClassTimingOutDto createCourseClassTiming(@Valid @RequestBody CourseClassTimingInDto courseClassTimingInDto) {
+        return courseClassTimingService.addCourseClassTiming(courseClassTimingInDto);
+    }
+
+    @GetMapping("/timing/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CourseClassTimingOutDto getCourseClassTimingById(@PathVariable Long id) {
+        return courseClassTimingService.getCourseClassTimingById(id);
+    }
+
+    @PutMapping({"/timing/{id}"})
+    @ResponseStatus(HttpStatus.OK)
+    public CourseClassTimingOutDto updateCourseClassTiming(@PathVariable Long id, @RequestBody CourseClassTimingInDto courseClassTimingInDto) {
+        return courseClassTimingService.updateCourseClassTiming(id, courseClassTimingInDto);
+    }
+
+    @DeleteMapping({"/timing/{id}"})
+    @ResponseStatus(HttpStatus.OK)
+    public CourseClassTimingOutDto deleteCourseClassTiming(@PathVariable Long id) {
+        return courseClassTimingService.deleteCourseClassTiming(id);
     }
 }

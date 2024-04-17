@@ -1,12 +1,16 @@
 package com.cu.sci.lambdaserver.auth.config;
 
+import com.cu.sci.lambdaserver.auth.security.CookieBearerTokenResolver;
 import com.cu.sci.lambdaserver.user.service.IUserService;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,7 +21,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -33,23 +39,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final AuthenticationEntryPoint authenticationEntryPoint;
-
-    private final AccessDeniedHandler accessDeniedHandler;
-
-    @Qualifier("jwtRefreshDecoder")
-    private final JwtDecoder jwtRefreshDecoder;
-
-    private final IUserService userService;
-
     private final static String[] WHITE_LIST_URL = {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/swagger-resources",
-            "/health", "/error"
+            "/health",
+            "/error",
     };
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
+    @Qualifier("jwtRefreshDecoder")
+    private final JwtDecoder jwtRefreshDecoder;
+
+    private final IUserService userService;
+    private final CookieBearerTokenResolver cookieBearerTokenResolver;
+    private final Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter;
 
     @Bean
     @Order(1)
@@ -69,29 +75,32 @@ public class SecurityConfiguration {
     @Order(2)
     public SecurityFilterChain refreshTokenFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/api/*/auth/refresh")
+                .securityMatcher("/api/*/auth/refresh", "/api/*/auth/signOut")
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().permitAll()
+                        authorize.anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2->oauth2
-                        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtRefreshDecoder))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtRefreshDecoder).jwtAuthenticationConverter(jwtAuthenticationConverter))
+                        .bearerTokenResolver(cookieBearerTokenResolver)
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
-                .exceptionHandling(ex->ex
+                .logout(AbstractHttpConfigurer::disable)
+                .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
                 .build();
     }
+
     @Bean
     @Order(3)
     public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/api/*/auth/**")
+                .securityMatcher("/api/*/auth")
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
@@ -99,9 +108,9 @@ public class SecurityConfiguration {
                 )
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex->ex
-                                    .authenticationEntryPoint(authenticationEntryPoint)
-                                    .accessDeniedHandler(accessDeniedHandler)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .build();
     }
@@ -113,15 +122,20 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated()
+                        /*Add multiple roles instead of user to reduce edited files */
+                        authorize.anyRequest().hasAnyRole(Role.ADMIN.toString(), Role.PROFESSOR.toString(), Role.STUDENT.toString(), Role.STAFF.toString(), Role.SUPER_ADMIN.toString(), Role.USER.toString())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2->oauth2
-                        .jwt(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwtConfigurer ->
+                                jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)
+                        )
+                        .bearerTokenResolver(defaultBearerTokenResolver())
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
-                .exceptionHandling(ex->ex
+                .logout(AbstractHttpConfigurer::disable)
+                .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
@@ -143,13 +157,19 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public DefaultBearerTokenResolver defaultBearerTokenResolver() {
+        return new DefaultBearerTokenResolver();
+    }
+
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET","POST"));
-        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -27,5 +29,7 @@ public class CourseDto {
     @Min(value = -1, message = "creditHours should be non negative")
     @Max(value = 7, message = "creditHours should be less than 7")
     private Integer creditHours;
+
+    private Collection<DepartmentCoursesDto> departmentCoursesSet;
 
 }

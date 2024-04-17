@@ -1,30 +1,29 @@
 package com.cu.sci.lambdaserver.professor;
 
-import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
-import jakarta.persistence.*;
-import lombok.*;
+import com.cu.sci.lambdaserver.utils.enums.Role;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Getter
 @Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@ToString(callSuper = true)
+@SuperBuilder
 @Entity
 @Table(name = "professors")
-public class Professor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long professorId;
+public class Professor extends User {
 
-    @OneToOne
-    @JoinColumn(name = "id")
-    private User user;
+    public Professor() {
+        setRoles(List.of(Role.PROFESSOR));
+    }
 
-//    @OneToMany
-//    @JoinColumn(name = "id")
-//    private List<Department> department;
+    public static Professor.ProfessorBuilder<?, ?> builder() {
+        return new Professor.ProfessorBuilderImpl().roles(List.of(Role.PROFESSOR));
+    }
 }

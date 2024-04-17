@@ -40,16 +40,16 @@ public class User implements UserDetails {
     private String profilePicture;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isEnabled=true;
+    private boolean isEnabled = true;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isAccountNonExpired=true;
+    private boolean isAccountNonExpired = true;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isAccountNonLocked=true;
+    private boolean isAccountNonLocked = true;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isCredentialsNonExpired=true;
+    private boolean isCredentialsNonExpired = true;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY, targetClass = Role.class)
