@@ -1,9 +1,7 @@
 package com.cu.sci.lambdaserver.auth;
 
-import com.cu.sci.lambdaserver.auth.dto.ClientInfoDto;
-import com.cu.sci.lambdaserver.auth.dto.LoginRequestDto;
-import com.cu.sci.lambdaserver.auth.dto.LoginResponseDto;
-import com.cu.sci.lambdaserver.auth.dto.SignOutResponseDto;
+import com.cu.sci.lambdaserver.auth.dto.*;
+import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.auth.service.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final IAuthService authService;
-
+    private final IAuthenticationFacade authenticationFacade;
 
     @PostMapping
     public ResponseEntity<LoginResponseDto> signIn(@RequestBody @Valid LoginRequestDto loginRequestDto,
@@ -38,8 +36,11 @@ public class AuthController {
     }
 
     @GetMapping("/health")
-    public SignOutResponseDto securedHealth() {
-        return SignOutResponseDto.builder().message("You are authed").build();
+    public AuthHealthDto securedHealth() {
+        return AuthHealthDto.builder()
+                .message("You are authed")
+                .roles(authenticationFacade.getAuthenticatedUser().getRoles())
+                .build();
     }
 
 }
