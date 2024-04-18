@@ -9,6 +9,7 @@ public enum Role implements GrantedAuthority {
     STUDENT,
     PROFESSOR,
     STUDENT_AFFAIR,
+    ACADEMIC_ADVISOR,
     STAFF;
 
     @Override
