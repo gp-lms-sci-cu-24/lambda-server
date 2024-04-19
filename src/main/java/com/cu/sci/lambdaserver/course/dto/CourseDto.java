@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.course.dto;
 
 import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
+import com.cu.sci.lambdaserver.course.entites.DepartmentCoursesDto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

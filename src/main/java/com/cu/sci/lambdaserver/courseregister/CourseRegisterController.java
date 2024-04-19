@@ -1,21 +1,24 @@
 package com.cu.sci.lambdaserver.courseregister;
 
+import com.cu.sci.lambdaserver.course.dto.CourseDto;
+import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
-import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
+import com.cu.sci.lambdaserver.courseregister.dto.GetStudentRegisteredCoursesDto;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
-import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
-import jakarta.persistence.EntityNotFoundException;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.State;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 public class CourseRegisterController {
     private final CourseRegisterService courseRegisterService;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
+    private final iMapper<CourseClass, CourseClassDto> classCourseClassDtoiMapper;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CourseRegisterOutDto createCourseRegister(@Validated(CourseRegisterInDto.CreateValidation.class)  @RequestBody CourseRegisterInDto courseRegisterInDto) {
@@ -43,10 +47,17 @@ public class CourseRegisterController {
     }
     @GetMapping(path = "/student/{code}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<CourseRegisterOutDto> getAllStudentCourseRegisters(@PathVariable String code) {
+    public Collection<CourseClassDto> getAllStudentRegisteredCourses(@PathVariable String code) {
         return courseRegisterService
-            .getStudentRegisteredCourses(code).stream()
-            .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList() );
+            .findStudentRegisteredCourses(code).stream()
+            .map(classCourseClassDtoiMapper::mapTo).collect(Collectors.toList() );
+    }
+    @GetMapping(path = "/student/{code}/{state}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<CourseClassDto> getAllStudentRegisteredCoursesBySemester(@PathVariable String code, @PathVariable State state) {
+        return courseRegisterService
+                .findStudentRegisteredCoursesBySemester(code,state).stream()
+                .map(classCourseClassDtoiMapper::mapTo).collect(Collectors.toList() );
     }
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)

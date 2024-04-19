@@ -24,6 +24,7 @@ public class LocationMapper implements iMapper<Location, LocationDto> {
 
     @Override
     public Location update(LocationDto locationDto, Location location) {
-        return null;
+        modelMapper.map(locationDto, location);
+        return location;
     }
 }

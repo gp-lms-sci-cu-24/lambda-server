@@ -38,15 +38,10 @@ public class LocationController {
         return foundLocation.map(location -> new ResponseEntity<>(locationMapper.mapTo(location), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
-//    @PatchMapping(path = "/{id}")
     @PatchMapping
     public ResponseEntity<LocationDto> updateLocation(@RequestBody LocationDto locationDto) {
         try {
-            Location location = locationMapper.mapFrom(locationDto);
-            System.out.println(locationService.getLocation(locationDto.getLocationId() ) );
-            Location updatedLocation = locationService.updateLocation(locationDto.getLocationId(), location);
-            System.out.println(updatedLocation);
+            Location updatedLocation = locationService.updateLocation(locationDto);
             return new ResponseEntity<>(locationMapper.mapTo(updatedLocation), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);

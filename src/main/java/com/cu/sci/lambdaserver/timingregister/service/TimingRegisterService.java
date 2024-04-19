@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTiming;
 import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTimingRepository;
 import com.cu.sci.lambdaserver.courseclasstiming.service.CourseClassTimingService;
+import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.timingregister.TimingRegisterRepository;
 import com.cu.sci.lambdaserver.timingregister.dto.TimingRegisterInDto;
@@ -102,5 +103,14 @@ public class TimingRegisterService implements ITimingRegisterService {
             .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(classId, timingId)
             .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "timing register was not found with this class and timing id") );
+    }
+    public Collection<CourseClassTiming> getTimingRegisterByClassId(Long classId){
+        Collection<TimingRegister> registeredTimings = timingRegisterRepository
+                .findTimingRegisterByCourseClass_CourseClassId(classId);
+        Collection<CourseClassTiming> courseTimings = registeredTimings
+            .stream()
+            .map(TimingRegister::getCourseClassTiming)
+            .collect(Collectors.toList());
+        return courseTimings;
     }
 }

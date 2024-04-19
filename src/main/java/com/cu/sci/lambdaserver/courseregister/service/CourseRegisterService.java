@@ -1,19 +1,16 @@
 package com.cu.sci.lambdaserver.courseregister.service;
 
-import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.courseclass.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
-import com.cu.sci.lambdaserver.courseclass.service.ICourseClassService;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.CourseRegisterRepository;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
-import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
-import com.cu.sci.lambdaserver.student.service.StudentService;
-import jakarta.persistence.EntityNotFoundException;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -79,9 +76,23 @@ public class CourseRegisterService implements ICourseRegisterService {
         courseRegisterRepository.deleteById(id);
         return courseRegister;
     }
-    public Collection<CourseRegister> getStudentRegisteredCourses(String studentCode){
-        Student student = studentRepository.findByCode(studentCode)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code") );
-        return courseRegisterRepository.findAllByStudentId(student.getId() );
+    public Collection<CourseClass> findStudentRegisteredCourses(String studentCode){
+        Collection<CourseRegister> registeredCourses = courseRegisterRepository
+                .findCourseRegisterByStudent_Code(studentCode );
+        Collection<CourseClass> registeredCourseClasses = registeredCourses
+            .stream()
+            .map(CourseRegister::getCourseClass)
+            .collect(Collectors.toList());
+        return registeredCourseClasses;
+    }
+    public Collection<CourseClass> findStudentRegisteredCoursesBySemester(String studentCode, State state){
+        Collection<CourseRegister> registeredCourses = courseRegisterRepository
+                .findCourseRegisterByStudent_CodeAndCourseClass_CourseState(studentCode, state);
+
+        Collection<CourseClass> registeredCourseClasses = registeredCourses
+                .stream()
+                .map(CourseRegister::getCourseClass)
+                .collect(Collectors.toList());
+        return registeredCourseClasses;
     }
 }

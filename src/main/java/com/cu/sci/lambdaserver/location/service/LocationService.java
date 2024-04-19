@@ -1,7 +1,10 @@
 package com.cu.sci.lambdaserver.location.service;
 
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
+import com.cu.sci.lambdaserver.location.dto.LocationDto;
+import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +19,7 @@ import java.util.Optional;
 public class LocationService implements ILocationService {
 
     private final LocationRepository locationRepository;
-
+    private final iMapper<Location, LocationDto> locationDtoiMapper;
     @Override
     public Location createLocation(Location location) {
         return locationRepository.save(location);
@@ -34,11 +37,10 @@ public class LocationService implements ILocationService {
     }
 
     @Override
-    public Location updateLocation(Long id, Location locationDetails) {
+    public Location updateLocation(LocationDto locationDto) {
+        Long id = locationDto.getLocationId();
         return locationRepository.findById(id).map(existingLocation -> {
-            existingLocation.setLocationPath(locationDetails.getLocationPath());
-            existingLocation.setMaxCapacity(locationDetails.getMaxCapacity());
-            existingLocation.setLocationInfo(locationDetails.getLocationInfo());
+            locationDtoiMapper.update(locationDto, existingLocation);
             return locationRepository.save(existingLocation);
         }).orElseThrow(() -> new EntityNotFoundException("Location with ID " + id + " does not exist"));
     }
