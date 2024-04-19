@@ -7,4 +7,5 @@ public enum State {
     REGISTER,
     ACTIVE,
     INACTIVE,
+    FINISHED
 }
