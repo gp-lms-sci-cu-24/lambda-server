@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "api/v1//location")
+@RequestMapping(path = "api/v1/location")
 @RequiredArgsConstructor
 public class LocationController {
 
