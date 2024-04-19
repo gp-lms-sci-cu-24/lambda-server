@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.student.service;
 
+import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.service.ContactInfoService;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.student.Student;
@@ -30,6 +32,7 @@ public class StudentService implements IStudentService {
     private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ContactInfoService contactInfoService;
 
     @Override
     public StudentDto creatStudent(CreateStudentRequestDto studentDto) throws ResponseStatusException {
@@ -55,6 +58,17 @@ public class StudentService implements IStudentService {
         log.info("Student: {}", student);
         Student saveStudent = studentRepository.save(student);
 
+        // Build contact info
+        CreateContactInfoDto createContactInfoDto = CreateContactInfoDto
+                .builder()
+                .email(studentDto.getEmail())
+                .userName(studentDto.getCode())
+                .phone(studentDto.getPhone())
+                .telephone(studentDto.getTelephone())
+                .build();
+
+        //save contact info
+        contactInfoService.createContactInfo(createContactInfoDto);
         return studentDtoiMapper.mapTo(saveStudent);
     }
 
@@ -104,6 +118,10 @@ public class StudentService implements IStudentService {
         if (student.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
         }
+        //delete student contact info
+        contactInfoService.deleteContactInfo(code);
+
+        //delete student
         studentRepository.delete(student.get());
     }
 
