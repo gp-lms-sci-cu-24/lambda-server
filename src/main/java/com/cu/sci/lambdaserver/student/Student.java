@@ -53,6 +53,9 @@ public class Student extends User {
 
     private String joiningYear;
 
+    @Column(columnDefinition = "integer default 0")
+    private Integer creditHoursSemester;
+
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;

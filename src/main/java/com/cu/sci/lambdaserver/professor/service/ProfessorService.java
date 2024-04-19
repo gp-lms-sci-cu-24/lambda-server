@@ -4,6 +4,8 @@ import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.ProfessorRepository;
+import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
+import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class ProfessorService implements IProfessorService {
 
     private final ProfessorRepository professorRepository;
+    private final ProfessorMapper professorMapper;
     private final CourseClassRepository courseClassRepository;
 
     @Override
@@ -35,8 +38,12 @@ public class ProfessorService implements IProfessorService {
     }
 
     @Override
-    public Optional<Professor> getProfessor(Long id) {
-        return professorRepository.findById(id);
+    public ProfessorDto getProfessor(Long id) {
+        Optional<Professor> professor = professorRepository.findById(id);
+        if (professor.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found");
+        }
+        return professorMapper.mapTo(professor.get());
     }
 
     @Override
