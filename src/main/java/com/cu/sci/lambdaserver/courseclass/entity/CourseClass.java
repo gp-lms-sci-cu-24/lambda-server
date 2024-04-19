@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.courseclass.entity;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
+import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.enums.State;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,4 +49,6 @@ public class CourseClass {
     @Builder.Default
     @Column(name = "group_number_seq")
     private Integer groupNumber = -1;
+    @ManyToMany
+    private List<Professor> professors;
 }
