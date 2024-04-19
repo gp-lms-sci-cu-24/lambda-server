@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.student.dto;
 
 
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
+import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDto {
+public class StudentDto extends UserDto {
 
     private String firstName;
 
@@ -21,8 +22,6 @@ public class StudentDto {
     private String grandfatherName;
 
     private String lastname;
-
-    private String code;
 
     private Integer creditHours;
 

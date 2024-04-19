@@ -1,7 +1,9 @@
 package com.cu.sci.lambdaserver.user;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
+import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.user.service.IUserService;
+import com.cu.sci.lambdaserver.user.service.ProfileService;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,23 +17,11 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
-    private final IAuthenticationFacade authenticationFacade;
+    private final ProfileService profileService;
 
     @GetMapping("/me")
-    public Object getMyState() {
-        User user = authenticationFacade.getAuthenticatedUser();
-        if (user.getRoles().contains(Role.STUDENT)) {
-            // user to student
-
-
-            return user;
-        } else if (user.getRoles().contains(Role.PROFESSOR)) {
-
-        } else if (user.getRoles().contains(Role.ADMIN)) {
-
-        }
-
-        return user;
+    public UserDto getMyState() {
+        return profileService.getMyState() ;
     }
 
     @GetMapping("/{id}")
