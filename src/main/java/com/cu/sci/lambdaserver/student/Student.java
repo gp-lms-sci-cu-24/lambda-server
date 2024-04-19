@@ -53,9 +53,6 @@ public class Student extends User {
 
     private String joiningYear;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;

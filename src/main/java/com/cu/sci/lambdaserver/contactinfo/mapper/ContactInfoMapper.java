@@ -2,14 +2,14 @@ package com.cu.sci.lambdaserver.contactinfo.mapper;
 
 import com.cu.sci.lambdaserver.contactinfo.ContactInfo;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ContactInfoMapper  implements iMapper<ContactInfo, ContactInfoDto> {
+public class ContactInfoMapper implements IMapper<ContactInfo, ContactInfoDto> {
 
     private final ModelMapper modelMapper;
 

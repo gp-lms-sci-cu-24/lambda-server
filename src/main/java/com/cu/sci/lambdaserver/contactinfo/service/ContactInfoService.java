@@ -6,7 +6,7 @@ import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.service.UserService;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class ContactInfoService implements IContactInfoService {
 
     private final ContactInfoRepository contactInfoRepository ;
     private final UserService userService ;
-    private final iMapper<ContactInfo, ContactInfoDto> contactInfoDtoMapper;
+    private final IMapper<ContactInfo, ContactInfoDto> contactInfoDtoMapper;
 
 
     public boolean isValidEmail(String email){
