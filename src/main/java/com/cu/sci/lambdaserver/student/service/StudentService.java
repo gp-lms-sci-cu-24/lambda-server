@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.student.service;
 
+import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.service.ContactInfoService;
 import com.cu.sci.lambdaserver.department.Department;
@@ -9,6 +10,7 @@ import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
+import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ public class StudentService implements IStudentService {
     private final DepartmentRepository departmentRepository;
     private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
+    private final StudentMapper studentMapper;
     private final PasswordEncoder passwordEncoder;
     private final ContactInfoService contactInfoService;
 
@@ -68,8 +71,8 @@ public class StudentService implements IStudentService {
                 .build();
 
         //save contact info
-        contactInfoService.createContactInfo(createContactInfoDto);
-        return studentDtoiMapper.mapTo(saveStudent);
+        ContactInfoDto contactInfoDtoSaved = contactInfoService.createContactInfo(createContactInfoDto);
+        return studentMapper.mapContactInfoTo(saveStudent, contactInfoDtoSaved);
     }
 
     @Override
@@ -89,7 +92,12 @@ public class StudentService implements IStudentService {
         if (student.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
         }
-        return studentDtoiMapper.mapTo(student.get());
+
+        //get student contact info
+        ContactInfoDto contactInfo = contactInfoService.getContactInfo(student.get().getCode());
+
+        return studentMapper.mapContactInfoTo(student.get(), contactInfo);
+
     }
 
     @Override

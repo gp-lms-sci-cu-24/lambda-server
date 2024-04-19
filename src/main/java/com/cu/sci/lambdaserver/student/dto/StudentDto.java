@@ -1,8 +1,10 @@
 package com.cu.sci.lambdaserver.student.dto;
 
 
+import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
+import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +33,13 @@ public class StudentDto extends UserDto {
 
     private Level level;
 
+    private Integer creditHoursSemester ;
+
+    private Gender gender ;
+
     private String joiningYear;
 
     private DepartmentDto department;
+
+    private ContactInfoDto contactInfo  ;
 }

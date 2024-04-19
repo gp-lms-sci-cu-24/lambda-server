@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.student.dto;
 
+import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
@@ -52,6 +53,13 @@ public class CreateStudentRequestDto {
 
     @JsonProperty("department_code")
     private String departmentCode;
+
+    @JsonProperty("credit_hours_semester")
+    @PositiveOrZero(message = "credit hours semester must be positive")
+    private Integer creditHoursSemester = 0 ;
+
+    @NotNull
+    private Gender gender ;
 
     @NotBlank(message = "phone cannot be null")
     @Length(min = 11, max = 11, message = "phone must be 10 digits")

@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.student.mapper;
 
+import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
@@ -15,6 +16,12 @@ public class StudentMapper implements IMapper<Student, StudentDto> {
     @Override
     public StudentDto mapTo(Student student) {
         return modelMapper.map(student, StudentDto.class);
+    }
+
+    public StudentDto mapContactInfoTo(Student student , ContactInfoDto contactInfoDto){
+        StudentDto studentDto = modelMapper.map(student, StudentDto.class);
+        studentDto.setContactInfo(contactInfoDto);
+        return studentDto;
     }
 
     @Override
