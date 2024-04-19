@@ -61,15 +61,4 @@ public class CreateStudentRequestDto {
     @NotNull
     private Gender gender ;
 
-    @NotBlank(message = "phone cannot be null")
-    @Length(min = 11, max = 11, message = "phone must be 10 digits")
-    private String phone;
-
-    @NotBlank(message = "telephone cannot be null")
-    @Length(min = 10, max = 10, message = "telephone must be 10 digits")
-    private String telephone;
-
-    @NotBlank(message = "email cannot be null")
-    @Email(message = "email must be valid")
-    private String email;
 }
