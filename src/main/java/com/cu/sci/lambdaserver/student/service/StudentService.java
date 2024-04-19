@@ -7,8 +7,7 @@ import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
-import com.cu.sci.lambdaserver.user.UserRepository;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,13 +25,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class StudentService implements IStudentService {
-    private final UserRepository userRepository;
-
     private final StudentRepository studentRepository;
     private final DepartmentRepository departmentRepository;
-    private final iMapper<Student, UpdateStudentDto> studentMapper;
-    private final iMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
-    private final iMapper<Student, StudentDto> studentDtoiMapper;
+    private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
+    private final IMapper<Student, StudentDto> studentDtoiMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -44,8 +40,8 @@ public class StudentService implements IStudentService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "department not found with this code");
         }
 
-        Optional<Student> findedStudentByCode = studentRepository.findByCode(studentDto.getCode());
-        if (findedStudentByCode.isPresent()) {
+        Optional<Student> foundedStudentByCode = studentRepository.findByCode(studentDto.getCode());
+        if (foundedStudentByCode.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Code is already exist.");
         }
 
@@ -65,7 +61,7 @@ public class StudentService implements IStudentService {
     @Override
     public Page<StudentDto> getAllStudents(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Student> students = studentRepository.findAll(pageable) ;
+        Page<Student> students = studentRepository.findAll(pageable);
         //check if list empty
         if (students.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);

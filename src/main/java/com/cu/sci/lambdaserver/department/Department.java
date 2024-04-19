@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -31,13 +29,13 @@ public class Department {
 
     private String image;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String code;
 
-    @OneToMany(mappedBy = "department")
-    private Collection<DepartmentCourses> departmentCoursesSet ;
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private Collection<DepartmentCourses> departmentCourses;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private Collection<Student> students;
 
 

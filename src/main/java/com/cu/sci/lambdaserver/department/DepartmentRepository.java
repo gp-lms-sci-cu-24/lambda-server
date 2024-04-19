@@ -5,9 +5,12 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Optional;
 
-public interface DepartmentRepository extends JpaRepository<Department,Long>, PagingAndSortingRepository<Department,Long> {
-    Optional<Department>findDepartmentByNameIgnoreCase(String name) ;
-    Optional<Department> findDepartmentByCodeIgnoreCase(String code) ;
+public interface DepartmentRepository extends JpaRepository<Department, Long>, PagingAndSortingRepository<Department, Long> {
+    Optional<Department> findDepartmentByNameIgnoreCase(String name);
 
+    Optional<Department> findDepartmentByCodeIgnoreCase(String code);
 
+    Boolean existsByCodeIgnoreCase(String code);
+
+    Boolean existsByNameIgnoreCase(String name);
 }

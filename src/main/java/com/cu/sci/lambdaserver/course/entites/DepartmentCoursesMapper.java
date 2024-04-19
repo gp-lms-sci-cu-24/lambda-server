@@ -1,14 +1,14 @@
 package com.cu.sci.lambdaserver.course.entites;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DepartmentCoursesMapper implements iMapper<DepartmentCourses, DepartmentCoursesDto> {
+public class DepartmentCoursesMapper implements IMapper<DepartmentCourses, DepartmentCoursesDto> {
     private final ModelMapper modelMapper;
 
     @Override

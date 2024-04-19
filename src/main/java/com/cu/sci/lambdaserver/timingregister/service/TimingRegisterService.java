@@ -1,17 +1,15 @@
 package com.cu.sci.lambdaserver.timingregister.service;
 
-import com.cu.sci.lambdaserver.courseclass.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassTimingRepository;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
-import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTiming;
-import com.cu.sci.lambdaserver.courseclasstiming.CourseClassTimingRepository;
-import com.cu.sci.lambdaserver.courseclasstiming.service.CourseClassTimingService;
-import com.cu.sci.lambdaserver.courseregister.CourseRegister;
+import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.timingregister.TimingRegisterRepository;
 import com.cu.sci.lambdaserver.timingregister.dto.TimingRegisterInDto;
 import com.cu.sci.lambdaserver.timingregister.mapper.TimingRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.timingregister.mapper.TimingRegisterOutDtoMapper;
-import com.cu.sci.lambdaserver.student.Student;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,10 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,32 +31,33 @@ public class TimingRegisterService implements ITimingRegisterService {
 
     private final TimingRegisterInDtoMapper timingRegisterInDtoMapper;
     private final TimingRegisterOutDtoMapper timingRegisterOutDtoMapper;
+
     @Override
     public TimingRegister createTimingRegister(TimingRegisterInDto timingRegisterInDto) {
         Long courseClassId = timingRegisterInDto.getCourseClassId();
         Long courseClassTimingId = timingRegisterInDto.getCourseClassTimingId();
 
         CourseClassTiming courseClassTiming = courseClassTimingRepository.findById(courseClassTimingId)
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class timing not found with this id") );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class timing not found with this id"));
         CourseClass courseClass = courseClassService.getCourseClassById(courseClassId);
-        if(timingRegisterRepository
-            .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(courseClassId, courseClassTimingId)
-            .isPresent() ){
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "timing register already exists");
+        if (timingRegisterRepository
+                .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(courseClassId, courseClassTimingId)
+                .isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "timing register already exists");
         }
         // this needs more work
         Integer sum = 0;
-        for(Integer c : courseClassTiming
-            .getCourseClassTimings()
-            .stream()
-            .map(TimingRegister::getCourseClass)
-            .map(CourseClass::getMaxCapacity)
-            .toList() ){
-            sum+=c;
+        for (Integer c : courseClassTiming
+                .getCourseClassTimings()
+                .stream()
+                .map(TimingRegister::getCourseClass)
+                .map(CourseClass::getMaxCapacity)
+                .toList()) {
+            sum += c;
         }
         log.info("Student: {}", sum);
 
-        if(sum+courseClass.getMaxCapacity()>courseClassTiming.getLocation().getMaxCapacity() ){
+        if (sum + courseClass.getMaxCapacity() > courseClassTiming.getLocation().getMaxCapacity()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "could not register class, too much max capacity");
         }
         TimingRegister timingRegister = new TimingRegister();
@@ -80,16 +75,16 @@ public class TimingRegisterService implements ITimingRegisterService {
     @Override
     public TimingRegister getTimingRegister(Long id) {
         return timingRegisterRepository.findById(id)
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "timing register not found with this id") );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "timing register not found with this id"));
     }
 
     @Override
     public TimingRegister updateTimingRegister(TimingRegisterInDto timingRegisterInDto) {
-        return timingRegisterRepository.findById(timingRegisterInDto.getTimingRegisterId() )
-            .map(courseRegister -> {
-                timingRegisterInDtoMapper.update(timingRegisterInDto, courseRegister);
-                return timingRegisterRepository.save(courseRegister);
-            }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id") );
+        return timingRegisterRepository.findById(timingRegisterInDto.getTimingRegisterId())
+                .map(courseRegister -> {
+                    timingRegisterInDtoMapper.update(timingRegisterInDto, courseRegister);
+                    return timingRegisterRepository.save(courseRegister);
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
     }
 
     @Override
@@ -98,19 +93,11 @@ public class TimingRegisterService implements ITimingRegisterService {
         timingRegisterRepository.deleteById(id);
         return timingRegister;
     }
-    public TimingRegister getTimingRegisterByClassIdAndTimingId(Long classId, Long timingId){
+
+    public TimingRegister getTimingRegisterByClassIdAndTimingId(Long classId, Long timingId) {
         return timingRegisterRepository
-            .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(classId, timingId)
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "timing register was not found with this class and timing id") );
-    }
-    public Collection<CourseClassTiming> getTimingRegisterByClassId(Long classId){
-        Collection<TimingRegister> registeredTimings = timingRegisterRepository
-                .findTimingRegisterByCourseClass_CourseClassId(classId);
-        Collection<CourseClassTiming> courseTimings = registeredTimings
-            .stream()
-            .map(TimingRegister::getCourseClassTiming)
-            .collect(Collectors.toList());
-        return courseTimings;
+                .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(classId, timingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "timing register was not found with this class and timing id"));
     }
 }

@@ -20,7 +20,7 @@ public class StudentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StudentDto createStudent(@RequestBody @Valid CreateStudentRequestDto studentDto) {
-       return studentService.creatStudent(studentDto);
+        return studentService.creatStudent(studentDto);
     }
 
     @GetMapping
@@ -43,7 +43,7 @@ public class StudentController {
 
     @DeleteMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletStudent(@PathVariable String code) {
+    public void deleteStudent(@PathVariable String code) {
         studentService.deleteStudent(code);
     }
 

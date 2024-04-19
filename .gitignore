@@ -178,4 +178,5 @@ target
 .gradle
 README.html
 .exercism
-.idea/dataSources.xml
+/.idea/dataSources.xml
+/.idea/misc.xml

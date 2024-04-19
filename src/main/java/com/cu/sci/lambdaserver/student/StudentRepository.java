@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student,Long> , PagingAndSortingRepository<Student,Long> {
+public interface StudentRepository extends JpaRepository<Student, Long>, PagingAndSortingRepository<Student, Long> {
     Optional<Student> findByCode(String code);
 }
