@@ -49,7 +49,7 @@ public class Student extends User {
     private Level level;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender ;
+    private Gender gender;
 
     private String joiningYear;
 

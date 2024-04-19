@@ -17,16 +17,16 @@ public class ContactInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_info_seq")
     @SequenceGenerator(name = "contact_info_seq", sequenceName = "contact_info_seq", allocationSize = 10)
-    private Long id ;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User user ;
+    private User user;
 
-    private String phone ;
+    private String phone;
 
-    private String telephone ;
+    private String telephone;
 
-    private String email ;
+    private String email;
 
 }

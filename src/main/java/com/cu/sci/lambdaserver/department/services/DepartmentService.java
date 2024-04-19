@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.department.services;
 
-import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.department.Department;
@@ -24,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The DepartmentService class provides the business logic for the Department entity.

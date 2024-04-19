@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContactInfoDto {
 
-    private String phone ;
+    private String phone;
 
-    private String telephone ;
+    private String telephone;
 
-    private String email ;
+    private String email;
 
 }

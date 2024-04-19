@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.course.mapper;
 
-import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;

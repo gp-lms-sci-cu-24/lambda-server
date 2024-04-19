@@ -1,7 +1,6 @@
 package com.cu.sci.lambdaserver.department;
 
 
-import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;

@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.contactinfo.service;
 
-import com.cu.sci.lambdaserver.contactinfo.ContactInfo;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
 
