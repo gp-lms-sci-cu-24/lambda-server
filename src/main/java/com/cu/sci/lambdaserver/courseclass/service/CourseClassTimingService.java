@@ -5,7 +5,6 @@ import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
 import com.cu.sci.lambdaserver.courseclass.mapper.TimingInDtoMapper;
 import com.cu.sci.lambdaserver.courseclass.mapper.TimingOutDtoMapper;
-import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassTimingRepository;
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
@@ -15,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,11 +24,10 @@ import java.util.stream.Collectors;
 public class CourseClassTimingService implements ICourseClassTimingService {
     private final CourseClassTimingRepository courseClassTimingRepository;
     private final LocationRepository locationRepository;
-    private final CourseClassRepository courseClassRepository;
     private final TimingInDtoMapper timingInDtoMapper;
     private final TimingOutDtoMapper timingOutDtoMapper;
 
-    private List<CourseClassTiming> getCollsionList(Location location, String day, Long startTime, Long endTime) {
+    private List<CourseClassTiming> getCollsionList(Location location, DayOfWeek day, Long startTime, Long endTime) {
         return courseClassTimingRepository.findByLocationAndDayAndStartTimeLessThanAndEndTimeGreaterThan(
                 location,
                 day,
@@ -67,7 +66,7 @@ public class CourseClassTimingService implements ICourseClassTimingService {
         );
         if (!collision.isEmpty())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "this class will make collision with " + buildConflictError(collision));
-        CourseClassTiming courseClassTiming = timingInDtoMapper.mapTo(courseClassTimingInDto, location.get(), null);
+        CourseClassTiming courseClassTiming = timingInDtoMapper.mapTo(courseClassTimingInDto, location.get());
         courseClassTimingRepository.save(courseClassTiming);
         return timingOutDtoMapper.mapTo(courseClassTiming);
     }

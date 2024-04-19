@@ -25,8 +25,21 @@ public class RestErrorResponse {
     private String message;
     private String path;
 
-    public static class RestErrorResponseBuilder{
-        public RestErrorResponseBuilder exception(ResponseStatusException exception){
+    public ResponseEntity<RestErrorResponse> entity() {
+        return ResponseEntity.status(status).headers(HttpHeaders.EMPTY).body(this);
+    }
+
+    public String json() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(this);
+    }
+
+    public static class RestErrorResponseBuilder {
+        public RestErrorResponseBuilder exception(ResponseStatusException exception) {
             HttpStatusCode status = exception.getStatusCode();
             this.status = status.value();
 
@@ -39,17 +52,5 @@ public class RestErrorResponse {
             }
             return this;
         }
-    }
-    public ResponseEntity<RestErrorResponse> entity() {
-        return ResponseEntity.status(status).headers(HttpHeaders.EMPTY).body(this);
-    }
-
-    public String json() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        return ow.writeValueAsString(this);
     }
 }

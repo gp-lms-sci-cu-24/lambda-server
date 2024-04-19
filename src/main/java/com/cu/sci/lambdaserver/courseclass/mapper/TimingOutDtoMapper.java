@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.courseclass.mapper;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class TimingOutDtoMapper implements iMapper<CourseClassTiming, CourseClassTimingOutDto> {
+public class TimingOutDtoMapper implements IMapper<CourseClassTiming, CourseClassTimingOutDto> {
     private final ModelMapper modelMapper;
 
     @Override

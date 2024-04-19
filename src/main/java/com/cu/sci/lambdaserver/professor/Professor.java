@@ -1,10 +1,12 @@
 package com.cu.sci.lambdaserver.professor;
 
-import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.enums.Role;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -15,16 +17,13 @@ import java.util.List;
 @SuperBuilder
 @Entity
 @Table(name = "professors")
-public class Professor extends User{
-    private Long professorId;
+public class Professor extends User {
+
     public Professor() {
-        setRoles(List.of(Role.TEACHER));
+        setRoles(List.of(Role.PROFESSOR));
     }
 
     public static Professor.ProfessorBuilder<?, ?> builder() {
-        return new Professor.ProfessorBuilderImpl().roles(List.of(Role.TEACHER));
+        return new Professor.ProfessorBuilderImpl().roles(List.of(Role.PROFESSOR));
     }
-//    @OneToMany
-//    @JoinColumn(name = "id")
-//    private List<Department> department;
 }

@@ -26,6 +26,7 @@ public class ProfessorController {
         Professor savedProfessor = professorService.createProfessor(professorEntity);
         return new ResponseEntity<>(professorMapper.mapTo(savedProfessor), HttpStatus.CREATED);
     }
+
     @GetMapping
     public ResponseEntity<Page<ProfessorDto>> getAllLocations(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         Page<Professor> page = professorService.getAllProfessors(pageNo, pageSize);
@@ -39,6 +40,7 @@ public class ProfessorController {
         return foundLocation.map(location -> new ResponseEntity<>(professorMapper.mapTo(location), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
     @PatchMapping
     public ResponseEntity<ProfessorDto> updateLocation(@Validated(ProfessorDto.UpdateValidation.class) @RequestBody ProfessorDto professorDto) {
         try {
@@ -49,6 +51,7 @@ public class ProfessorController {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<String> deleteLocation(@PathVariable("id") Long id) {
         try {

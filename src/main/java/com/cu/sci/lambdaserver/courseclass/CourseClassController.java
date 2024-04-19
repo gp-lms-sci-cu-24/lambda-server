@@ -73,7 +73,7 @@ public class CourseClassController {
             return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
         }
         courseClassService.deleteCourseClass(id);
-        return new ResponseEntity<>("The record was deleted succesfully", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("The record was deleted successfully", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/timing")

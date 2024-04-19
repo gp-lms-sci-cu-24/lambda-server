@@ -1,6 +1,8 @@
 package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
+import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
@@ -9,7 +11,7 @@ import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,36 +21,55 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The DepartmentService class provides the business logic for the Department entity.
+ * It implements the IDepartmentService interface which defines the methods that this service class must implement.
+ * This class is annotated with @Service to indicate that it's a service component in the Spring framework.
+ * The @RequiredArgsConstructor annotation is a Lombok annotation that generates a constructor with required fields.
+ * Required fields are final fields and fields with constraints such as @NonNull.
+ */
 @Service
 @RequiredArgsConstructor
 public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final iMapper<Department, DepartmentDto> departmentMapper;
-    private final iMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
-    private final iMapper<Department,UpdateDepartmentDto> updateDepartmentDtoiMapper ;
-    private final iMapper<Student, StudentDto> studentDtoiMapper;
+    private final IMapper<Department, DepartmentDto> departmentMapper;
+    private final IMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
+    private final IMapper<Department, UpdateDepartmentDto> updateDepartmentDtoiMapper;
+    private final IMapper<Student, StudentDto> studentDtoiMapper;
+    private final IMapper<DepartmentCourses, DepartmentCoursesCollectingDto> departmentCoursesCollectingMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DepartmentDto createDepartment(CreateDepartmentDto department) {
-        // check if department if already exist
-        Optional<Department> foundedDepartmentBycode = departmentRepository
-                .findDepartmentByCodeIgnoreCase(department.getCode()) ;
-        Optional<Department> foundedDepartmentByname = departmentRepository
-                .findDepartmentByNameIgnoreCase(department.getName());
-        if(foundedDepartmentBycode.isPresent()||foundedDepartmentByname.isPresent()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Department is already exist.");
+        // check if department is already exist
+        Boolean foundedDepartmentByCode = departmentRepository
+                .existsByCodeIgnoreCase(department.getCode());
+        Boolean foundedDepartmentByName = departmentRepository
+                .existsByNameIgnoreCase(department.getName());
+
+        if (foundedDepartmentByCode) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Department code is already exist.");
+        }
+        if (foundedDepartmentByName) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Department name is already exist.");
         }
 
         // convert dto to entity and save it to db
-        Department savedDepartment = createDepartmentDtoiMapper.mapFrom(department) ;
-        return departmentMapper.mapTo(departmentRepository.save(savedDepartment)) ;
-
+        Department savedDepartment = createDepartmentDtoiMapper.mapFrom(department);
+        return departmentMapper.mapTo(departmentRepository.save(savedDepartment));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<DepartmentDto> getAllDepartments(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -60,8 +81,11 @@ public class DepartmentService implements IDepartmentService {
         return departmentPage.map(departmentMapper::mapTo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public DepartmentDto getDepartment(String code) {
+    public DepartmentDto getDepartmentByCode(String code) {
         Optional<Department> department = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
         // check if department exist
@@ -72,8 +96,11 @@ public class DepartmentService implements IDepartmentService {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public UpdateDepartmentDto updateDepartment(String code, UpdateDepartmentDto departmentDto) {
+    public UpdateDepartmentDto updateDepartmentByCode(String code, UpdateDepartmentDto departmentDto) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
@@ -81,9 +108,11 @@ public class DepartmentService implements IDepartmentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
         }
 
-        // check update values
-        if (Objects.equals(foundedDepartment.get().getCode(), departmentDto.getCode()) || Objects.equals(foundedDepartment.get().getName(), departmentDto.getName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Code or Name is used");
+        // check update values if they equal old values
+        if (Objects.equals(foundedDepartment.get().getCode(), departmentDto.getCode()) ||
+                Objects.equals(foundedDepartment.get().getName(), departmentDto.getName())
+        ) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You can't use old code or name.");
         }
 
 
@@ -96,13 +125,15 @@ public class DepartmentService implements IDepartmentService {
         });
 
         // convert saved department to dto
-        return updateDepartmentDtoiMapper.mapTo(foundedDepartment.get()) ;
-
+        return updateDepartmentDtoiMapper.mapTo(foundedDepartment.get());
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void deleteDepartment(String code) {
+    public void deleteDepartmentByCode(String code) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
@@ -114,70 +145,65 @@ public class DepartmentService implements IDepartmentService {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Page<CreateCourseDto> getDepartmentCourses(String code, Integer pageNo, Integer pageSize) {
+    public Page<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Department with this code.");
         }
 
+        /* @TODO: Fight with person who write this*/
         // get courses of department
-        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCoursesSet().stream().map(departmentCourses -> {
-            CreateCourseDto createCourseDto = new CreateCourseDto();
-            createCourseDto.setCode(departmentCourses.getCourse().getCode());
-            createCourseDto.setName(departmentCourses.getCourse().getName());
-            createCourseDto.setInfo(departmentCourses.getCourse().getInfo());
-            createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
-            createCourseDto.setSemester(departmentCourses.getSemester());
-            createCourseDto.setMandatory(departmentCourses.getMandatory());
-            createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCoursesSet().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
-            return createCourseDto;
-        }).toList();
+        List<DepartmentCoursesCollectingDto> courseList = foundedDepartment.get().getDepartmentCourses().stream()
+                .map(departmentCoursesCollectingMapper::mapTo)
+                .toList();
 
         // convert list to page
         int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseDtoList.size());
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseList.size());
 
-        return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
+        return new PageImpl<>(courseList.subList(start, end), PageRequest.of(pageNo, pageSize), courseList.size());
 
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Page<CreateCourseDto> getCourseDepartmentbySemster(String code, Integer pageNo, Integer pageSize, Semester semester) {
+    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
         }
 
+        /* @TODO: Fight with person who write this*/
         // get courses of department by semester
-        List<CreateCourseDto> courseDtoList = foundedDepartment.get().getDepartmentCoursesSet().stream()
+        List<DepartmentCoursesCollectingDto> courseList = foundedDepartment.get().getDepartmentCourses().stream()
                 .filter(departmentCourses -> departmentCourses.getSemester().equals(semester))
-                .map(departmentCourses -> {
-                    CreateCourseDto createCourseDto = new CreateCourseDto();
-                    createCourseDto.setCode(departmentCourses.getCourse().getCode());
-                    createCourseDto.setName(departmentCourses.getCourse().getName());
-                    createCourseDto.setInfo(departmentCourses.getCourse().getInfo());
-                    createCourseDto.setCreditHours(departmentCourses.getCourse().getCreditHours());
-                    createCourseDto.setSemester(departmentCourses.getSemester());
-                    createCourseDto.setMandatory(departmentCourses.getMandatory());
-                    createCourseDto.setDepartmentCode(departmentCourses.getDepartment().getDepartmentCoursesSet().stream().map(departmentCourses1 -> departmentCourses1.getDepartment().getCode()).collect(Collectors.toSet()));
-                    return createCourseDto;
-                }).toList();
+                .map(departmentCoursesCollectingMapper::mapTo).toList();
 
         // convert list to page
         int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseDtoList.size());
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseList.size());
 
-        return new PageImpl<>(courseDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), courseDtoList.size());
+        return new PageImpl<>(courseList.subList(start, end), PageRequest.of(pageNo, pageSize), courseList.size());
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Page<StudentDto> getDepartmentStudents(String code) {
+    public Page<StudentDto> getDepartmentStudentsByCode(String code, Integer pageNo, Integer pageSize) {
+        /* @TODO: USE Pageable */
+
         //check if department found
         Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
@@ -191,13 +217,13 @@ public class DepartmentService implements IDepartmentService {
                 .map(studentDtoiMapper::mapTo)
                 .toList();
 
-        if(StudentDtoList.isEmpty()){
+        if (StudentDtoList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No students found in this department");
         }
 
         // convert list to page
-        return new PageImpl<>(StudentDtoList, PageRequest.of(0, StudentDtoList.size()), StudentDtoList.size());
+        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), StudentDtoList.size());
+        return new PageImpl<>(StudentDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), StudentDtoList.size());
     }
-
-
 }

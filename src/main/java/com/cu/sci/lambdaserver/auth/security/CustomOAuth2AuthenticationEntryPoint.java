@@ -1,5 +1,6 @@
-package com.cu.sci.lambdaserver.auth.config;
+package com.cu.sci.lambdaserver.auth.security;
 
+import com.cu.sci.lambdaserver.auth.utils.WWWAuthenticateHeaderBuilder;
 import com.cu.sci.lambdaserver.utils.exception.RestErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,12 +50,12 @@ public class CustomOAuth2AuthenticationEntryPoint implements AuthenticationEntry
 
         // Set the default status and error message
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String errorMessage ;
+        String errorMessage;
 
         // If the error message is not null and not blank, use it as the error message
         // Otherwise, use a default error message
-        if(Objects.nonNull(e.getLocalizedMessage()) && !e.getLocalizedMessage().isBlank())
-            errorMessage=e.getLocalizedMessage();
+        if (Objects.nonNull(e.getLocalizedMessage()) && !e.getLocalizedMessage().isBlank())
+            errorMessage = e.getLocalizedMessage();
         else
             errorMessage = "Insufficient authentication details";
 

@@ -1,41 +1,43 @@
 package com.cu.sci.lambdaserver.auth.service;
 
+import com.cu.sci.lambdaserver.auth.dto.ClientInfoDto;
 import com.cu.sci.lambdaserver.auth.dto.LoginRequestDto;
 import com.cu.sci.lambdaserver.auth.dto.LoginResponseDto;
+import com.cu.sci.lambdaserver.auth.dto.SignOutResponseDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import java.security.Principal;
 
 /**
- * IAuthService is an interface that defines the contract for authentication services.
- * It includes methods for signing in, refreshing the authentication, and signing out.
+ * This interface defines the authentication services that are required for the application.
+ * It includes methods for signing in, refreshing the authentication token and signing out.
  */
 public interface IAuthService {
 
     /**
-     * This method handles the sign-in process for a user.
-     * It takes a LoginRequestDto object and returns a LoginResponseDto object.
+     * This method is used to sign in a user.
      *
-     * @param loginRequestDto The LoginRequestDto object containing the user's login credentials
-     * @return A LoginResponseDto object containing the response of the login process
+     * @param loginRequestDto This is the first parameter to signIn method which includes the login credentials.
+     * @param clientInfoDto   This is the second parameter to signIn method which includes the client information.
+     * @return ResponseEntity<LoginResponseDto> This returns the response entity with the login response data transfer object.
      */
-    LoginResponseDto signIn(LoginRequestDto loginRequestDto);
+    ResponseEntity<LoginResponseDto> signIn(LoginRequestDto loginRequestDto, ClientInfoDto clientInfoDto);
 
     /**
-     * This method handles the refresh process for a user's authentication.
-     * It takes a Principal object and a JwtAuthenticationToken object and returns a LoginResponseDto object.
+     * This method is used to refresh the JWT authentication token.
      *
-     * @param principal              The Principal object representing the user
-     * @param jwtAuthenticationToken The JwtAuthenticationToken object representing the user's authentication token
-     * @return A LoginResponseDto object containing the response of the refresh process
+     * @param jwtAuthenticationToken This is the first parameter to refresh method which includes the JWT authentication token.
+     * @param clientInfo             This is the second parameter to refresh method which includes the client information.
+     * @return ResponseEntity<LoginResponseDto> This returns the response entity with the login response data transfer object.
      */
-    LoginResponseDto refresh(Principal principal, JwtAuthenticationToken jwtAuthenticationToken);
+    ResponseEntity<LoginResponseDto> refresh(JwtAuthenticationToken jwtAuthenticationToken, ClientInfoDto clientInfo);
 
     /**
-     * This method handles the sign-out process for a user.
-     * It returns a string indicating the result of the sign-out process.
+     * This method is used to sign out a user.
      *
-     * @return A string indicating the result of the sign-out process
+     * @param jwtAuthenticationToken This is the first parameter to signOut method which includes the JWT authentication token.
+     * @param clientInfo             This is the second parameter to signOut method which includes the client information.
+     * @return ResponseEntity<SignOutResponseDto> This returns the response entity with the sign-out response data transfer object.
      */
-    String signOut();
+    ResponseEntity<SignOutResponseDto> signOut(JwtAuthenticationToken jwtAuthenticationToken, ClientInfoDto clientInfo);
 }

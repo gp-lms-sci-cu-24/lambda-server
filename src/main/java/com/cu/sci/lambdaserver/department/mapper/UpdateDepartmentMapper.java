@@ -2,12 +2,12 @@ package com.cu.sci.lambdaserver.department.mapper;
 
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
-import com.cu.sci.lambdaserver.utils.mapper.config.iMapper;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UpdateDepartmentMapper implements iMapper<Department, UpdateDepartmentDto> {
+public class UpdateDepartmentMapper implements IMapper<Department, UpdateDepartmentDto> {
     private final ModelMapper modelMapper;
 
     public UpdateDepartmentMapper(ModelMapper modelMapper) {

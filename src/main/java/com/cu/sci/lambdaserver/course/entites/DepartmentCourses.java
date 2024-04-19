@@ -15,27 +15,27 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="department_courses")
+@Table(name = "department_courses")
 public class DepartmentCourses {
 
     @EmbeddedId
-    private DepartmentCoursesKey departmentCoursesKey ;
+    private DepartmentCoursesKey departmentCoursesKey;
 
     @ManyToOne
     @MapsId("departmentId")
     @JoinColumn(name = "department_id")
-    private Department department ;
+    private Department department;
 
     @ManyToOne
     @MapsId("courseId")
     @JoinColumn(name = "course_id")
-    private Course course ;
+    private Course course;
 
     @Enumerated(EnumType.STRING)
-    private Semester semester ;
+    private Semester semester;
 
     @Column(nullable = false)
-    private Boolean mandatory ;
+    private Boolean mandatory;
 
     @Override
     public boolean equals(Object o) {
