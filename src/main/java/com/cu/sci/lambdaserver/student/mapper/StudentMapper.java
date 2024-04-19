@@ -18,11 +18,6 @@ public class StudentMapper implements IMapper<Student, StudentDto> {
         return modelMapper.map(student, StudentDto.class);
     }
 
-    public StudentDto mapContactInfoTo(Student student , ContactInfoDto contactInfoDto){
-        StudentDto studentDto = modelMapper.map(student, StudentDto.class);
-        studentDto.setContactInfo(contactInfoDto);
-        return studentDto;
-    }
 
     @Override
     public Student mapFrom(StudentDto studentDto) {

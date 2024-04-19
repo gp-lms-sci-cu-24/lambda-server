@@ -33,7 +33,6 @@ public class StudentService implements IStudentService {
     private final DepartmentRepository departmentRepository;
     private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
-    private final StudentMapper studentMapper;
     private final PasswordEncoder passwordEncoder;
     private final ContactInfoService contactInfoService;
 
@@ -71,8 +70,8 @@ public class StudentService implements IStudentService {
                 .build();
 
         //save contact info
-        ContactInfoDto contactInfoDtoSaved = contactInfoService.createContactInfo(createContactInfoDto);
-        return studentMapper.mapContactInfoTo(saveStudent, contactInfoDtoSaved);
+        contactInfoService.createContactInfo(createContactInfoDto);
+        return studentDtoiMapper.mapTo(saveStudent);
     }
 
     @Override
@@ -92,11 +91,7 @@ public class StudentService implements IStudentService {
         if (student.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
         }
-
-        //get student contact info
-        ContactInfoDto contactInfo = contactInfoService.getContactInfo(student.get().getCode());
-
-        return studentMapper.mapContactInfoTo(student.get(), contactInfo);
+        return studentDtoiMapper.mapTo(student.get());
 
     }
 

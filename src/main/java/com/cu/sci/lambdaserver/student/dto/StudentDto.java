@@ -1,7 +1,6 @@
 package com.cu.sci.lambdaserver.student.dto;
 
 
-import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.utils.enums.Gender;
@@ -41,5 +40,4 @@ public class StudentDto extends UserDto {
 
     private DepartmentDto department;
 
-    private ContactInfoDto contactInfo  ;
 }
