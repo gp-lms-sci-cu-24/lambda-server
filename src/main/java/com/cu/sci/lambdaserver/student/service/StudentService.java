@@ -60,17 +60,8 @@ public class StudentService implements IStudentService {
         log.info("Student: {}", student);
         Student saveStudent = studentRepository.save(student);
 
-        // Build contact info
-        CreateContactInfoDto createContactInfoDto = CreateContactInfoDto
-                .builder()
-                .email(studentDto.getEmail())
-                .userName(studentDto.getCode())
-                .phone(studentDto.getPhone())
-                .telephone(studentDto.getTelephone())
-                .build();
 
-        //save contact info
-        contactInfoService.createContactInfo(createContactInfoDto);
+        //save student
         return studentDtoiMapper.mapTo(saveStudent);
     }
 
