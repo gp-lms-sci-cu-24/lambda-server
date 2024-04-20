@@ -9,6 +9,7 @@ import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
@@ -131,7 +132,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteDepartmentByCode(String code) {
+    public MessageResponse deleteDepartmentByCode(String code) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
@@ -140,6 +141,8 @@ public class DepartmentService implements IDepartmentService {
         }
         // delete department by code
         departmentRepository.delete(foundedDepartment.get());
+
+        return new MessageResponse("Department with code " + code + " deleted successfully.");
     }
 
 

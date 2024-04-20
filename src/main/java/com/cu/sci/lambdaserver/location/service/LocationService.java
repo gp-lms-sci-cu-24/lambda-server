@@ -27,6 +27,11 @@ public class LocationService implements ILocationService {
      */
     @Override
     public LocationDto createLocation(LocationDto locationDto) {
+        boolean exists = locationRepository.existsByNameIgnoreCase(locationDto.getName());
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Location with name " + locationDto.getName() + " already exists");
+        }
+
         Location location = locationRepository.save(locationMapper.mapFrom(locationDto));
         return locationMapper.mapTo(location);
     }
@@ -66,16 +71,27 @@ public class LocationService implements ILocationService {
      */
     @Override
     public LocationDto updateLocationById(Long id, LocationDto locationDetails) {
+        /*@TODO: Logic need to write by better way*/
+
         Optional<Location> location = locationRepository.findById(id);
 
         if (location.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Location with ID " + id + " does not exist");
         }
 
+        if (!locationDetails.getName().equalsIgnoreCase(location.get().getName())) {
+            Optional<Location> locationByName = locationRepository.findByNameIgnoreCase(locationDetails.getName());
+            if (locationByName.isPresent() && !locationByName.get().getId().equals(id)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Location with name " + locationDetails.getName() + " already exists");
+            }
+        }
+
         Location updatedLocation = location.map(existingLocation -> {
             existingLocation.setPath(locationDetails.getPath());
             existingLocation.setMaxCapacity(locationDetails.getMaxCapacity());
             existingLocation.setInfo(locationDetails.getInfo());
+            existingLocation.setImage(locationDetails.getImage());
+            existingLocation.setName(locationDetails.getName());
             return locationRepository.save(existingLocation);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
 
