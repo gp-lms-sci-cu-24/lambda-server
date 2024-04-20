@@ -1,5 +1,8 @@
 package com.cu.sci.lambdaserver.student.service;
 
+import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.service.ContactInfoService;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.student.Student;
@@ -7,6 +10,7 @@ import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
+import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,7 @@ public class StudentService implements IStudentService {
     private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ContactInfoService contactInfoService;
 
     @Override
     public StudentDto creatStudent(CreateStudentRequestDto studentDto) throws ResponseStatusException {
@@ -55,6 +60,8 @@ public class StudentService implements IStudentService {
         log.info("Student: {}", student);
         Student saveStudent = studentRepository.save(student);
 
+
+        //save student
         return studentDtoiMapper.mapTo(saveStudent);
     }
 
@@ -76,6 +83,7 @@ public class StudentService implements IStudentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
         }
         return studentDtoiMapper.mapTo(student.get());
+
     }
 
     @Override
@@ -104,6 +112,10 @@ public class StudentService implements IStudentService {
         if (student.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
         }
+        //delete student contact info
+        contactInfoService.deleteContactInfo(code);
+
+        //delete student
         studentRepository.delete(student.get());
     }
 

@@ -48,10 +48,13 @@ public class Student extends User {
     @Enumerated(EnumType.STRING)
     private Level level;
 
-    private String joiningYear;
-
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private String joiningYear;
+
+    @Column(columnDefinition = "integer default 0")
+    private Integer creditHoursSemester;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
