@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,9 +41,10 @@ public interface IDepartmentService {
      * This method is secured with Spring Security's @PreAuthorize annotation, which restricts access to users with 'ADMIN' role.
      *
      * @param code The code of the department to be deleted.
+     * @return A MessageResponse object containing the result of the deletion operation.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    void deleteDepartmentByCode(String code);
+    MessageResponse deleteDepartmentByCode(String code);
 
     /**
      * Retrieves the students of a specific department.

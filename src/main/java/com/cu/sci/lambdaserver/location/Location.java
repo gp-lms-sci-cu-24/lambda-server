@@ -16,10 +16,15 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String name;
+
     @Column(nullable = false)
     private String path;
 
     private String info;
+
+    private String image;
 
     @Column(nullable = false)
     private Integer maxCapacity;

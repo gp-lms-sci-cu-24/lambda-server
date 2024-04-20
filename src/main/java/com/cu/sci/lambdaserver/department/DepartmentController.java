@@ -7,6 +7,7 @@ import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/department")
+@RequestMapping("api/v1/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
 
@@ -29,7 +30,7 @@ public class DepartmentController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<DepartmentDto> getDepartments(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+    public Page<DepartmentDto> getDepartments(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
         return departmentService.getAllDepartments(pageNo, pageSize);
     }
 
@@ -48,8 +49,8 @@ public class DepartmentController {
 
     @DeleteMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDepartment(@PathVariable String code) {
-        departmentService.deleteDepartmentByCode(code);
+    public MessageResponse deleteDepartment(@PathVariable String code) {
+        return departmentService.deleteDepartmentByCode(code);
     }
 
     @GetMapping(path = "/{code}/courses")
