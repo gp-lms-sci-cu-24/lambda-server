@@ -22,4 +22,7 @@ public class DepartmentDto {
     @NotNull
     private String code;
 
+    private Integer graduationCreditHours = 146;
+
+
 }

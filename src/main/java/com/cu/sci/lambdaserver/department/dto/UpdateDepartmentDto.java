@@ -19,4 +19,5 @@ public class UpdateDepartmentDto {
 
     private String code;
 
+    private Integer graduationCreditHours = 146;
 }
