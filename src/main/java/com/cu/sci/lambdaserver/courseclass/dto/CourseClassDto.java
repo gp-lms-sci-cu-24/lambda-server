@@ -19,7 +19,7 @@ public class CourseClassDto {
     @NotNull(groups = {CourseClassInDto.CreateValidation.class}, message = "Course Semester cannot be null during creation")
     @Null(groups = {CourseClassInDto.UpdateValidation.class}, message = "Course Semester must be null during update")
     private String courseSemester;
-    @Null(groups = {CourseClassInDto.UpdateValidation.class, CourseClassInDto.CreateValidation.class}, message = "Course Semester cannot be set by dto")
+    @Null(groups = {CourseClassInDto.UpdateValidation.class, CourseClassInDto.CreateValidation.class}, message = "Course State cannot be set by dto")
     private String courseState;
     @NotNull(groups = {CourseClassInDto.CreateValidation.class}, message = "Max Capacity cannot be null during creation")
 //    @Null(groups = {CourseClassInDto.UpdateValidation.class}, message = "Max Capacity must be null during update")

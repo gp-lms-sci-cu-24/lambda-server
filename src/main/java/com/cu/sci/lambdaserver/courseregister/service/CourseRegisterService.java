@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.courseregister.service;
 
+import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
@@ -9,6 +10,8 @@ import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
+import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,9 +32,25 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
+    private final IAuthenticationFacade iAuthenticationFacade;
+
+    @Override
+    public CourseRegister studentCreateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
+        User user = iAuthenticationFacade.getAuthenticatedUser();
+        Student student = studentRepository.findById(user.getId() )
+                .orElseThrow();
+        CourseClass courseClass = courseClassService
+                .getCourseClassById(courseRegisterInDto.getCourseClassId() );
+        CourseRegister courseRegister = new CourseRegister();
+        courseRegister.setCourseClass(courseClass);
+        courseRegister.setStudent(student);
+
+        return courseRegisterRepository.save(courseRegister);
+    }
 
     @Override
     public CourseRegister createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
+
         String studentCode = courseRegisterInDto.getStudentCode();
         Long courseClassId = courseRegisterInDto.getCourseClassId();
         Student student = studentRepository.findByCode(studentCode)
@@ -41,9 +60,6 @@ public class CourseRegisterService implements ICourseRegisterService {
         CourseRegister courseRegister = new CourseRegister();
         courseRegister.setCourseClass(courseClass);
         courseRegister.setStudent(student);
-//        System.out.println(student);
-//        System.out.println(courseClass);
-//        System.out.println(courseRegister);
         return courseRegisterRepository.save(courseRegister);
     }
 
@@ -51,6 +67,11 @@ public class CourseRegisterService implements ICourseRegisterService {
     public Page<CourseRegister> getAllCourseRegisters(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return courseRegisterRepository.findAll(pageable);
+    }
+    @Override
+    public Collection<CourseRegister> studentGetAllCourseRegisters() {
+        User user = iAuthenticationFacade.getAuthenticatedUser();
+        return courseRegisterRepository.findAllByStudentId(user.getId() );
     }
 
     @Override
@@ -75,6 +96,7 @@ public class CourseRegisterService implements ICourseRegisterService {
         return courseRegister;
     }
 
+    @Override
     public Collection<CourseRegister> getStudentRegisteredCourses(String studentCode) {
         Student student = studentRepository.findByCode(studentCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));

@@ -1,9 +1,11 @@
 package com.cu.sci.lambdaserver.courseregister;
 
+import com.cu.sci.lambdaserver.courseclass.service.ICourseClassService;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "v1/api/course-register")
 @RequiredArgsConstructor
 public class CourseRegisterController {
-    private final CourseRegisterService courseRegisterService;
+    private final ICourseRegisterService courseRegisterService;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
 
     @PostMapping
@@ -25,14 +27,25 @@ public class CourseRegisterController {
     public CourseRegisterOutDto createCourseRegister(@Validated(CourseRegisterInDto.CreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
         return courseRegisterOutDtoMapper.mapTo(courseRegisterService.createCourseRegister(courseRegisterInDto));
     }
-
+    @PostMapping("/me")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseRegisterOutDto studentCreateCourseRegister(@Validated(CourseRegisterInDto.StudentCreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
+        return courseRegisterOutDtoMapper
+            .mapTo(courseRegisterService.studentCreateCourseRegister(courseRegisterInDto) );
+    }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<CourseRegisterOutDto> getAllCourseRegisters(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         Page<CourseRegister> page = courseRegisterService.getAllCourseRegisters(pageNo, pageSize);
         return page.map(courseRegisterOutDtoMapper::mapTo);
     }
-
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<CourseRegisterOutDto> studentGetAllCourseRegisters() {
+        return courseRegisterService
+                .studentGetAllCourseRegisters().stream()
+                .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList() );
+    }
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CourseRegisterOutDto getCourseRegister(@PathVariable Long id) {
