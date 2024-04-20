@@ -20,55 +20,50 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CourseRegisterController {
     private final ICourseRegisterService courseRegisterService;
-    private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CourseRegisterOutDto createCourseRegister(@Validated(CourseRegisterInDto.CreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
-        return courseRegisterOutDtoMapper.mapTo(courseRegisterService.createCourseRegister(courseRegisterInDto));
+        return courseRegisterService.createCourseRegister(courseRegisterInDto);
     }
     @PostMapping("/me")
     @ResponseStatus(HttpStatus.CREATED)
     public CourseRegisterOutDto studentCreateCourseRegister(@Validated(CourseRegisterInDto.StudentCreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
-        return courseRegisterOutDtoMapper
-            .mapTo(courseRegisterService.studentCreateCourseRegister(courseRegisterInDto) );
+        return courseRegisterService.studentCreateCourseRegister(courseRegisterInDto);
     }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<CourseRegisterOutDto> getAllCourseRegisters(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-        Page<CourseRegister> page = courseRegisterService.getAllCourseRegisters(pageNo, pageSize);
-        return page.map(courseRegisterOutDtoMapper::mapTo);
+        return courseRegisterService.getAllCourseRegisters(pageNo, pageSize);
     }
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public Collection<CourseRegisterOutDto> studentGetAllCourseRegisters() {
         return courseRegisterService
-                .studentGetAllCourseRegisters().stream()
-                .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList() );
+                .studentGetAllCourseRegisters();
     }
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CourseRegisterOutDto getCourseRegister(@PathVariable Long id) {
-        return courseRegisterOutDtoMapper.mapTo(courseRegisterService.getCourseRegister(id));
+        return courseRegisterService.getCourseRegister(id);
     }
 
     @GetMapping(path = "/student/{code}")
     @ResponseStatus(HttpStatus.OK)
     public Collection<CourseRegisterOutDto> getAllStudentCourseRegisters(@PathVariable String code) {
         return courseRegisterService
-                .getStudentRegisteredCourses(code).stream()
-                .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
+                .getStudentRegisteredCourses(code);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public CourseRegisterOutDto updateCourseRegister(@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
-        return courseRegisterOutDtoMapper.mapTo(courseRegisterService.updateCourseRegister(courseRegisterInDto));
+        return courseRegisterService.updateCourseRegister(courseRegisterInDto);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public CourseRegisterOutDto deleteCourseRegister(@PathVariable("id") Long id) {
-        return courseRegisterOutDtoMapper.mapTo(courseRegisterService.deleteCourseRegister(id));
+        return courseRegisterService.deleteCourseRegister(id);
     }
 }

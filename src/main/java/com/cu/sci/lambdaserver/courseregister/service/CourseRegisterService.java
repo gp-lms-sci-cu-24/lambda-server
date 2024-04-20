@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.CourseRegisterRepository;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
+import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.student.Student;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +35,8 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
     private final IAuthenticationFacade iAuthenticationFacade;
-
     @Override
-    public CourseRegister studentCreateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
+    public CourseRegisterOutDto studentCreateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
         User user = iAuthenticationFacade.getAuthenticatedUser();
         Student student = studentRepository.findById(user.getId() )
                 .orElseThrow();
@@ -45,11 +46,11 @@ public class CourseRegisterService implements ICourseRegisterService {
         courseRegister.setCourseClass(courseClass);
         courseRegister.setStudent(student);
 
-        return courseRegisterRepository.save(courseRegister);
+        return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister) );
     }
 
     @Override
-    public CourseRegister createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
+    public CourseRegisterOutDto createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
 
         String studentCode = courseRegisterInDto.getStudentCode();
         Long courseClassId = courseRegisterInDto.getCourseClassId();
@@ -60,46 +61,50 @@ public class CourseRegisterService implements ICourseRegisterService {
         CourseRegister courseRegister = new CourseRegister();
         courseRegister.setCourseClass(courseClass);
         courseRegister.setStudent(student);
-        return courseRegisterRepository.save(courseRegister);
+
+        return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister) );
     }
 
     @Override
-    public Page<CourseRegister> getAllCourseRegisters(Integer pageNo, Integer pageSize) {
+    public Page<CourseRegisterOutDto> getAllCourseRegisters(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return courseRegisterRepository.findAll(pageable);
+        return courseRegisterRepository.findAll(pageable).map(courseRegisterOutDtoMapper::mapTo);
     }
     @Override
-    public Collection<CourseRegister> studentGetAllCourseRegisters() {
+    public Collection<CourseRegisterOutDto> studentGetAllCourseRegisters() {
         User user = iAuthenticationFacade.getAuthenticatedUser();
-        return courseRegisterRepository.findAllByStudentId(user.getId() );
+        return courseRegisterRepository.findAllByStudentId(user.getId() ).stream()
+                .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList() );
     }
 
     @Override
-    public CourseRegister getCourseRegister(Long id) {
+    public CourseRegisterOutDto getCourseRegister(Long id) {
         return courseRegisterRepository.findById(id)
+                .map(courseRegisterOutDtoMapper::mapTo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
     }
 
     @Override
-    public CourseRegister updateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
+    public CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
         return courseRegisterRepository.findById(courseRegisterInDto.getCourseRegisterId())
                 .map(courseRegister -> {
                     courseRegisterInDtoMapper.update(courseRegisterInDto, courseRegister);
-                    return courseRegisterRepository.save(courseRegister);
+                    return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister) );
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
     }
 
     @Override
-    public CourseRegister deleteCourseRegister(Long id) {
-        CourseRegister courseRegister = getCourseRegister(id);
+    public CourseRegisterOutDto deleteCourseRegister(Long id) {
+        CourseRegisterOutDto courseRegisterOutDto = getCourseRegister(id);
         courseRegisterRepository.deleteById(id);
-        return courseRegister;
+        return courseRegisterOutDto;
     }
 
     @Override
-    public Collection<CourseRegister> getStudentRegisteredCourses(String studentCode) {
+    public Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode) {
         Student student = studentRepository.findByCode(studentCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
-        return courseRegisterRepository.findAllByStudentId(student.getId());
+        return courseRegisterRepository.findAllByStudentId(student.getId())
+                .stream().map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList() );
     }
 }
