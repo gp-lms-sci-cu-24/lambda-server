@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.professor;
 
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
 import com.cu.sci.lambdaserver.professor.service.IProfessorService;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class ProfessorController {
     private final ProfessorMapper professorMapper;
     private final IProfessorService professorService;
+    private final CourseClassMapper courseClassMapper;
 
 //    @PostMapping
 //    public ResponseEntity<ProfessorDto> createProfessor(@Validated(ProfessorDto.CreateValidation.class) @RequestBody ProfessorDto professorDto) {
