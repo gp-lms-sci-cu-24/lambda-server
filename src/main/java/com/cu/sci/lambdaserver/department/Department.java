@@ -38,5 +38,7 @@ public class Department {
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private Collection<Student> students;
 
+    @Column(columnDefinition = "integer default 146")
+    private Integer graduationCreditHours;
 
 }

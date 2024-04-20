@@ -3,13 +3,14 @@ package com.cu.sci.lambdaserver.location;
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.location.service.ILocationService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "api/v1/location")
+@RequestMapping(path = "api/v1/locations")
 @RequiredArgsConstructor
 public class LocationController {
 
@@ -17,7 +18,7 @@ public class LocationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LocationDto createLocation(@RequestBody LocationDto locationDto) {
+    public LocationDto createLocation(@RequestBody @Valid LocationDto locationDto) {
         return locationService.createLocation(locationDto);
     }
 
