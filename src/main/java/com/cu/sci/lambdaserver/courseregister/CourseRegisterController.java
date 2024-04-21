@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
 import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,12 @@ public class CourseRegisterController {
         return courseRegisterService
                 .getStudentRegisteredCourses(code);
     }
-
+    @GetMapping(path = "/class/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<StudentDto> getAllCourseClassStudents(@PathVariable Long id) {
+        return courseRegisterService
+                .getAllCourseClassStudents(id);
+    }
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public CourseRegisterOutDto updateCourseRegister(@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {

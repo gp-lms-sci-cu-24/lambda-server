@@ -11,8 +11,10 @@ import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.enums.Role;
+import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +37,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
+    private final IMapper<Student, StudentDto> studentDtoIMapper;
     private final IAuthenticationFacade iAuthenticationFacade;
     public CourseRegister initNewCourseRegister(CourseClass courseClass, Student student){
         CourseRegister courseRegister = new CourseRegister();
@@ -117,6 +120,15 @@ public class CourseRegisterService implements ICourseRegisterService {
         courseRegisterRepository.deleteById(id);
 
         return courseRegisterOutDtoMapper.mapTo(courseRegister);
+    }
+
+    @Override
+    public Collection<StudentDto> getAllCourseClassStudents(Long courseClassId) {
+        Collection<CourseRegister> courseRegisters = courseRegisterRepository
+                .findAllByCourseClass_CourseClassId(courseClassId);
+        Collection<Student> courseClassStudents = courseRegisters.stream()
+                .map(CourseRegister::getStudent).collect(Collectors.toList() );
+        return courseClassStudents.stream().map(studentDtoIMapper::mapTo).collect(Collectors.toList() );
     }
 
     @Override

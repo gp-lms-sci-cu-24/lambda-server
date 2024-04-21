@@ -1,9 +1,11 @@
 package com.cu.sci.lambdaserver.courseregister.service;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -24,4 +26,5 @@ public interface ICourseRegisterService {
 
     Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode);
     CourseRegisterOutDto deleteCourseRegister(Long id);
+    Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
 }
