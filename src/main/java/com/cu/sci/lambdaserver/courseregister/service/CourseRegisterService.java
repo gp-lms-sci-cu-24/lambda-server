@@ -13,6 +13,7 @@ import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.enums.Role;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,13 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
     private final IAuthenticationFacade iAuthenticationFacade;
+    public CourseRegister initNewCourseRegister(CourseClass courseClass, Student student){
+        CourseRegister courseRegister = new CourseRegister();
+        student.setCreditHoursSemester(student.getCreditHoursSemester() + courseClass.getCourse().getCreditHours() );
+        courseRegister.setCourseClass(courseClass);
+        courseRegister.setStudent(student);
+        return courseRegister;
+    }
     @Override
     public CourseRegisterOutDto studentCreateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
         User user = iAuthenticationFacade.getAuthenticatedUser();
@@ -42,11 +50,12 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .orElseThrow();
         CourseClass courseClass = courseClassService
                 .getCourseClassById(courseRegisterInDto.getCourseClassId() );
-        CourseRegister courseRegister = new CourseRegister();
-        courseRegister.setCourseClass(courseClass);
-        courseRegister.setStudent(student);
+//        CourseRegister courseRegister = new CourseRegister();
+//        courseRegister.setCourseClass(courseClass);
+//        courseRegister.setStudent(student);
 
-        return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister) );
+        return courseRegisterOutDtoMapper
+                .mapTo(courseRegisterRepository.save(initNewCourseRegister(courseClass, student) ) );
     }
 
     @Override
@@ -58,11 +67,12 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
         CourseClass courseClass = courseClassService.getCourseClassById(courseClassId);
 
-        CourseRegister courseRegister = new CourseRegister();
-        courseRegister.setCourseClass(courseClass);
-        courseRegister.setStudent(student);
+//        CourseRegister courseRegister = new CourseRegister();
+//        courseRegister.setCourseClass(courseClass);
+//        courseRegister.setStudent(student);
 
-        return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister) );
+        return courseRegisterOutDtoMapper
+                .mapTo(courseRegisterRepository.save(initNewCourseRegister(courseClass, student) ) );
     }
 
     @Override
@@ -94,10 +104,19 @@ public class CourseRegisterService implements ICourseRegisterService {
     }
 
     @Override
+    @Transactional
     public CourseRegisterOutDto deleteCourseRegister(Long id) {
-        CourseRegisterOutDto courseRegisterOutDto = getCourseRegister(id);
+        CourseRegister courseRegister = courseRegisterRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id") );
+        Student student = courseRegister.getStudent();
+        CourseClass courseClass = courseRegister.getCourseClass();
+
+        student.setCreditHoursSemester(student.getCreditHoursSemester() - courseClass.getCourse().getCreditHours() );
+        studentRepository.save(student);
         courseRegisterRepository.deleteById(id);
-        return courseRegisterOutDto;
+
+        return courseRegisterOutDtoMapper.mapTo(courseRegister);
     }
 
     @Override
