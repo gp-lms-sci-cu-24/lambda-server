@@ -19,6 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,11 +29,9 @@ public class TimingRegisterService implements ITimingRegisterService {
 
     private final TimingRegisterRepository timingRegisterRepository;
     private final CourseClassTimingRepository courseClassTimingRepository;
-    private final CourseClassTimingService courseClassTimingService;
     private final CourseClassService courseClassService;
 
     private final TimingRegisterInDtoMapper timingRegisterInDtoMapper;
-    private final TimingRegisterOutDtoMapper timingRegisterOutDtoMapper;
 
     @Override
     public TimingRegister createTimingRegister(TimingRegisterInDto timingRegisterInDto) {
@@ -99,5 +100,14 @@ public class TimingRegisterService implements ITimingRegisterService {
                 .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(classId, timingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "timing register was not found with this class and timing id"));
+    }
+
+    public List<CourseClassTiming> getTimingRegisterByClassId(Long classId) {
+        List<TimingRegister> timingRegisters = timingRegisterRepository.findCourseClassTimTimingRegistersByCourseClass_CourseClassId(classId);
+        List<CourseClassTiming> courseClassTimings = new ArrayList<>();
+        timingRegisters.forEach(timingRegister -> {
+            courseClassTimings.add(timingRegister.getCourseClassTiming());
+        });
+        return courseClassTimings;
     }
 }
