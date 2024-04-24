@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.user.UserRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class ImageUploadService implements IimageUploadService {
 
 
     private final IAuthenticationFacade authenticationFacade;
+    private final UserRepository userRepository;
 
 
     /**
@@ -54,6 +56,7 @@ public class ImageUploadService implements IimageUploadService {
 
             //save the image url in the user
             user.setProfilePicture(url);
+            userRepository.save(user);
 
             return url ;
 
