@@ -47,6 +47,7 @@ public class SecurityConfiguration {
             "/swagger-resources",
             "/health",
             "/error",
+            "/**"
     };
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
