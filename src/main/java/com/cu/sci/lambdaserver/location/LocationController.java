@@ -22,7 +22,7 @@ public class LocationController {
         return locationService.createLocation(locationDto);
     }
 
-    @GetMapping(params = "details=true")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public Page<LocationDto> getAllLocations(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
         return locationService.getAllLocations(pageNo, pageSize);
