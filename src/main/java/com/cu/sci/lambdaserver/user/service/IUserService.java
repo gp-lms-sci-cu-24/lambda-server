@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.user.service;
 
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
@@ -42,7 +43,7 @@ public interface IUserService extends UserDetailsService {
      * @param username the username of the user to be deleted.
      * @return a boolean indicating the success of the operation.
      */
-    boolean deleteUserByUsername(String username);
+    User deleteUserByUsername(String username);
 
     /**
      * Deletes a user by their ID.
@@ -51,4 +52,29 @@ public interface IUserService extends UserDetailsService {
      * @return a boolean indicating the success of the operation.
      */
     boolean deleteUserByID(Long id);
+
+    /**
+     * Saves a user to the database.
+     *
+     * @param user the user to be saved.
+     * @return the saved user.
+     */
+    User createUser(User user);
+
+    /**
+     * Updates a user in the database.
+     *
+     * @param user the user to be updated.
+     * @return the updated user.
+     */
+    User updateUser(Long id, User user);
+
+    /**
+     * Fetches a users by their roles.
+     *
+     * @param role the roles of the users to be fetched.
+     * @return a collection of User objects.
+     */
+    Collection<User> getUsersByRole(Role role);
+
 }
