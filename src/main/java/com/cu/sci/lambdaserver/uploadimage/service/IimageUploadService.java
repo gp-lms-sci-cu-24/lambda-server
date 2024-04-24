@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.imageupload.service;
+package com.cu.sci.lambdaserver.uploadimage.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

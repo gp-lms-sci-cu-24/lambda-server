@@ -1,6 +1,6 @@
-package com.cu.sci.lambdaserver.imageupload;
+package com.cu.sci.lambdaserver.uploadimage;
 
-import com.cu.sci.lambdaserver.imageupload.service.ImageUploadService;
+import com.cu.sci.lambdaserver.uploadimage.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

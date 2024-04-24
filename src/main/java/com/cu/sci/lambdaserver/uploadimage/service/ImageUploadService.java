@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.imageupload.service;
+package com.cu.sci.lambdaserver.uploadimage.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
