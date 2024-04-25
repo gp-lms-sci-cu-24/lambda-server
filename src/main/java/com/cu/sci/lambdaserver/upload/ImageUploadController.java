@@ -7,20 +7,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/upload")
+@RequestMapping("/api/v1/image")
 @RequiredArgsConstructor
 public class ImageUploadController {
 
     private final ImageUploadService imageUploadService;
 
-    @PostMapping(path = "/image-user")
+    @PostMapping(path = "/user")
     @ResponseStatus(HttpStatus.CREATED)
     public String uploadImage(MultipartFile image) {
         return imageUploadService.uploadUserImage(image);
     }
 
 
-    @DeleteMapping(path = "/image-user")
+    @DeleteMapping(path = "/user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteImage() {
         imageUploadService.deleteUserImage();
