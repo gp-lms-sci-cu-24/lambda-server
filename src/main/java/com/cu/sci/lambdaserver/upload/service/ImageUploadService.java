@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.upload.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class ImageUploadService implements IimageUploadService {
      * @return url
      */
     @Override
-    public String uploadImage(MultipartFile image,String folder) {
+    public String uploadImage(MultipartFile image,String folder ,String customPublicId) {
         try{
 
             //check file type
@@ -48,6 +50,7 @@ public class ImageUploadService implements IimageUploadService {
             //define options
             Map<Object, Object> options = new HashMap<>();
             options.put("folder", folder);
+            options.put("public_id",customPublicId);
             options.put("transformation",
                     new Transformation()
                             .quality(60)
@@ -67,13 +70,35 @@ public class ImageUploadService implements IimageUploadService {
         }
     }
 
+
+    /**
+     * Delete an image from cloudinary
+     */
+    @Override
+    public void deleteImage(String publicId) {
+        try {
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        }catch (Exception e){
+            throw new RuntimeException(e) ;
+        }
+    }
+
+
+
+    /**
+     * Upload a user image
+     * @return url
+     */
     @Override
     public String uploadUserImage(MultipartFile image) {
         //get the authenticated user
         User user = authenticationFacade.getAuthenticatedUser() ;
 
+        //generate a custom public id
+        String customPublicId = "user_"+user.getId()+"-"+ UUID.randomUUID().toString() ;
+
         //upload the image
-        String url = uploadImage(image,"users") ;
+        String url = uploadImage(image,"users",customPublicId) ;
 
         //save the image url to the user
         user.setProfilePicture(url);
@@ -82,5 +107,33 @@ public class ImageUploadService implements IimageUploadService {
         return url ;
 
     }
+
+
+
+    /**
+     * Delete a user image
+     */
+    @Override
+    public void deleteUserImage() {
+        //get the authenticated user
+        User user = authenticationFacade.getAuthenticatedUser() ;
+
+        //check if user try to delete the default image
+        String defaultImageUrl = "https://res.cloudinary.com/dyafviw2c/image/upload/users/defaultuserimage.jpg" ;
+        if(user.getProfilePicture().equals(defaultImageUrl)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You can't delete the default image") ;
+        }
+
+        //delete the image
+        deleteImage(user.getProfilePicture()) ;
+
+        //update the user with the default image
+        user.setProfilePicture(defaultImageUrl);
+        userRepository.save(user) ;
+
+    }
+
+
+
 
 }
