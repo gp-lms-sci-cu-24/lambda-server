@@ -119,7 +119,6 @@ public class ImageUploadService implements IimageUploadService {
         User user = authenticationFacade.getAuthenticatedUser() ;
 
         //check if user try to delete the default image
-        //////////////////////////0123456789
         String defaultImageUrl = "https://res.cloudinary.com/dyafviw2c/image/upload/users/defaultuserimage.jpg" ;
         if(user.getProfilePicture().equals(defaultImageUrl)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You can't delete the default image") ;
