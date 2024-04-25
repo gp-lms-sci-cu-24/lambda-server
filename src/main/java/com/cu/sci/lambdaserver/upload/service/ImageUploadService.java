@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.upload.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
+import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.user.User;
@@ -13,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -77,9 +76,10 @@ public class ImageUploadService implements IimageUploadService {
     @Override
     public void deleteImage(String publicId) {
         try {
-            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-        }catch (Exception e){
-            throw new RuntimeException(e) ;
+            ApiResponse apiResponse = cloudinary.api().deleteResources(Arrays.asList(publicId),
+                    ObjectUtils.asMap("type", "upload", "resource_type", "image"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class ImageUploadService implements IimageUploadService {
         User user = authenticationFacade.getAuthenticatedUser() ;
 
         //generate a custom public id
-        String customPublicId = "user_"+user.getId()+"-"+ UUID.randomUUID().toString() ;
+        String customPublicId = "user_" + user.getUsername() + "-" + UUID.randomUUID();
 
         //upload the image
         String url = uploadImage(image,"users",customPublicId) ;
@@ -119,13 +119,15 @@ public class ImageUploadService implements IimageUploadService {
         User user = authenticationFacade.getAuthenticatedUser() ;
 
         //check if user try to delete the default image
+        //////////////////////////0123456789
         String defaultImageUrl = "https://res.cloudinary.com/dyafviw2c/image/upload/users/defaultuserimage.jpg" ;
         if(user.getProfilePicture().equals(defaultImageUrl)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You can't delete the default image") ;
         }
 
         //delete the image
-        deleteImage(user.getProfilePicture()) ;
+        String publicId = user.getProfilePicture().substring(53) ;
+        deleteImage(publicId) ;
 
         //update the user with the default image
         user.setProfilePicture(defaultImageUrl);
