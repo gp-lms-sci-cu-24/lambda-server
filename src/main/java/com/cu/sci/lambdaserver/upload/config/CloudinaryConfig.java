@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.uploadimage.config;
+package com.cu.sci.lambdaserver.upload.config;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

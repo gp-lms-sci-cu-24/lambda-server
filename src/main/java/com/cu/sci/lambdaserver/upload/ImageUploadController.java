@@ -1,6 +1,6 @@
-package com.cu.sci.lambdaserver.uploadimage;
+package com.cu.sci.lambdaserver.upload;
 
-import com.cu.sci.lambdaserver.uploadimage.service.ImageUploadService;
+import com.cu.sci.lambdaserver.upload.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +15,8 @@ public class ImageUploadController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String uploadImage(@RequestParam("image") MultipartFile image) {
-        return imageUploadService.uploadImage(image);
+    public String uploadImage(MultipartFile image) {
+        return imageUploadService.uploadUserImage(image);
     }
 
 }
