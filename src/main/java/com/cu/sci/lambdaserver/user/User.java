@@ -37,6 +37,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(columnDefinition = "varchar(255) default 'https://res.cloudinary.com/dyafviw2c/image/upload/users/defaultuserimage.jpg'")
     private String profilePicture;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
