@@ -1,8 +1,10 @@
 package com.cu.sci.lambdaserver.user;
 
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -19,4 +21,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
      * @return an Optional containing the User object if found, or an empty Optional if not found.
      */
     Optional<User> findByUsernameIgnoreCase(String username);
+
+    boolean existsByUsernameIgnoreCase(String username);
+
+    User deleteByUsernameIgnoreCase(String username);
+
+    Collection<User> findAllByRolesContaining(Role role);
 }
