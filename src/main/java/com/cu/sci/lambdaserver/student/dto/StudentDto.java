@@ -40,4 +40,7 @@ public class StudentDto extends UserDto {
 
     private DepartmentDto department;
 
+    private String profilePicture;
+
+
 }

@@ -3,7 +3,9 @@ package com.cu.sci.lambdaserver.user;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.user.service.IUserService;
 import com.cu.sci.lambdaserver.user.service.ProfileService;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +35,29 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-        return ResponseEntity.internalServerError().body("Not Implemented Yet!");
+    @ResponseStatus(HttpStatus.OK)
+    public boolean deleteUserById(@PathVariable Long id) {
+        return userService.deleteUserByID(id);
     }
 
     @DeleteMapping("/{username}")
-    public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
-        return ResponseEntity.internalServerError().body("Not Implemented Yet!");
+    @ResponseStatus(HttpStatus.OK)
+    public User deleteUserByUsername(@PathVariable String username) {
+        return userService.deleteUserByUsername(username);
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+
+    @GetMapping("/roles/{role}")
+    public Collection<User> getAllUsersByRole(@PathVariable Role role) {
+        return userService.getUsersByRole(role);
     }
 }

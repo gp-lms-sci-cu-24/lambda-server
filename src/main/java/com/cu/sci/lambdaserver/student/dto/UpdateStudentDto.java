@@ -15,8 +15,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateStudentDto {
 
+    // need it when making batch updates
+    private String code;
     @PositiveOrZero(message = "credit hours must be positive")
-    @Max(value = 146, message = "credit hours do not exceed 164 hours")
+    @Max(value = 146, message = "credit hours do not exceed 146 hours")
     private Integer creditHours = 0;
 
     @PositiveOrZero(message = "gpa must be positive")

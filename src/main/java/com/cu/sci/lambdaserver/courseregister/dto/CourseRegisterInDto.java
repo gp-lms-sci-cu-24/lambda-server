@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class CourseRegisterInDto {
     @NotNull(message = "Course register ID is required", groups = {UpdateValidation.class})
     private Long courseRegisterId;
-    @NotNull(message = "Course class ID is required", groups = {CreateValidation.class})
-    @Null(message = "Course class ID must be null during update", groups = {UpdateValidation.class})
+    @NotNull(message = "Course class ID is required", groups = {CreateValidation.class, StudentCreateValidation.class})
+    @Null(message = "Course class ID must be null during update or student create", groups = {UpdateValidation.class})
     private Long courseClassId;
     @NotNull(message = "Student ID is required", groups = {CreateValidation.class})
     @Null(message = "Student ID must be null during update", groups = {UpdateValidation.class})
@@ -36,4 +36,6 @@ public class CourseRegisterInDto {
     public interface CreateValidation {
     }
 
+    public interface StudentCreateValidation {
+    }
 }
