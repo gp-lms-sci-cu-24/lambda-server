@@ -26,6 +26,7 @@ public class UpdateStudentMapper implements IMapper<Student, UpdateStudentDto> {
 
     @Override
     public Student update(UpdateStudentDto updateStudentDto, Student student) {
-        return null;
+        modelMapper.map(updateStudentDto, student);
+        return student;
     }
 }

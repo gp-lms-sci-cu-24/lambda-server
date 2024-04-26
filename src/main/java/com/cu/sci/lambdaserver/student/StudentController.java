@@ -1,14 +1,14 @@
 package com.cu.sci.lambdaserver.student;
 
-import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
-import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
+import com.cu.sci.lambdaserver.student.dto.*;
 import com.cu.sci.lambdaserver.student.service.IStudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "api/v1/students")
@@ -22,7 +22,11 @@ public class StudentController {
     public StudentDto createStudent(@RequestBody @Valid CreateStudentRequestDto studentDto) {
         return studentService.creatStudent(studentDto);
     }
-
+    @PostMapping("/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Collection<StudentDto> createStudents(@RequestBody @Valid CreateStudentsDto createStudentsDto) {
+        return studentService.createStudents(createStudentsDto);
+    }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<StudentDto> getAllStudents(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
@@ -40,7 +44,11 @@ public class StudentController {
     public StudentDto updateStudent(@PathVariable String code, @RequestBody @Valid UpdateStudentDto studentDto) {
         return studentService.updateStudent(code, studentDto);
     }
-
+    @PatchMapping(path = "/bulk")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<StudentDto> updateStudents(@RequestBody @Valid UpdateStudentsDto updateStudentsDto) {
+        return studentService.updateStudents(updateStudentsDto);
+    }
     @DeleteMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStudent(@PathVariable String code) {
