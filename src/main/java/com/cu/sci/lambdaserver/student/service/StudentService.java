@@ -1,7 +1,5 @@
 package com.cu.sci.lambdaserver.student.service;
 
-import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
-import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.service.ContactInfoService;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
@@ -10,7 +8,6 @@ import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.CreateStudentRequestDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.student.dto.UpdateStudentDto;
-import com.cu.sci.lambdaserver.student.mapper.StudentMapper;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
