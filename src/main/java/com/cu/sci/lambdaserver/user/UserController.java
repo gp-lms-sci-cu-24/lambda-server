@@ -1,10 +1,8 @@
 package com.cu.sci.lambdaserver.user;
 
-import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.user.service.IUserService;
 import com.cu.sci.lambdaserver.user.service.ProfileService;
-import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +19,7 @@ public class UserController {
 
     @GetMapping("/me")
     public UserDto getMyState() {
-        return profileService.getMyState() ;
+        return profileService.getMyState();
     }
 
     @GetMapping("/{id}")
