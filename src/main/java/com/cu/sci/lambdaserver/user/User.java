@@ -57,6 +57,16 @@ public class User implements UserDetails {
     private Collection<Role> roles;
 
     /**
+     * Checks if the user has a specific role.
+     *
+     * @param role The role to check for.
+     * @return true if the user has the role, false otherwise.
+     */
+    public boolean hasRole(Role role) {
+        return roles.contains(role);
+    }
+
+    /**
      * Returns the authorities granted to the user.
      *
      * @return a collection of GrantedAuthority objects.
