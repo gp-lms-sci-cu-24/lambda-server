@@ -4,14 +4,17 @@ import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.ProfessorRepository;
+import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
+import com.cu.sci.lambdaserver.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,10 +28,25 @@ public class ProfessorService implements IProfessorService {
     private final ProfessorRepository professorRepository;
     private final ProfessorMapper professorMapper;
     private final CourseClassRepository courseClassRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Professor createProfessor(Professor professor) {
-        return professorRepository.save(professor);
+    public ProfessorDto createProfessor(CreateProfessorRequestDto professorDto) {
+        boolean existByUsername = userRepository.existsByUsernameIgnoreCase(professorDto.getUsername());
+        if (existByUsername) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There already user with this username");
+        }
+
+        Professor professor = Professor.builder()
+                .username(professorDto.getUsername())
+                .password(passwordEncoder.encode(professorDto.getPassword()))
+                .build();
+
+        // save it
+        professorRepository.save(professor);
+
+        return professorMapper.mapTo(professor);
     }
 
     @Override
