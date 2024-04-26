@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.course.entites;
 
-import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
