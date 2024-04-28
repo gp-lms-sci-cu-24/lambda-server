@@ -22,7 +22,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "course_classes")
-public class CourseClass {
+public class  CourseClass {
     @OneToMany(mappedBy = "courseClass")
     @ToString.Exclude
     Collection<CourseRegister> courseRegisters;

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Time;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class CourseClassTimingService implements ICourseClassTimingService {
     private final TimingInDtoMapper timingInDtoMapper;
     private final TimingOutDtoMapper timingOutDtoMapper;
 
-    private List<CourseClassTiming> getCollsionList(Location location, DayOfWeek day, Long startTime, Long endTime) {
+    private List<CourseClassTiming> getCollsionList(Location location, DayOfWeek day, Time startTime, Time endTime) {
         return courseClassTimingRepository.findByLocationAndDayAndStartTimeLessThanAndEndTimeGreaterThan(
                 location,
                 day,
@@ -51,7 +52,7 @@ public class CourseClassTimingService implements ICourseClassTimingService {
 
     @Override
     public CourseClassTimingOutDto addCourseClassTiming(@Valid CourseClassTimingInDto courseClassTimingInDto) {
-        if (courseClassTimingInDto.getStartTime() >= courseClassTimingInDto.getEndTime())
+        if (courseClassTimingInDto.getStartTime().getTime() >= courseClassTimingInDto.getEndTime().getTime())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "invalid time range end time should be greater than start time");
 
         Optional<Location> location = locationRepository.findById(courseClassTimingInDto.getLocationId());
