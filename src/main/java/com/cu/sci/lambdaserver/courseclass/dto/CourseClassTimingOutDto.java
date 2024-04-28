@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -20,9 +22,9 @@ public class CourseClassTimingOutDto {
 
     private String day;
 
-    private Long startTime;
+    private Time startTime;
 
-    private Long endTime;
+    private Time endTime;
 
     private Location location;
 }

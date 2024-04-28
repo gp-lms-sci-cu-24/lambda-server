@@ -42,8 +42,8 @@ public class ScheduleService {
                 schedule.add(
                         ScheduleDto.builder()
                                 .day(timing.getDay().toString())
-                                .endTime(timing.getEndTime())
-                                .startTime(timing.getStartTime())
+                                .endTime(timing.getEndTime().getTime())
+                                .startTime(timing.getStartTime().getTime())
                                 .lecCode(timing.getType() + " " + courseClass.getCourseClass().getCourse().getCode())
                                 .location(locationMapper.mapTo(timing.getLocation()))
                                 .courseCode(courseClass.getCourseClass().getCourse().getCode())
