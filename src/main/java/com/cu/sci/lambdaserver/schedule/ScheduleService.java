@@ -10,6 +10,7 @@ import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.timingregister.service.TimingRegisterService;
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class ScheduleService {
 
     public List<ScheduleDto> getSchedule() {
         User user = authenticationFacade.getAuthenticatedUser();
+        if(!user.hasRole(Role.valueOf("STUDENT"))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Schedule is only available for students till now.");
+        }
         Student student = studentRepository.findById(user.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this id"));
         Collection<CourseRegisterOutDto> courseRegister = courseRegisterService.getStudentRegisteredCourses(
