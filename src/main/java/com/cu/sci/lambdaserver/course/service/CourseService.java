@@ -15,6 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 
@@ -27,9 +31,17 @@ public class CourseService implements ICourseService {
     private final DepartmentCoursesRepository departmentCoursesRepository;
     private final IMapper<Course, CourseDto> courseMapper;
 
-    public List<Course> getCourses() {
-        return courseRepository.findAll();
+    public Page<CourseDto> getCourses(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Course> coursePage = courseRepository.findAll(pageable);
+
+        //check if list empty
+        if (coursePage.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return coursePage.map(courseMapper::mapTo);
     }
+
 
 
     public Course getCourse(Long courseId) {

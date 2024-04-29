@@ -9,6 +9,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -23,8 +27,8 @@ public class CourseController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseDto> GetCourses() {
-        return courseService.getCourses().stream().map(courseMapper::mapTo).collect(Collectors.toList());
+    public Page<CourseDto> GetCourses() {
+        return courseService.getCourses();
     }
 
     @GetMapping("/{id}")
