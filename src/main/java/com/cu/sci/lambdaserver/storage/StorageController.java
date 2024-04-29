@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/storage")
 @RequiredArgsConstructor
@@ -20,7 +22,11 @@ public class StorageController {
 
     @PostMapping("/departments/{departmentCode}")
     public MessageResponse uploadDepartmentImage(@PathVariable String departmentCode, MultipartFile image){
-        return
+        try {
+            return new MessageResponse(storageService.uploadDepartmentImage(departmentCode, image)) ;
+         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

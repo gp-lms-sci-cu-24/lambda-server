@@ -27,8 +27,8 @@ public class CourseController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<CourseDto> GetCourses() {
-        return courseService.getCourses();
+    public Page<CourseDto> GetCourses(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
+        return courseService.getCourses(pageNo, pageSize);
     }
 
     @GetMapping("/{id}")
