@@ -37,7 +37,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private String profilePicture;
+    @Column(columnDefinition = "varchar(255) default 'https://res.cloudinary.com/dyafviw2c/image/upload/users/defaultuserimage.jpg'")
+    private String profilePicture = "https://res.cloudinary.com/dyafviw2c/image/upload/users/defaultuserimage.jpg";
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isEnabled = true;
@@ -55,6 +56,16 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.LAZY, targetClass = Role.class)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     private Collection<Role> roles;
+
+    /**
+     * Checks if the user has a specific role.
+     *
+     * @param role The role to check for.
+     * @return true if the user has the role, false otherwise.
+     */
+    public boolean hasRole(Role role) {
+        return roles.contains(role);
+    }
 
     /**
      * Returns the authorities granted to the user.

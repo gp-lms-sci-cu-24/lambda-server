@@ -3,12 +3,14 @@ package com.cu.sci.lambdaserver.student.dto;
 import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 @Builder
 @Data
@@ -56,9 +58,9 @@ public class CreateStudentRequestDto {
 
     @JsonProperty("credit_hours_semester")
     @PositiveOrZero(message = "credit hours semester must be positive")
-    private Integer creditHoursSemester = 0 ;
+    private Integer creditHoursSemester = 0;
 
     @NotNull
-    private Gender gender ;
+    private Gender gender;
 
 }

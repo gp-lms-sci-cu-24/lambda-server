@@ -2,35 +2,34 @@ package com.cu.sci.lambdaserver.professor;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
+import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
 import com.cu.sci.lambdaserver.professor.service.IProfessorService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "v1/api/professor")
+@RequestMapping(path = "api/v1/professors")
 @RequiredArgsConstructor
 public class ProfessorController {
     private final ProfessorMapper professorMapper;
     private final IProfessorService professorService;
     private final CourseClassMapper courseClassMapper;
 
-//    @PostMapping
-//    public ResponseEntity<ProfessorDto> createProfessor(@Validated(ProfessorDto.CreateValidation.class) @RequestBody ProfessorDto professorDto) {
-//        Professor professorEntity = professorMapper.mapFrom(professorDto);
-//        Professor savedProfessor = professorService.createProfessor(professorEntity);
-//        return new ResponseEntity<>(professorMapper.mapTo(savedProfessor), HttpStatus.CREATED);
-//    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProfessorDto createProfessor(@Valid @RequestBody CreateProfessorRequestDto professorDto) {
+        return professorService.createProfessor(professorDto);
+    }
 
     @GetMapping
     public ResponseEntity<Page<ProfessorDto>> getAllProfessors(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
@@ -66,6 +65,7 @@ public class ProfessorController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping(path = "/{id}/course-classes")
     @ResponseStatus(HttpStatus.OK)
     public List<CourseClassDto> getCourseClasses(@PathVariable Long id) {

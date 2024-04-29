@@ -32,12 +32,15 @@ public class StudentDto extends UserDto {
 
     private Level level;
 
-    private Integer creditHoursSemester ;
+    private Integer creditHoursSemester;
 
-    private Gender gender ;
+    private Gender gender;
 
     private String joiningYear;
 
     private DepartmentDto department;
+
+    private String profilePicture;
+
 
 }

@@ -19,14 +19,6 @@ import java.util.List;
 @Table(name = "professors")
 public class Professor extends User {
 
-    public Professor() {
-        setRoles(List.of(Role.PROFESSOR));
-    }
-
-    public static Professor.ProfessorBuilder<?, ?> builder() {
-        return new Professor.ProfessorBuilderImpl().roles(List.of(Role.PROFESSOR));
-    }
-
     @ManyToMany
     @JoinTable(
             name = "course_classes_professors",
@@ -34,4 +26,12 @@ public class Professor extends User {
             inverseJoinColumns = @JoinColumn(name = "course_classes_id")
     )
     private List<CourseClass> CourseClasses;
+
+    public Professor() {
+        setRoles(List.of(Role.PROFESSOR));
+    }
+
+    public static Professor.ProfessorBuilder<?, ?> builder() {
+        return new Professor.ProfessorBuilderImpl().roles(List.of(Role.PROFESSOR));
+    }
 }

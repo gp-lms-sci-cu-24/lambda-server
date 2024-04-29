@@ -31,7 +31,6 @@ public class CourseClassController {
     @PostMapping
     public ResponseEntity<CourseClassDto> createCourseClass(@Validated(CourseClassInDto.CreateValidation.class) @RequestBody CourseClassDto courseClassDto) {
         CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
-        System.out.println(courseClassEntity);
         AtomicInteger groupNumberSeq = new AtomicInteger(1);
 
         courseClassService.getLatestClassByCourseId(courseClassDto.getCourseId())
@@ -44,7 +43,6 @@ public class CourseClassController {
 
         courseClassEntity.setGroupNumber(groupNumberSeq.get());
         CourseClass savedCourseClass = courseClassService.createCourseClass(courseClassEntity);
-        System.out.println(courseClassEntity);
         return new ResponseEntity<>(courseClassMapper.mapTo(savedCourseClass), HttpStatus.CREATED);
     }
 

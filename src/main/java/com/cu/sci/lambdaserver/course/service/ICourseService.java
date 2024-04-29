@@ -3,12 +3,16 @@ package com.cu.sci.lambdaserver.course.service;
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
 
 public interface ICourseService {
-    List<Course> getCourses();
+    Page<CourseDto> getCourses(Integer pageNo, Integer pageSize);
 
     Course getCourse(Long courseId);
 

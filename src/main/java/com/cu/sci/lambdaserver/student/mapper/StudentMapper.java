@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.student.mapper;
 
-import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
