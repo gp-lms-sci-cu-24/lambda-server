@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.upload.service;
+package com.cu.sci.lambdaserver.storage.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,6 +1,6 @@
-package com.cu.sci.lambdaserver.upload;
+package com.cu.sci.lambdaserver.storage;
 
-import com.cu.sci.lambdaserver.upload.service.ImageUploadService;
+import com.cu.sci.lambdaserver.storage.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/image")
 @RequiredArgsConstructor
-public class ImageUploadController {
+public class           ImageUploadController {
 
     private final ImageUploadService imageUploadService;
 
