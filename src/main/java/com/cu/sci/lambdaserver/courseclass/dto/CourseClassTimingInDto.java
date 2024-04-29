@@ -1,14 +1,13 @@
 package com.cu.sci.lambdaserver.courseclass.dto;
 
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.time.DayOfWeek;
 
 @Builder
@@ -23,19 +22,15 @@ public class CourseClassTimingInDto {
 
     private ClassType type;
 
-    @NotBlank(message = "day is mandatory to know availability of location")
+    @NotNull(message = "day is mandatory to know availability of location")
     private DayOfWeek day;
 
 
-    //    @NotBlank(message = "start time is mandatory to know availability of location")
-    @Min(value = 0, message = "start time should be within 24hr format ")
-    @Max(value = 24, message = "end time should be within 24hr format")
-    private Long startTime;
+    @NotNull(message = "start time is mandatory to know availability of location")
+    private Time startTime;
 
-    //    @NotBlank(message = "end time is mandatory to know availability of location")
-    @Min(value = 0, message = "end time should be within 24hr format ")
-    @Max(value = 24, message = "end time should be within 24hr format")
-    private Long endTime;
+    @NotNull(message = "end time is mandatory to know availability of location")
+    private Time endTime;
 
     private Long locationId;
 }
