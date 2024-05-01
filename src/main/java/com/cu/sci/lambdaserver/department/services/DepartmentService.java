@@ -158,7 +158,6 @@ public class DepartmentService implements IDepartmentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Department with this code.");
         }
 
-        /* @TODO: Fight with person who write this*/
         // get courses of department
         List<DepartmentCoursesCollectingDto> courseList = foundedDepartment.get().getDepartmentCourses().stream()
                 .map(departmentCoursesCollectingMapper::mapTo)
@@ -184,7 +183,6 @@ public class DepartmentService implements IDepartmentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
         }
 
-        /* @TODO: Fight with person who write this*/
         // get courses of department by semester
         List<DepartmentCoursesCollectingDto> courseList = foundedDepartment.get().getDepartmentCourses().stream()
                 .filter(departmentCourses -> departmentCourses.getSemester().equals(semester))
