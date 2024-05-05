@@ -46,52 +46,6 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final IMapper<Student, StudentDto> studentDtoIMapper;
     private final IAuthenticationFacade iAuthenticationFacade;
 
-//    public CourseRegister initNewCourseRegister(CourseClass courseClass, Student student) {
-//        CourseRegister courseRegister = new CourseRegister();
-//        student.setCreditHoursSemester(student.getCreditHoursSemester() + courseClass.getCourse().getCreditHours());
-//        courseRegister.setCourseClass(courseClass);
-//        courseRegister.setStudent(student);
-//        return courseRegister;
-//    }
-//    @Override
-//    public CourseRegisterOutDto studentCreateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
-//        User user = iAuthenticationFacade.getAuthenticatedUser();
-//        Student student = studentRepository.findById(user.getId())
-//                .orElseThrow();
-//        CourseClass courseClass = courseClassService
-//                .getCourseClassById(courseRegisterInDto.getCourseClassId());
-////        CourseRegister courseRegister = new CourseRegister();
-////        courseRegister.setCourseClass(courseClass);
-////        courseRegister.setStudent(student);
-//
-//        return courseRegisterOutDtoMapper
-//                .mapTo(courseRegisterRepository.save(initNewCourseRegister(courseClass, student)));
-//    }
-//
-//    @Override
-//    public CourseRegisterOutDto createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
-//
-//        String studentCode = courseRegisterInDto.getStudentCode();
-//        Long courseClassId = courseRegisterInDto.getCourseClassId();
-//        Student student = studentRepository.findByCode(studentCode)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
-//        CourseClass courseClass = courseClassService.getCourseClassById(courseClassId);
-//
-////        CourseRegister courseRegister = new CourseRegister();
-////        courseRegister.setCourseClass(courseClass);
-////        courseRegister.setStudent(student);
-//
-//        return courseRegisterOutDtoMapper
-//                .mapTo(courseRegisterRepository.save(initNewCourseRegister(courseClass, student)));
-//    }
-
-
-
-
-
-
-
-
 
     /**
      * Create a new course register
