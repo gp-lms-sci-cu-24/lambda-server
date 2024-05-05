@@ -2,18 +2,18 @@ package com.cu.sci.lambdaserver.courseregister.service;
 
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
+import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterResponseDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
 
 public interface ICourseRegisterService {
-    @PreAuthorize("hasRole('STUDENT')")
-    CourseRegisterOutDto studentCreateCourseRegister(CourseRegisterInDto courseRegisterInDto);
 
-    @PreAuthorize("hasRole('ADMIN')")
-    CourseRegisterOutDto createCourseRegister(CourseRegisterInDto courseRegisterInDto);
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN','ACADEMIC_ADVISOR')")
+    CourseRegisterResponseDto createCourseRegister(CourseRegisterInDto courseRegisterInDto);
 
     Page<CourseRegisterOutDto> getAllCourseRegisters(Integer pageNo, Integer pageSize);
 
@@ -29,4 +29,6 @@ public interface ICourseRegisterService {
     CourseRegisterOutDto deleteCourseRegister(Long id);
 
     Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
+
+    Collection<CourseRegisterResponseDto> getCourseRegistersByState(String studentCode, CourseRegisterState state);
 }
