@@ -27,11 +27,6 @@ public class CourseRegisterController {
         return courseRegisterService.createCourseRegister(courseRegisterInDto);
     }
 
-    @PostMapping("/me")
-    @ResponseStatus(HttpStatus.CREATED)
-    public CourseRegisterOutDto studentCreateCourseRegister(@Validated(CourseRegisterInDto.StudentCreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
-        return null ;
-    }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<CourseRegisterOutDto> getAllCourseRegisters(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
