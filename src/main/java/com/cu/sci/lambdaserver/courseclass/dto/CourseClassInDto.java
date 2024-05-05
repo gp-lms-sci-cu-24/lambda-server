@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.courseclass.dto;
 
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class CourseClassInDto {
     private Long courseId;
     @NotNull(groups = {CreateValidation.class}, message = "Course Semester cannot be null during creation")
     @Null(groups = {UpdateValidation.class}, message = "Course Semester must be null during update")
-    private String courseSemester;
+    private Semester courseSemester;
     @NotNull(groups = {CreateValidation.class}, message = "Max Capacity cannot be null during creation")
     @Null(groups = {UpdateValidation.class}, message = "Max Capacity must be null during update")
     private Integer maxCapacity;

@@ -1,9 +1,6 @@
 package com.cu.sci.lambdaserver.courseclass;
 
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassInDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
+import com.cu.sci.lambdaserver.courseclass.dto.*;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
@@ -21,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v1/api/class")
+@RequestMapping("/api/v1/course-class")
 @RequiredArgsConstructor
 public class CourseClassController {
     private final CourseClassMapper courseClassMapper;
@@ -29,21 +26,9 @@ public class CourseClassController {
     private final CourseClassTimingService courseClassTimingService;
 
     @PostMapping
-    public ResponseEntity<CourseClassDto> createCourseClass(@Validated(CourseClassInDto.CreateValidation.class) @RequestBody CourseClassDto courseClassDto) {
-        CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
-        AtomicInteger groupNumberSeq = new AtomicInteger(1);
-
-        courseClassService.getLatestClassByCourseId(courseClassDto.getCourseId())
-                .ifPresent((courseClass) -> {
-                    if (LocalDateTime.now().getYear() == courseClass.getPublishDate().getYear()
-                            && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester()) {
-                        groupNumberSeq.set(courseClass.getGroupNumber() + 1);
-                    }
-                });
-
-        courseClassEntity.setGroupNumber(groupNumberSeq.get());
-        CourseClass savedCourseClass = courseClassService.createCourseClass(courseClassEntity);
-        return new ResponseEntity<>(courseClassMapper.mapTo(savedCourseClass), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseClassResponse createCourseClass(@Validated(CourseClassInDto.CreateValidation.class) @RequestBody CourseClassDto courseClassDto) {
+        return courseClassService.createCourseClass(courseClassDto);
     }
 
     @GetMapping
