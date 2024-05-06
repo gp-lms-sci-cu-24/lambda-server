@@ -112,7 +112,7 @@ public class ContactInfoService implements IContactInfoService {
     }
 
     @Override
-    public ContactInfoDto updateContactInfo(String userName, ContactInfoDto contactInfo) {
+    public ContactInfoDto updateContactInfo(ContactInfoDto contactInfo) {
         // Get user
         User user = iAuthenticationFacade.getAuthenticatedUser() ;
 

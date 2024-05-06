@@ -14,7 +14,7 @@ public interface IContactInfoService {
 
     MessageResponse deleteContactInfo();
 
-    ContactInfoDto updateContactInfo(String userName, ContactInfoDto contactInfo);
+    ContactInfoDto updateContactInfo(ContactInfoDto contactInfo);
 
 }
 

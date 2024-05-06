@@ -28,20 +28,20 @@ public class ContactInfoController {
         return contactInfoService.getContactInfo(userName);
     }
 
-    @GetMapping(path = "/my")
+    @GetMapping(path = "/me")
     @ResponseStatus(HttpStatus.OK)
     public ContactInfoDto getMyContactInfo() {
         return contactInfoService.getMyContactInfo();
     }
 
 
-    @PutMapping(path = "/{user-name}")
+    @PutMapping(path = "/me")
     @ResponseStatus(HttpStatus.OK)
-    public ContactInfoDto updateContactInfo(@PathVariable(name = "user-name") String userName, @RequestBody ContactInfoDto contactInfo) {
-        return contactInfoService.updateContactInfo(userName, contactInfo);
+    public ContactInfoDto updateContactInfo(@RequestBody ContactInfoDto contactInfo) {
+        return contactInfoService.updateContactInfo(contactInfo);
     }
 
-    @DeleteMapping(path = "/my")
+    @DeleteMapping(path = "/me")
     @ResponseStatus(HttpStatus.OK)
     public MessageResponse deleteContactInfo() {
         return contactInfoService.deleteContactInfo();
