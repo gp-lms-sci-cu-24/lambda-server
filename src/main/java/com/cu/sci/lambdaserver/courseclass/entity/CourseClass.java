@@ -22,7 +22,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "course_classes")
-public class  CourseClass {
+public class CourseClass {
     @OneToMany(mappedBy = "courseClass")
     @ToString.Exclude
     Collection<CourseRegister> courseRegisters;
@@ -49,6 +49,6 @@ public class  CourseClass {
     @Builder.Default
     @Column(name = "group_number_seq")
     private Integer groupNumber = -1;
-    @ManyToMany
+    @ManyToMany(mappedBy = "CourseClasses")
     private List<Professor> professors;
 }

@@ -4,22 +4,41 @@ import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IProfessorService {
+    @PreAuthorize("hasRole('ADMIN')")
     ProfessorDto createProfessor(CreateProfessorRequestDto professorDto);
 
+    @PreAuthorize("hasRole('ADMIN')")
     Page<Professor> getAllProfessors(Integer pageNo, Integer pageSize);
 
+    @PreAuthorize("hasRole('ADMIN')")
     ProfessorDto getProfessor(Long id);
 
-    Professor updateProfessor(Long id, Professor professor);
+    @PreAuthorize("hasRole('ADMIN')")
+    ProfessorDto updateProfessor(Long id, Professor professor);
 
+    @PreAuthorize("hasRole('ADMIN')")
     void deleteProfessor(Long id);
 
+    @PreAuthorize("hasRole('ADMIN')")
     List<CourseClass> getCourseClasses(Long id);
 
-    Professor addCourseClass(Long id, Long courseClassId);
+    @PreAuthorize("hasRole('ADMIN')")
+    Professor assignCourseClass(Long id, Long courseClassId);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    Professor removeCourseClass(Long id, Long courseClassId);
+
+    @PreAuthorize("hasRole('PROFESSOR')")
+    Collection<StudentDto> getMyStudents();
+
+    @PreAuthorize("hasRole('PROFESSOR')")
+    Collection<StudentDto> getMyStudentsInCourseClass(Long courseClassId);
 }

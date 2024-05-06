@@ -23,9 +23,12 @@ public class Professor extends User {
     @JoinTable(
             name = "course_classes_professors",
             joinColumns = @JoinColumn(name = "professor_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_classes_id")
+            inverseJoinColumns = @JoinColumn(name = "course_class_id")
     )
     private List<CourseClass> CourseClasses;
+
+    @Enumerated(EnumType.STRING)
+    private ProfessorDegree degree;
 
     public Professor() {
         setRoles(List.of(Role.PROFESSOR));

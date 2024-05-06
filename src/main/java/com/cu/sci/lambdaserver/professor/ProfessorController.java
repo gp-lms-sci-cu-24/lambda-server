@@ -6,14 +6,14 @@ import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
 import com.cu.sci.lambdaserver.professor.service.IProfessorService;
-import jakarta.persistence.EntityNotFoundException;
+import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,38 +32,27 @@ public class ProfessorController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProfessorDto>> getAllProfessors(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-        Page<Professor> page = professorService.getAllProfessors(pageNo, pageSize);
-        Page<ProfessorDto> dtoPage = page.map(professorMapper::mapTo);
-        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Professor> getAllProfessors(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+        return professorService.getAllProfessors(pageNo, pageSize);
     }
 
-//    @GetMapping(path = "/{id}")
-//    public ResponseEntity<ProfessorDto> getProfessor(@PathVariable Long id) {
-//        Optional<Professor> foundLocation = professorService.getProfessor(id);
-//        return foundLocation.map(location -> new ResponseEntity<>(professorMapper.mapTo(location), HttpStatus.OK))
-//                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
-//
-//    @PatchMapping
-//    public ResponseEntity<ProfessorDto> updateProfessor(@Validated(ProfessorDto.UpdateValidation.class) @RequestBody ProfessorDto professorDto) {
-//        try {
-//            Professor professor = professorMapper.mapFrom(professorDto);
-//            Professor updatedProfessor = professorService.updateProfessor(professorDto.getProfessorId(), professor);
-//            return new ResponseEntity<>(professorMapper.mapTo(updatedProfessor), HttpStatus.OK);
-//        } catch (EntityNotFoundException e) {
-//            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @GetMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProfessorDto getProfessor(@PathVariable("id") Long id) {
+        return professorService.getProfessor(id);
+    }
+
+    @PutMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProfessorDto updateProfessor(@PathVariable("id") Long id, @Valid @RequestBody Professor professor) {
+        return professorService.updateProfessor(id, professor);
+    }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<String> deleteProfessor(@PathVariable("id") Long id) {
-        try {
-            professorService.deleteProfessor(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteProfessor(@PathVariable("id") Long id) {
+        professorService.deleteProfessor(id);
     }
 
     @GetMapping(path = "/{id}/course-classes")
@@ -72,9 +61,28 @@ public class ProfessorController {
         return professorService.getCourseClasses(id).stream().map(courseClassMapper::mapTo).collect(Collectors.toList());
     }
 
-    @PutMapping(path = "/{id}/course-classes/{courseClassId}")
+    @PostMapping(path = "/{id}/course-classes/{courseClassId}")
     @ResponseStatus(HttpStatus.OK)
     public Professor addCourseClass(@PathVariable Long id, @PathVariable Long courseClassId) {
-        return professorService.addCourseClass(id, courseClassId);
+        return professorService.assignCourseClass(id, courseClassId);
     }
+
+    @DeleteMapping(path = "/{id}/course-classes/{courseClassId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Professor removeCourseClass(@PathVariable Long id, @PathVariable Long courseClassId) {
+        return professorService.removeCourseClass(id, courseClassId);
+    }
+
+    @GetMapping(path = "/my-students")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<StudentDto> getMyStudents() {
+        return professorService.getMyStudents();
+    }
+
+    @GetMapping(path = "/my-students/{courseClassId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<StudentDto> getMyStudentsInCourseClass(@PathVariable Long courseClassId) {
+        return professorService.getMyStudentsInCourseClass(courseClassId);
+    }
+
 }
