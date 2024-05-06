@@ -15,11 +15,6 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class CreateContactInfoDto {
 
-    @JsonProperty("user_name")
-    @NotBlank(message = "user name cannot be null")
-    @Length(min = 7, max = 7, message = "user name must be 7 characters")
-    private String userName;
-
     @NotBlank(message = "phone cannot be null")
     @Length(min = 11, max = 11, message = "phone must be 10 digits")
     private String phone;

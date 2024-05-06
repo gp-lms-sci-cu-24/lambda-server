@@ -1,11 +1,13 @@
 package com.cu.sci.lambdaserver.contactinfo.service;
 
+import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.contactinfo.ContactInfo;
 import com.cu.sci.lambdaserver.contactinfo.ContactInfoRepository;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.service.UserService;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ public class ContactInfoService implements IContactInfoService {
     private final ContactInfoRepository contactInfoRepository;
     private final UserService userService;
     private final IMapper<ContactInfo, ContactInfoDto> contactInfoDtoMapper;
+    private final IAuthenticationFacade iAuthenticationFacade;
 
 
     public boolean isValidEmail(String email) {
@@ -49,8 +52,9 @@ public class ContactInfoService implements IContactInfoService {
 
     @Override
     public ContactInfoDto createContactInfo(CreateContactInfoDto contactInfo) {
-        // Get user
-        User user = userService.loadUserByUsername(contactInfo.getUserName());
+        // Get Auth user
+        User user = iAuthenticationFacade.getAuthenticatedUser() ;
+
 
         // Check if user already has contact info
         Optional<ContactInfo> existingContactInfo = contactInfoRepository.findByUser_Id(user.getId());
@@ -102,23 +106,15 @@ public class ContactInfoService implements IContactInfoService {
     }
 
     @Override
-    public void deleteContactInfo(String userName) {
-        // Get user
-        User user = userService.loadUserByUsername(userName);
-
-        // Check if user already has contact info
-        Optional<ContactInfo> existingContactInfo = contactInfoRepository.findByUser_Id(user.getId());
-        if (existingContactInfo.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not have contact info");
-        }
-
-        contactInfoRepository.delete(existingContactInfo.get());
+    public ContactInfoDto getMyContactInfo() {
+        User user = iAuthenticationFacade.getAuthenticatedUser() ;
+        return getContactInfo(user.getUsername());
     }
 
     @Override
     public ContactInfoDto updateContactInfo(String userName, ContactInfoDto contactInfo) {
         // Get user
-        User user = userService.loadUserByUsername(userName);
+        User user = iAuthenticationFacade.getAuthenticatedUser() ;
 
         //check if user have contact info
         Optional<ContactInfo> foundContactInfo = contactInfoRepository.findByUser_Id(user.getId());
@@ -150,6 +146,21 @@ public class ContactInfoService implements IContactInfoService {
         });
 
         return contactInfoDtoMapper.mapTo(foundContactInfo.get());
+    }
+
+    @Override
+    public MessageResponse deleteContactInfo() {
+        // Get user
+        User user = iAuthenticationFacade.getAuthenticatedUser() ;
+
+        // Check if user already has contact info
+        Optional<ContactInfo> existingContactInfo = contactInfoRepository.findByUser_Id(user.getId());
+        if (existingContactInfo.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not have contact info");
+        }
+
+        contactInfoRepository.delete(existingContactInfo.get());
+        return new MessageResponse("Contact info deleted successfully");
     }
 
 
