@@ -14,7 +14,7 @@ public interface CourseRegisterRepository extends JpaRepository<CourseRegister, 
 
     Collection<CourseRegister> findAllByCourseClass_CourseClassId(Long courseClassId);
 
-    Collection<CourseRegister> findAllByStudent_CodeAndState(String studentCode, CourseRegisterState state);
+   Collection<CourseRegister> findAllByStudent_CodeAndState(String studentCode, CourseRegisterState state);
 
     Optional<CourseRegister> findByCourseClass_CourseClassIdAndStudentId(Long courseClassId , Long studentId);
 }

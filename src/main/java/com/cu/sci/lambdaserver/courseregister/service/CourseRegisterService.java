@@ -15,6 +15,7 @@ import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
@@ -27,8 +28,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Year;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,26 @@ public class CourseRegisterService implements ICourseRegisterService {
      * @RequestBody courseRegisterInDto
      * @return CourseRegisterResponseDto
      */
+
+    void confirmCourseRegister(String studentCode) {
+        //get course register
+        Collection<CourseRegister> courseRegisters = courseRegisterRepository.findAllByStudent_CodeAndState(studentCode, CourseRegisterState.REGISTERING);
+
+        // check if collection empty
+        if (courseRegisters.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No course registrations not confirmed for student with code: " + studentCode);
+        }
+
+        //update state
+        courseRegisters.stream().forEach(courseRegister -> {
+            if (courseRegister.getCourseClass().getYear().equals(Year.now().toString())) {
+                courseRegister.setState(CourseRegisterState.STUDYING);
+            }
+            courseRegisterRepository.save(courseRegister);
+        });
+    }
+
+
     @Override
     public CourseRegisterResponseDto createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
 
@@ -102,10 +123,37 @@ public class CourseRegisterService implements ICourseRegisterService {
     }
 
     @Override
+    public MessageResponse adminConfirmCourseRegister(String studentCode) {
+        //check student code
+        studentRepository.findByCode(studentCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code " + studentCode));
+
+        // Confirm CourseRegister
+        confirmCourseRegister(studentCode);
+
+        return new MessageResponse("Course Register Confirmed Successfully");
+    }
+
+
+    @Override
+    public MessageResponse studentConfirmCourseRegister() {
+        //get Authenticated Student
+        User user = iAuthenticationFacade.getAuthenticatedUser();
+
+        //get course register
+        confirmCourseRegister(user.getUsername());
+
+        return new MessageResponse("Course Register Confirmed Successfully");
+    }
+
+
+    @Override
     public Page<CourseRegisterOutDto> getAllCourseRegisters(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return courseRegisterRepository.findAll(pageable).map(courseRegisterOutDtoMapper::mapTo);
     }
+
+
     @Override
     public Collection<CourseRegisterOutDto> studentGetAllCourseRegisters() {
         User user = iAuthenticationFacade.getAuthenticatedUser();
@@ -113,12 +161,14 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
     }
 
+
     @Override
     public CourseRegisterOutDto getCourseRegister(Long id) {
         return courseRegisterRepository.findById(id)
                 .map(courseRegisterOutDtoMapper::mapTo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
     }
+
 
     @Override
     public CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
@@ -128,6 +178,7 @@ public class CourseRegisterService implements ICourseRegisterService {
                     return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister));
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
     }
+
 
     @Override
     @Transactional
@@ -145,6 +196,7 @@ public class CourseRegisterService implements ICourseRegisterService {
         return courseRegisterOutDtoMapper.mapTo(courseRegister);
     }
 
+
     @Override
     public Collection<StudentDto> getAllCourseClassStudents(Long courseClassId) {
         Collection<CourseRegister> courseRegisters = courseRegisterRepository
@@ -154,6 +206,7 @@ public class CourseRegisterService implements ICourseRegisterService {
         return courseClassStudents.stream().map(studentDtoIMapper::mapTo).collect(Collectors.toList());
     }
 
+
     @Override
     public Collection<CourseRegisterResponseDto> getCourseRegistersByState(String studentCode, CourseRegisterState state) {
         //check if student exists
@@ -161,12 +214,16 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
 
         //return course registers by state
-        return  courseRegisterRepository
-                .findAllByStudent_CodeAndState(studentCode,state).
-                stream()
+        Collection<CourseRegister> courseRegisters = courseRegisterRepository.findAllByStudent_CodeAndState(studentCode, state);
+        if (courseRegisters.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No course registrations found for student with code: " + studentCode);
+        }
+        return courseRegisters
+                .stream()
                 .map(courseRegisterResponseDtoMapper::mapTo)
                 .toList();
     }
+
 
     @Override
     public Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode) {

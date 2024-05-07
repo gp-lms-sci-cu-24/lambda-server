@@ -30,4 +30,7 @@ public class CourseClassResponse {
 
     private Integer groupNumber;
 
+    private String year;
+
+
 }

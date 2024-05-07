@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,9 +33,6 @@ public class CourseClassService implements ICourseClassService {
 
 
 
-    public CourseClass saveCourseClass(CourseClass courseClass) {
-        return courseClassRepository.save(courseClass);
-    }
 
     public Optional<CourseClass> getLatestClassByCourseId(Long id) {
         return courseClassRepository.getLatestClassByCourseId(id);
@@ -53,6 +51,9 @@ public class CourseClassService implements ICourseClassService {
         //get course code
         String courseCode = course.get().getCode();
 
+        //get current year
+        String year = Year.now().toString();
+
         //create the course class
         CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
         AtomicInteger groupNumberSeq = new AtomicInteger(1);
@@ -67,7 +68,9 @@ public class CourseClassService implements ICourseClassService {
 
                 courseClassEntity.setGroupNumber(groupNumberSeq.get());
                 courseClassEntity.setCourse(course.get());
-                CourseClass courseClass = saveCourseClass(courseClassEntity);
+                courseClassEntity.setYear(year);
+                CourseClass courseClass = courseClassRepository.save(courseClassEntity);
+
                 CourseClassResponse courseClassResponse = courseClassResponseMapper.mapFrom(courseClass);
                 courseClassResponse.setCourseCode(courseCode);
                 courseClassResponse.setCourseName(course.get().getName());

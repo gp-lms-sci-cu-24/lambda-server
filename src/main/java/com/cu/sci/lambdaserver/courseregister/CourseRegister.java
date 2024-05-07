@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.courseregister;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
+import com.cu.sci.lambdaserver.utils.enums.Rate;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,7 +37,10 @@ public class CourseRegister {
     private LocalDateTime registerDate;
 
     @Enumerated(EnumType.STRING)
-    private CourseRegisterState state = CourseRegisterState.REGISTERING;
+    private CourseRegisterState state ;
+
+    @Enumerated(EnumType.STRING)
+    private Rate rate ;
 
     @Builder.Default
     private Long grade = -1L;

@@ -4,8 +4,8 @@ import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterResponseDto;
 import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
-import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -71,6 +71,19 @@ public class CourseRegisterController {
     public CourseRegisterOutDto updateCourseRegister(@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
         return courseRegisterService.updateCourseRegister(courseRegisterInDto);
     }
+
+    @PatchMapping(path = "/confirm/{student-code}")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse confrimAdminCourseRegister(@PathVariable("student-code") String studentCode) {
+        return courseRegisterService.adminConfirmCourseRegister(studentCode);
+    }
+
+    @PatchMapping(path = "/confirm/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse confrimStudentCourseRegister() {
+        return courseRegisterService.studentConfirmCourseRegister();
+    }
+
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
