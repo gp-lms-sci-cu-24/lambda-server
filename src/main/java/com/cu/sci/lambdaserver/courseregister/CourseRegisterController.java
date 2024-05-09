@@ -27,11 +27,6 @@ public class CourseRegisterController {
         return courseRegisterService.createCourseRegister(courseRegisterInDto);
     }
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Page<CourseRegisterOutDto> getAllCourseRegisters(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-        return courseRegisterService.getAllCourseRegisters(pageNo, pageSize);
-    }
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
@@ -84,6 +79,11 @@ public class CourseRegisterController {
         return courseRegisterService.studentConfirmCourseRegister();
     }
 
+    @PatchMapping(path = "/grade/{student-code}")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse addGrade(@PathVariable("student-code") String studentCode, @RequestParam Long grade) {
+        return courseRegisterService.addGrade(studentCode, grade);
+    }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

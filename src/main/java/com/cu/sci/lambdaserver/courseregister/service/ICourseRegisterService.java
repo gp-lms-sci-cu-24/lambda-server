@@ -22,11 +22,13 @@ public interface ICourseRegisterService {
     @PreAuthorize("hasRole('STUDENT')")
     MessageResponse studentConfirmCourseRegister();
 
-    Page<CourseRegisterOutDto> getAllCourseRegisters(Integer pageNo, Integer pageSize);
-
     @PreAuthorize("hasRole('STUDENT')")
     Collection<CourseRegisterOutDto> studentGetAllCourseRegisters();
 
+    @PreAuthorize("hasRole('ADMIN')")
+    MessageResponse addGrade(String studentCode , Long grade);
+
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     CourseRegisterOutDto getCourseRegister(Long id);
 
     CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto);

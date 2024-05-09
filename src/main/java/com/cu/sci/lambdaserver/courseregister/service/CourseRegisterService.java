@@ -18,6 +18,7 @@ import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import com.cu.sci.lambdaserver.utils.enums.Role;
+import com.cu.sci.lambdaserver.utils.enums.State;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -102,6 +103,11 @@ public class CourseRegisterService implements ICourseRegisterService {
         //get Course Class
         CourseClass courseClass = courseClassService.getCourseClassById(courseRegisterInDto.getCourseClassId());
 
+        //check course class state
+        if (!courseClass.getCourseState().equals(State.ACTIVE)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not active");
+        }
+
         //create course register
         CourseRegister newCourseRegister = CourseRegister
                 .builder()
@@ -147,18 +153,43 @@ public class CourseRegisterService implements ICourseRegisterService {
     }
 
 
-    @Override
-    public Page<CourseRegisterOutDto> getAllCourseRegisters(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return courseRegisterRepository.findAll(pageable).map(courseRegisterOutDtoMapper::mapTo);
-    }
-
 
     @Override
     public Collection<CourseRegisterOutDto> studentGetAllCourseRegisters() {
         User user = iAuthenticationFacade.getAuthenticatedUser();
         return courseRegisterRepository.findAllByStudentId(user.getId()).stream()
                 .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @Override
+    public MessageResponse addGrade(String studentCode, Long grade) {
+        //check student code
+        studentRepository.findByCode(studentCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code " + studentCode));
+
+        //get course register
+        CourseRegister courseRegister = courseRegisterRepository.findByStudent_CodeAndState(studentCode , CourseRegisterState.STUDYING) ;
+        if(courseRegister == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No course register found for student with code: " + studentCode);
+        }
+
+        //check if grade is valid
+        if (grade < 0 || grade > 100) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "grade must be between 0 and 100");
+        }
+
+        //update course register state and grade
+        if(grade>=60){
+            courseRegister.setState(CourseRegisterState.PASSED);
+        }else {
+            courseRegister.setState(CourseRegisterState.FAILED);
+        }
+
+        courseRegister.setGrade(grade);
+        courseRegisterRepository.save(courseRegister);
+
+        return new MessageResponse("Grade added successfully");
+
     }
 
 

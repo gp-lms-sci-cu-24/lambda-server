@@ -7,7 +7,6 @@ import com.cu.sci.lambdaserver.utils.enums.Rate;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import static com.cu.sci.lambdaserver.utils.enums.CourseRegisterState.REGISTERING;
 import java.time.LocalDateTime;
 
 
