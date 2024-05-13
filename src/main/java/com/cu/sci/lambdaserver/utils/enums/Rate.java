@@ -1,9 +1,11 @@
 package com.cu.sci.lambdaserver.utils.enums;
 
 public enum Rate {
+
+    FAIL,
     POOR,
-    BAD,
-    AVERAGE,
     GOOD,
+    VERY_GOOD,
     EXCELLENT
+
 }

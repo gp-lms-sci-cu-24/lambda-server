@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.courseregister.service;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.CourseRegisterRepository;
@@ -16,15 +17,10 @@ import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
-import com.cu.sci.lambdaserver.utils.enums.Role;
-import com.cu.sci.lambdaserver.utils.enums.State;
+import com.cu.sci.lambdaserver.utils.enums.*;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,6 +36,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     private final CourseRegisterRepository courseRegisterRepository;
     private final StudentRepository studentRepository;
+    private final CourseClassRepository courseClassRepository;
     private final CourseClassService courseClassService;
 
     private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
@@ -55,7 +52,6 @@ public class CourseRegisterService implements ICourseRegisterService {
      * @RequestBody courseRegisterInDto
      * @return CourseRegisterResponseDto
      */
-
     void confirmCourseRegister(String studentCode) {
         //get course register
         Collection<CourseRegister> courseRegisters = courseRegisterRepository.findAllByStudent_CodeAndState(studentCode, CourseRegisterState.REGISTERING);
@@ -72,6 +68,21 @@ public class CourseRegisterService implements ICourseRegisterService {
             }
             courseRegisterRepository.save(courseRegister);
         });
+    }
+
+    void assignGradeToCourseRegister(Long grade, CourseRegister courseRegister) {
+
+        if(grade<GradeBounds.UPPER_BOUND_FAIL.getValue()){
+            courseRegister.setRate(Rate.FAIL);
+        } else if (grade<GradeBounds.UPPER_BOUND_POOR.getValue()) {
+            courseRegister.setRate(Rate.POOR);
+        } else if (grade<GradeBounds.UPPER_BOUND_GOOD.getValue()) {
+            courseRegister.setRate(Rate.GOOD);
+        } else if (grade<GradeBounds.UPPER_BOUND_VERY_GOOD.getValue()) {
+            courseRegister.setRate(Rate.VERY_GOOD);
+        }else{
+            courseRegister.setRate(Rate.EXCELLENT);
+        }
     }
 
 
@@ -108,6 +119,10 @@ public class CourseRegisterService implements ICourseRegisterService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not active");
         }
 
+       if(courseClass.getNumberOfStudentsRegistered().equals(courseClass.getMaxCapacity())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is full");
+        }
+
         //create course register
         CourseRegister newCourseRegister = CourseRegister
                 .builder()
@@ -119,9 +134,13 @@ public class CourseRegisterService implements ICourseRegisterService {
         //save course register
         CourseRegister savedCourseRegister = courseRegisterRepository.save(newCourseRegister);
 
+        courseClass.setNumberOfStudentsRegistered(courseClass.getNumberOfStudentsRegistered() + 1);
+        courseClassRepository.save(courseClass);
+
         //update student credit hours
         student.setCreditHoursSemester(student.getCreditHoursSemester() + courseClass.getCourse().getCreditHours());
         studentRepository.save(student);
+
 
         //return course register
         return courseRegisterResponseDtoMapper.mapTo(savedCourseRegister);
@@ -153,7 +172,6 @@ public class CourseRegisterService implements ICourseRegisterService {
     }
 
 
-
     @Override
     public Collection<CourseRegisterOutDto> studentGetAllCourseRegisters() {
         User user = iAuthenticationFacade.getAuthenticatedUser();
@@ -161,17 +179,23 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
     }
 
+
     @Override
-    public MessageResponse addGrade(String studentCode, Long grade) {
+    public MessageResponse addGrade(String studentCode, Long courseClassId, Long grade) {
+
         //check student code
         studentRepository.findByCode(studentCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code " + studentCode));
 
         //get course register
-        CourseRegister courseRegister = courseRegisterRepository.findByStudent_CodeAndState(studentCode , CourseRegisterState.STUDYING) ;
-        if(courseRegister == null){
+        Optional<CourseRegister> courseRegisterOptional = courseRegisterRepository
+                .findByCourseClass_CourseClassIdAndStudent_CodeAndState(courseClassId, studentCode, CourseRegisterState.STUDYING);
+
+        if (courseRegisterOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No course register found for student with code: " + studentCode);
         }
+
+        CourseRegister courseRegister = courseRegisterOptional.get();
 
         //check if grade is valid
         if (grade < 0 || grade > 100) {
@@ -183,13 +207,14 @@ public class CourseRegisterService implements ICourseRegisterService {
             courseRegister.setState(CourseRegisterState.PASSED);
         }else {
             courseRegister.setState(CourseRegisterState.FAILED);
+            courseRegister.setNumberOfFailed(courseRegister.getNumberOfFailed() + 1);
         }
 
         courseRegister.setGrade(grade);
+        assignGradeToCourseRegister(grade, courseRegister);
         courseRegisterRepository.save(courseRegister);
 
         return new MessageResponse("Grade added successfully");
-
     }
 
 
@@ -263,4 +288,5 @@ public class CourseRegisterService implements ICourseRegisterService {
         return courseRegisterRepository.findAllByStudentId(student.getId())
                 .stream().map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
     }
+
 }

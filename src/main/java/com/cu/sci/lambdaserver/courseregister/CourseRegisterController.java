@@ -82,7 +82,7 @@ public class CourseRegisterController {
     @PatchMapping(path = "/grade/{student-code}")
     @ResponseStatus(HttpStatus.OK)
     public MessageResponse addGrade(@PathVariable("student-code") String studentCode, @RequestParam Long grade) {
-        return courseRegisterService.addGrade(studentCode, grade);
+        return null ;
     }
 
     @DeleteMapping(path = "/{id}")

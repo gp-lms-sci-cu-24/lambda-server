@@ -26,7 +26,7 @@ public interface ICourseRegisterService {
     Collection<CourseRegisterOutDto> studentGetAllCourseRegisters();
 
     @PreAuthorize("hasRole('ADMIN')")
-    MessageResponse addGrade(String studentCode , Long grade);
+    MessageResponse addGrade(String studentCode , Long courseClassId , Long grade);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     CourseRegisterOutDto getCourseRegister(Long id);
