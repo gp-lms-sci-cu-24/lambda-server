@@ -30,7 +30,11 @@ public class CourseClassController {
         return courseClassService.createCourseClass(courseClassDto);
     }
 
-
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<CourseClassDto> getAllCourseClasses() {
+        return courseClassService.getAllCourseClasses().stream().toList() ;
+    }
 
     @GetMapping("/{course-code}/{group-number}")
     @ResponseStatus(HttpStatus.OK)
@@ -38,10 +42,10 @@ public class CourseClassController {
         return courseClassService.getCourseClass(courseCode, groupNumber);
     }
 
-    @PatchMapping
-    public ResponseEntity<CourseClassDto> updateCourseClass(@Validated(CreateCourseClassDto.UpdateValidation.class) @RequestBody CourseClassDto courseClassDto) {
-        CourseClass updatedCourseClass = courseClassService.updateCourseClass(courseClassDto);
-        return new ResponseEntity<>(courseClassMapper.mapTo(updatedCourseClass), HttpStatus.OK);
+    @PatchMapping("/{course-code}/{group-number}")
+    @ResponseStatus(HttpStatus.OK)
+    public CourseClassDto updateCourseClass(@PathVariable("course-code") String courseCode, @PathVariable("group-number") Integer groupNumber,@Validated(CreateCourseClassDto.UpdateValidation.class) @RequestBody CreateCourseClassDto courseClassDto) {
+    return courseClassService.updateCourseClass(courseCode, groupNumber, courseClassDto);
     }
 
     @DeleteMapping("/{course-code}/{group-number}")
@@ -49,6 +53,8 @@ public class CourseClassController {
     public MessageResponse deleteCourseClass(@PathVariable("course-code") String courseCode, @PathVariable("group-number") Integer groupNumber) {
         return  courseClassService.deleteCourseClass(courseCode, groupNumber);
     }
+
+
 
     @GetMapping("/timing")
     @ResponseStatus(HttpStatus.OK)

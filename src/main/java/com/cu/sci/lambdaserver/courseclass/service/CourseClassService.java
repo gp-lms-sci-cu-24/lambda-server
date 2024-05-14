@@ -5,13 +5,12 @@ import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponse;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
-import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassResponseMapper;
 import com.cu.sci.lambdaserver.courseclass.mapper.CreateCourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,12 +31,6 @@ public class CourseClassService implements ICourseClassService {
     private final CourseClassMapper courseClassMapper;
     private final CreateCourseClassMapper createCourseClassMapper ;
     private final CourseRepository courseRepository;
-    private final CourseClassResponseMapper courseClassResponseMapper;
-
-
-
-
-
 
 
 
@@ -77,6 +71,16 @@ public class CourseClassService implements ICourseClassService {
     }
 
 
+    @Override
+    public Collection<CourseClassDto> getAllCourseClasses() {
+
+        Collection<CourseClass> courseClasses =  courseClassRepository.findAll() ;
+        if(courseClasses.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found");
+        }
+
+        return courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
+    }
 
 
     @Override
@@ -94,24 +98,6 @@ public class CourseClassService implements ICourseClassService {
 
         return courseClassMapper.mapTo(courseClass.get());
     }
-
-
-
-
-
-
-
-
-    @Override
-    public CourseClass updateCourseClass(CourseClassDto courseClassDto) {
-        // make sure that the courseClass exist
-        Long id = courseClassDto.getCourseClassId();
-        CourseClass courseClass = courseClassRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id"));
-        courseClassMapper.update(courseClassDto, courseClass);
-        return courseClassRepository.save(courseClass);
-    }
-
 
 
     @Override
@@ -133,6 +119,44 @@ public class CourseClassService implements ICourseClassService {
     }
 
 
+    @Override
+    public CourseClassDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClassDto) {
+
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+        if (course.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+
+        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+        if (courseClass.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
+        }
+
+        CourseClass courseClassUpdating = createCourseClassMapper.update(courseClassDto, courseClass.get());
+
+        courseClassRepository.save(courseClassUpdating);
+
+        return courseClassMapper.mapTo(courseClassUpdating);
+
+
+    }
+
+
+    @Override
+    public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, Semester semester, String Year) {
+
+        Optional<Course> course = courseRepository.findByCode(courseCode);
+        if (course.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+
+        Collection<CourseClass> courseClasses = courseClassRepository.findByCourseIdAndCourseSemesterAndYear(course.get().getId(), semester, Year);
+        if(courseClasses.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found with this course code " + courseCode + " and semester " + semester);
+        }
+
+        return  courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
+    }
 
 
 }
