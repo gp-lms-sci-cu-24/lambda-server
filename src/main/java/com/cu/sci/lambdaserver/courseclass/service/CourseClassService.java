@@ -11,6 +11,7 @@ import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassResponseMapper;
 import com.cu.sci.lambdaserver.courseclass.mapper.CreateCourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -111,9 +112,24 @@ public class CourseClassService implements ICourseClassService {
         return courseClassRepository.save(courseClass);
     }
 
+
+
     @Override
-    public void deleteCourseClass(Long id) {
-        courseClassRepository.deleteById(id);
+    public MessageResponse deleteCourseClass(String courseCode , Integer groupNumber) {
+        //check if the course exist
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+        if (course.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+
+        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+        if (courseClass.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
+        }
+
+        courseClassRepository.delete(courseClass.get());
+
+        return new MessageResponse("course class deleted successfully");
     }
 
 

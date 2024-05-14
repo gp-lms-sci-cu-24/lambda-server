@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,13 +44,10 @@ public class CourseClassController {
         return new ResponseEntity<>(courseClassMapper.mapTo(updatedCourseClass), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCourseClass(@PathVariable Long id) {
-        if (!courseClassService.isCourseClassExists(id)) {
-            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-        }
-        courseClassService.deleteCourseClass(id);
-        return new ResponseEntity<>("The record was deleted successfully", HttpStatus.NO_CONTENT);
+    @DeleteMapping("/{course-code}/{group-number}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public MessageResponse deleteCourseClass(@PathVariable("course-code") String courseCode, @PathVariable("group-number") Integer groupNumber) {
+        return  courseClassService.deleteCourseClass(courseCode, groupNumber);
     }
 
     @GetMapping("/timing")
