@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,12 @@ public class CourseClassController {
     @ResponseStatus(HttpStatus.OK)
     public CourseClassDto getCourseClassById(@PathVariable("course-code") String courseCode, @PathVariable("group-number") Integer groupNumber) {
         return courseClassService.getCourseClass(courseCode, groupNumber);
+    }
+
+    @GetMapping("/{course-code}/{semester}/{year}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CourseClassDto> getCourseClassByCourseCodeAndSemesterAndYear(@PathVariable("course-code") String courseCode, @PathVariable("semester") Semester semester, @PathVariable("year") String year) {
+        return courseClassService.getCourseClassesByCourseCodeAndSemester(courseCode, semester, year).stream().toList();
     }
 
     @PatchMapping("/{course-code}/{group-number}")
