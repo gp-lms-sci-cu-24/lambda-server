@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.courseregister.dto;
 
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import com.cu.sci.lambdaserver.utils.enums.Rate;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
@@ -23,18 +24,16 @@ public class CourseRegisterInDto {
 
     @NotNull(message = "Course class ID is required", groups = {CreateValidation.class, StudentCreateValidation.class})
     @Null(message = "Course class ID must be null during update or student create", groups = {UpdateValidation.class})
-    private Long courseClassId;
+    @JsonProperty("course_code")
+    private String courseCode;
+
+    @NotNull(message = "Group number is required", groups = {CreateValidation.class, StudentCreateValidation.class})
+    private  Integer groupNumber;
 
     @NotNull(message = "Student ID is required", groups = {CreateValidation.class})
     @Null(message = "Student ID must be null during update", groups = {UpdateValidation.class})
     private String studentCode;
 
-    @Min(value = 0, message = "Grade must be a positive number", groups = {CreateValidation.class, UpdateValidation.class})
-    private Long grade;
-
-    private CourseRegisterState state = CourseRegisterState.REGISTERING ;
-
-    private Rate courseRate;
 
     public interface UpdateValidation {
     }

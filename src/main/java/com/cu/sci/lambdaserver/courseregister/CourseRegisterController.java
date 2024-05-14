@@ -2,13 +2,11 @@ package com.cu.sci.lambdaserver.courseregister;
 
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
-import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterResponseDto;
 import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +21,7 @@ public class CourseRegisterController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseRegisterResponseDto createCourseRegister(@Validated(CourseRegisterInDto.CreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
+    public CourseRegisterOutDto createCourseRegister(@Validated(CourseRegisterInDto.CreateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
         return courseRegisterService.createCourseRegister(courseRegisterInDto);
     }
 
@@ -42,7 +40,7 @@ public class CourseRegisterController {
 
     @GetMapping(path = "/{code}/registers")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<CourseRegisterResponseDto> getAllCourseRegisters(@PathVariable String code, @RequestParam CourseRegisterState state) {
+    public Collection<CourseRegisterOutDto> getAllCourseRegisters(@PathVariable String code, @RequestParam CourseRegisterState state) {
         System.out.println(state);
         return courseRegisterService.getCourseRegistersByState(code, state) ;
     }
