@@ -4,11 +4,12 @@ package com.cu.sci.lambdaserver.courseclass.service;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassInDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponse;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassResponseMapper;
+import com.cu.sci.lambdaserver.courseclass.mapper.CreateCourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class CourseClassService implements ICourseClassService {
 
     private final CourseClassRepository courseClassRepository;
     private final CourseClassMapper courseClassMapper;
+    private final CreateCourseClassMapper createCourseClassMapper ;
     private final CourseRepository courseRepository;
     private final CourseClassResponseMapper courseClassResponseMapper;
 
@@ -34,31 +36,27 @@ public class CourseClassService implements ICourseClassService {
 
 
 
-    public Optional<CourseClass> getLatestClassByCourseId(Long id) {
-        return courseClassRepository.getLatestClassByCourseId(id);
-    }
+
 
 
     @Override
-    public CourseClassResponse createCourseClass(CourseClassDto courseClassDto) {
+    public CourseClassDto  createCourseClass(CreateCourseClassDto courseClassDto) {
 
         //check if the course exist
-        Optional<Course> course = courseRepository.findById(courseClassDto.getCourseId());
+        Optional<Course> course = courseRepository.findByCode(courseClassDto.getCourseCode());
         if (course.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseClassDto.getCourseCode());
         }
-
-        //get course code
-        String courseCode = course.get().getCode();
 
         //get current year
         String year = Year.now().toString();
 
         //create the course class
-        CourseClass courseClassEntity = courseClassMapper.mapFrom(courseClassDto);
+        CourseClass courseClassEntity = createCourseClassMapper.mapFrom(courseClassDto);
+
         AtomicInteger groupNumberSeq = new AtomicInteger(1);
 
-                getLatestClassByCourseId(courseClassDto.getCourseId())
+        courseClassRepository.findTopByCourseIdOrderByGroupNumberDesc(course.get().getId())
                 .ifPresent((courseClass) -> {
                     if (LocalDateTime.now().getYear() == courseClass.getPublishDate().getYear()
                             && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester()) {
@@ -66,28 +64,40 @@ public class CourseClassService implements ICourseClassService {
                     }
                 });
 
-                courseClassEntity.setGroupNumber(groupNumberSeq.get());
-                courseClassEntity.setCourse(course.get());
-                courseClassEntity.setYear(year);
-                CourseClass courseClass = courseClassRepository.save(courseClassEntity);
+        courseClassEntity.setGroupNumber(groupNumberSeq.get());
+        courseClassEntity.setCourse(course.get());
+        courseClassEntity.setYear(year);
+        CourseClass courseClass = courseClassRepository.save(courseClassEntity);
 
-                CourseClassResponse courseClassResponse = courseClassResponseMapper.mapFrom(courseClass);
-                courseClassResponse.setCourseCode(courseCode);
-                courseClassResponse.setCourseName(course.get().getName());
-                return courseClassResponse;
+        CourseClassDto courseClassDtoResponse =  courseClassMapper.mapTo(courseClass);
+        courseClassDtoResponse.setCourseCode(course.get().getCode());
+        return  courseClassDtoResponse;
 
     }
+
+
+
 
     @Override
-    public List<CourseClass> getAllCourseClasses() {
-        return courseClassRepository.findAll();
+    public CourseClassDto getCourseClass(String courseCode , Integer groupNumber) {
+        //check if the course exist
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+        if (course.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+
+        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+        if (courseClass.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
+        }
+
+        return courseClassMapper.mapTo(courseClass.get());
     }
 
-    @Override
-    public CourseClass getCourseClassById(Long id) {
-        return courseClassRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id"));
-    }
+
+
+
+
 
     @Override
     public boolean isCourseClassExists(Long id) {

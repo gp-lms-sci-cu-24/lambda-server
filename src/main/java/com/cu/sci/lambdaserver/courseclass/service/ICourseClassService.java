@@ -1,19 +1,18 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassInDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponse;
+import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
 public interface ICourseClassService {
 
-    CourseClassResponse createCourseClass(CourseClassDto courseClass);
+    @PreAuthorize("hasRole('ADMIN')")
+    CourseClassDto createCourseClass(CreateCourseClassDto courseClass);
 
-    List<CourseClass> getAllCourseClasses();
-
-    CourseClass getCourseClassById(Long id);
+    CourseClassDto getCourseClass(String courseCode , Integer groupNumber);
 
     boolean isCourseClassExists(Long id);
 

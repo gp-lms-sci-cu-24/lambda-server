@@ -12,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,25 +25,20 @@ public class CourseClassController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseClassResponse createCourseClass(@Validated(CourseClassInDto.CreateValidation.class) @RequestBody CourseClassDto courseClassDto) {
+    public CourseClassDto createCourseClass(@Validated(CreateCourseClassDto.CreateValidation.class) @RequestBody CreateCourseClassDto courseClassDto) {
         return courseClassService.createCourseClass(courseClassDto);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CourseClassDto>> getAllCourseClasses() {
-        List<CourseClass> courseClasses = courseClassService.getAllCourseClasses();
-        return new ResponseEntity<>(courseClasses.stream().map(courseClassMapper::mapTo).collect(Collectors.toList())
-                , HttpStatus.OK);
-    }
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/{course-code}/{group-number}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseClassDto getCourseClassById(@PathVariable Long id) {
-        return courseClassMapper.mapTo(courseClassService.getCourseClassById(id));
+    public CourseClassDto getCourseClassById(@PathVariable("course-code") String courseCode, @PathVariable("group-number") Integer groupNumber) {
+        return courseClassService.getCourseClass(courseCode, groupNumber);
     }
 
     @PatchMapping
-    public ResponseEntity<CourseClassDto> updateCourseClass(@Validated(CourseClassInDto.UpdateValidation.class) @RequestBody CourseClassDto courseClassDto) {
+    public ResponseEntity<CourseClassDto> updateCourseClass(@Validated(CreateCourseClassDto.UpdateValidation.class) @RequestBody CourseClassDto courseClassDto) {
         CourseClass updatedCourseClass = courseClassService.updateCourseClass(courseClassDto);
         return new ResponseEntity<>(courseClassMapper.mapTo(updatedCourseClass), HttpStatus.OK);
     }

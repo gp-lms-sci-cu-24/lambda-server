@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.courseclass.repository;
 
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,8 @@ public interface CourseClassRepository extends JpaRepository<CourseClass, Long> 
             "AND publish_date = (select MAX(publish_date) from course_classes) " +
             "ORDER BY course_class_id desc limit 1", nativeQuery = true)
     Optional<CourseClass> getLatestClassByCourseId(@Param("courseId") Long courseId);
+
+    Optional<CourseClass> findTopByCourseIdOrderByGroupNumberDesc(Long courseId) ;
+
+    Optional<CourseClass> findByCourseIdAndGroupNumber(Long courseId, Integer groupNumber);
 }

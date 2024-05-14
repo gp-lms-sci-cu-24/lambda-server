@@ -50,7 +50,7 @@ public class CourseClass {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private State courseState = State.INACTIVE;
+    private State courseState = State.ACTIVE;
 
     private Integer maxCapacity;
 

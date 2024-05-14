@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.courseclass.dto;
 
 import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,8 @@ public class CreateCourseClassDto {
     private Long courseClassId;
 
     @NotNull(groups = {CreateValidation.class}, message = "Course code cannot be null during creation")
-    private String cousreCode;
+    @JsonProperty("course_code")
+    private String courseCode;
 
     @NotNull(groups = {CreateValidation.class}, message = "Course Semester cannot be null during creation")
     @Null(groups = {UpdateValidation.class}, message = "Course Semester must be null during update")
