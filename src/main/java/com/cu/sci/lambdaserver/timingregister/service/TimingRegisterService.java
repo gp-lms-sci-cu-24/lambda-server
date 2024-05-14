@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.timingregister.service;
 
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
+import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassTimingRepository;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
@@ -27,7 +28,7 @@ public class TimingRegisterService implements ITimingRegisterService {
 
     private final TimingRegisterRepository timingRegisterRepository;
     private final CourseClassTimingRepository courseClassTimingRepository;
-    private final CourseClassService courseClassService;
+    private final CourseClassRepository courseClassRepository;
 
     private final TimingRegisterInDtoMapper timingRegisterInDtoMapper;
 
@@ -38,7 +39,8 @@ public class TimingRegisterService implements ITimingRegisterService {
 
         CourseClassTiming courseClassTiming = courseClassTimingRepository.findById(courseClassTimingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class timing not found with this id"));
-        CourseClass courseClass = courseClassService.getCourseClassById(courseClassId);
+        CourseClass courseClass = courseClassRepository.findById(courseClassId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id"));
         if (timingRegisterRepository
                 .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(courseClassId, courseClassTimingId)
                 .isPresent()) {
