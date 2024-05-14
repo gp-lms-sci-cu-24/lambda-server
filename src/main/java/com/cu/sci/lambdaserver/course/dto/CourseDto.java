@@ -21,7 +21,7 @@ public class CourseDto {
     @NotBlank(message = "code is mandatory")
     private String name;
 
-    @NotBlank(message = "code is mandatory")
+    @NotBlank(message = "code courseDto mandatory")
     private String code;
 
     private String info;
@@ -32,4 +32,5 @@ public class CourseDto {
 
     private Collection<DepartmentCoursesDto> departmentCoursesSet;
 
+    private Collection<String> coursePrerequisites;
 }

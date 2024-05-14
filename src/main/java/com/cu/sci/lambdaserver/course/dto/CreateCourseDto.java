@@ -1,7 +1,6 @@
 package com.cu.sci.lambdaserver.course.dto;
 
 
-import com.cu.sci.lambdaserver.utils.enums.Semester;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -10,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.Set;
 
 @Builder
@@ -32,13 +32,8 @@ public class CreateCourseDto {
     @Max(value = 4, message = "Credit hours do not exceed 4 hours")
     private Integer creditHours;
 
-    @NotNull(message = "Semester is required")
-    private Semester semester;
-
-    @NotNull(message = "Mandatory is required")
-    private Boolean mandatory;
-
-    @NotNull(message = "Department code is required")
+    @NotNull(message = "At least one department code is required")
     private Set<String> departmentCode;
 
+    private Collection<String> coursePrerequisites;
 }

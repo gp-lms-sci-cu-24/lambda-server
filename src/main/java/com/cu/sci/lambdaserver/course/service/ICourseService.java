@@ -2,29 +2,31 @@ package com.cu.sci.lambdaserver.course.service;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Set;
 
 public interface ICourseService {
     Page<CourseDto> getCourses(Integer pageNo, Integer pageSize);
 
-    Course getCourse(Long courseId);
+    Course getCourse(String courseCode);
 
     CourseDto createCourse(CreateCourseDto createCourseDto);
 
-    Course deleteCourse(Long courseId);
+    Course deleteCourse(String courseCode);
 
-    Course updateCourse(Long courseId, Course course);
+    Course updateCourse(String courseCode, Course course);
 
-    Course addPrerequisite(Long courseId, Long prerequisiteId);
+    Course addPrerequisite(String courseCode, String prerequisiteCode);
 
-    Set<Course> getPrerequisite(Long id);
+    Set<Course> getPrerequisite(String courseCode);
 
-    Set<Course> getAllPrerequisites(Long courseId);
+    Set<Course> getAllPrerequisites(String courseCode);
+
+    Course removePrerequisite(String courseCode, String prerequisiteCode);
+
+    DepartmentCoursesCollectingDto changeMandatoryAndSemester(String courseCode, String departmentCode, Boolean mandatory, String semester);
+
 }
