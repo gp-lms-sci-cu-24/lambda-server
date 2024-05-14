@@ -86,7 +86,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public CourseClassDto getCourseClass(String courseCode , Integer groupNumber) {
         //check if the course exist
-        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+        Optional<Course> course = courseRepository.findByCode(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
@@ -103,7 +103,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public MessageResponse deleteCourseClass(String courseCode , Integer groupNumber) {
         //check if the course exist
-        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+        Optional<Course> course = courseRepository.findByCode(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
@@ -122,7 +122,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public CourseClassDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClassDto) {
 
-        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+        Optional<Course> course = courseRepository.findByCode(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
@@ -152,8 +152,9 @@ public class CourseClassService implements ICourseClassService {
 
         Collection<CourseClass> courseClasses = courseClassRepository.findByCourseIdAndCourseSemesterAndYear(course.get().getId(), semester, Year);
         if(courseClasses.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found with this course code " + courseCode + " and semester " + semester);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found with this course code " + courseCode + " and semester " + semester + "and year " + Year);
         }
+        System.out.println(courseClasses);
 
         return  courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
     }

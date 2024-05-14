@@ -82,8 +82,6 @@ public class StudentService implements IStudentService {
     public StudentDto getStudent(String code) {
         Optional<Student> student = studentRepository.findByCode(code);
         if (student.isEmpty()) {
-            // this throws a null error when students table is empty
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
         }
         return studentDtoiMapper.mapTo(student.get());
