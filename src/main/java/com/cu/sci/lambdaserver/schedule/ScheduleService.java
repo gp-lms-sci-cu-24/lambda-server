@@ -53,9 +53,9 @@ public class ScheduleService {
                                     .day(timing.getDay().toString())
                                     .endTime(timing.getEndTime().getTime())
                                     .startTime(timing.getStartTime().getTime())
-                                    .lecCode(timing.getType() + " " + courseClass.getCourseClass().getCourse().getCode())
+                                    .lecCode(timing.getType() + " " + courseClass.getCourseClass().getCourseCode())
                                     .location(locationMapper.mapTo(timing.getLocation()))
-                                    .courseCode(courseClass.getCourseClass().getCourse().getCode())
+                                    .courseCode(courseClass.getCourseClass().getCourseCode())
                                     .courseGroup(courseClass.getCourseClass().getGroupNumber().toString())
                                     .build()
                     );
