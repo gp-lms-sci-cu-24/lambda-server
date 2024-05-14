@@ -14,7 +14,6 @@ public interface ICourseClassService {
 
     CourseClassDto getCourseClass(String courseCode , Integer groupNumber);
 
-    boolean isCourseClassExists(Long id);
 
     CourseClass updateCourseClass(CourseClassDto courseClassDto);
 

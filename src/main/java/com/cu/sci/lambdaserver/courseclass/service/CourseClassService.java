@@ -99,10 +99,7 @@ public class CourseClassService implements ICourseClassService {
 
 
 
-    @Override
-    public boolean isCourseClassExists(Long id) {
-        return courseClassRepository.existsById(id);
-    }
+
 
     @Override
     public CourseClass updateCourseClass(CourseClassDto courseClassDto) {
