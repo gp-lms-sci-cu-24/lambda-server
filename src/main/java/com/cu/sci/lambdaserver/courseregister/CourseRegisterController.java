@@ -88,6 +88,6 @@ public class CourseRegisterController {
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public CourseRegisterOutDto deleteCourseRegister(@PathVariable("id") Long id) {
-        return courseRegisterService.deleteCourseRegister(id);
+        return null ;
     }
 }

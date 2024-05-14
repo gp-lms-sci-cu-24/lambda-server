@@ -70,7 +70,8 @@ public class CourseRegisterService implements ICourseRegisterService {
         });
     }
 
-    void assignGradeToCourseRegister(Long grade, CourseRegister courseRegister) {
+    @Override
+    public void assignGradeToCourseRegister(Long grade, CourseRegister courseRegister) {
 
         if(grade<GradeBounds.UPPER_BOUND_FAIL.getValue()){
             courseRegister.setRate(Rate.FAIL);
@@ -83,6 +84,7 @@ public class CourseRegisterService implements ICourseRegisterService {
         }else{
             courseRegister.setRate(Rate.EXCELLENT);
         }
+
     }
 
 
@@ -238,18 +240,37 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     @Override
     @Transactional
-    public CourseRegisterOutDto deleteCourseRegister(Long id) {
-        CourseRegister courseRegister = courseRegisterRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
-        Student student = courseRegister.getStudent();
-        CourseClass courseClass = courseRegister.getCourseClass();
+    public MessageResponse deleteCourseRegister(Long courseClassId) {
 
-        student.setCreditHoursSemester(student.getCreditHoursSemester() - courseClass.getCourse().getCreditHours());
-        studentRepository.save(student);
-        courseRegisterRepository.deleteById(id);
+        User user = iAuthenticationFacade.getAuthenticatedUser() ;
 
-        return courseRegisterOutDtoMapper.mapTo(courseRegister);
+        Optional<Student> student = studentRepository.findByCode(user.getUsername()) ;
+        if(student.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found ");
+        }
+
+        Optional<CourseClass>courseClass = courseClassRepository.findById(courseClassId) ;
+        if(courseClass.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found ");
+        }
+
+        Optional<CourseRegister> courseRegister = courseRegisterRepository
+                .findByCourseClass_CourseClassIdAndStudent_CodeAndState(courseClassId,user.getUsername(),CourseRegisterState.REGISTERING) ;
+
+        if(courseRegister.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found ");
+        }
+
+        courseRegisterRepository.delete(courseRegister.get());
+
+        courseClass.get().setNumberOfStudentsRegistered(courseClass.get().getNumberOfStudentsRegistered()-1);
+
+        courseClassRepository.save(courseClass.get());
+
+        student.get().setCreditHoursSemester((student.get().getCreditHoursSemester())-(courseClass.get().getCourse().getCreditHours()));
+        studentRepository.save(student.get());
+
+        return new MessageResponse("Course Register Deleted Successfully");
     }
 
 

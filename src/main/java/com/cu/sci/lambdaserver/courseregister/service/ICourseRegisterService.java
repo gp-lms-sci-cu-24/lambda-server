@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.courseregister.service;
 
+import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterResponseDto;
@@ -31,11 +32,15 @@ public interface ICourseRegisterService {
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     CourseRegisterOutDto getCourseRegister(Long id);
 
+    @PreAuthorize("hasRole('STUDENT')")
+    MessageResponse deleteCourseRegister(Long courseClassId);
+
+    void assignGradeToCourseRegister(Long grade, CourseRegister courseRegister) ;
+
     CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto);
 
     Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode);
 
-    CourseRegisterOutDto deleteCourseRegister(Long id);
 
     Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
 
