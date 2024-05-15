@@ -45,5 +45,6 @@ public class CourseRegister {
     private Long grade = -1L;
 
     @Column(columnDefinition = "integer default 0")
-    private Integer numberOfFailed ;
+    @Builder.Default
+    private Integer numberOfFailed = 0 ;
 }

@@ -1,17 +1,16 @@
 package com.cu.sci.lambdaserver.courseregister.service;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
+import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
-import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.CourseRegisterRepository;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
-import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterResponseDto;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
-import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterResponseMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
@@ -37,21 +36,15 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final CourseRegisterRepository courseRegisterRepository;
     private final StudentRepository studentRepository;
     private final CourseClassRepository courseClassRepository;
-    private final CourseClassService courseClassService;
+    private final CourseRepository courseRepository;
+    private final CourseRegisterOutDtoMapper courseRegisterResponseDtoMapper;
 
     private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
-    private final CourseRegisterResponseMapper courseRegisterResponseDtoMapper;
     private final IMapper<Student, StudentDto> studentDtoIMapper;
     private final IAuthenticationFacade iAuthenticationFacade;
 
 
-    /**
-     * Create a new course register
-     *  check if course register already exists
-     * @RequestBody courseRegisterInDto
-     * @return CourseRegisterResponseDto
-     */
     void confirmCourseRegister(String studentCode) {
         //get course register
         Collection<CourseRegister> courseRegisters = courseRegisterRepository.findAllByStudent_CodeAndState(studentCode, CourseRegisterState.REGISTERING);
@@ -89,7 +82,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
     @Override
-    public CourseRegisterResponseDto createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
+    public CourseRegisterOutDto createCourseRegister(CourseRegisterInDto courseRegisterInDto) {
 
         //get user
         User user = iAuthenticationFacade.getAuthenticatedUser();
@@ -106,22 +99,29 @@ public class CourseRegisterService implements ICourseRegisterService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
         }
 
+        Course course = courseRepository.findByCode(courseRegisterInDto.getCourseCode())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code "));
 
-        //check course class exists
-        Optional<CourseRegister> courseRegister = courseRegisterRepository.findByCourseClass_CourseClassIdAndStudentId(courseRegisterInDto.getCourseClassId(),student.getId());
-        if(courseRegister.isPresent()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "course register already exists");
+        Optional<CourseRegister> courseRegisterWithSameCourse = courseRegisterRepository.findByCourseClassCourseAndState(course, CourseRegisterState.REGISTERING);
+        if (courseRegisterWithSameCourse.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Register With The Same Course already exists");
         }
 
-        //get Course Class
-        CourseClass courseClass = courseClassService.getCourseClassById(courseRegisterInDto.getCourseClassId());
+        //get course class
+        CourseClass courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.getId(), courseRegisterInDto.getGroupNumber())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number "));
+
 
         //check course class state
         if (!courseClass.getCourseState().equals(State.ACTIVE)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not active");
         }
 
-       if(courseClass.getNumberOfStudentsRegistered().equals(courseClass.getMaxCapacity())){
+        if (!(courseClass.getYear().equals(Year.now().toString()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not available for this year");
+        }
+
+        if(courseClass.getNumberOfStudentsRegistered().equals(courseClass.getMaxCapacity())){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is full");
         }
 
@@ -181,6 +181,14 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<CourseRegisterOutDto> adminGetAllCourseRegisters(String studentCode) {
+        Student student = studentRepository.findByCode(studentCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code " + studentCode));
+        return courseRegisterRepository.findAllByStudentId(student.getId()).stream()
+                .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
+    }
+
 
     @Override
     public MessageResponse addGrade(String studentCode, Long courseClassId, Long grade) {
@@ -229,12 +237,23 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
     @Override
-    public CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto) {
-        return courseRegisterRepository.findById(courseRegisterInDto.getCourseRegisterId())
-                .map(courseRegister -> {
-                    courseRegisterInDtoMapper.update(courseRegisterInDto, courseRegister);
-                    return courseRegisterOutDtoMapper.mapTo(courseRegisterRepository.save(courseRegister));
-                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found with this id"));
+    public CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto, Long courseRegisterId) {
+
+
+        CourseClass courseClass = courseClassRepository.findById(courseRegisterInDto.getCourseClassId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this Id " + courseRegisterInDto.getCourseClassId()));
+
+        Optional<CourseRegister> courseRegister = courseRegisterRepository.findById(courseRegisterId);
+        if (courseRegister.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found ");
+        }
+
+        courseRegister.get().setCourseClass(courseClass);
+
+        courseRegisterRepository.save(courseRegister.get());
+
+        return courseRegisterOutDtoMapper.mapTo(courseRegister.get());
+
     }
 
 
@@ -273,6 +292,33 @@ public class CourseRegisterService implements ICourseRegisterService {
         return new MessageResponse("Course Register Deleted Successfully");
     }
 
+    @Override
+    public MessageResponse deleteCourseRegisterByStudentCode(String studentCode, Long courseClassId) {
+
+        Student student = studentRepository.findByCode(studentCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code " + studentCode));
+
+        CourseClass courseClass = courseClassRepository.findById(courseClassId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this Id " + courseClassId));
+
+        CourseRegister courseRegister = courseRegisterRepository
+                .findByCourseClass_CourseClassIdAndStudent_CodeAndState(courseClassId, studentCode, CourseRegisterState.REGISTERING)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found "));
+
+        courseRegisterRepository.delete(courseRegister);
+
+        courseClass.setNumberOfStudentsRegistered(courseClass.getNumberOfStudentsRegistered() - 1);
+
+        courseClassRepository.save(courseClass);
+
+        student.setCreditHoursSemester((student.getCreditHoursSemester()) - (courseClass.getCourse().getCreditHours()));
+        studentRepository.save(student);
+
+        return new MessageResponse("Course Register Deleted Successfully");
+
+
+    }
+
 
     @Override
     public Collection<StudentDto> getAllCourseClassStudents(Long courseClassId) {
@@ -283,9 +329,18 @@ public class CourseRegisterService implements ICourseRegisterService {
         return courseClassStudents.stream().map(studentDtoIMapper::mapTo).collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<CourseRegisterOutDto> getMyReslut(Semester semester, String year) {
+        User user = iAuthenticationFacade.getAuthenticatedUser();
+
+        return courseRegisterRepository.findByCourseClassYearAndCourseClassCourseSemesterAndStudentCode(user.getUsername(), semester, year)
+                .stream().map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
+
+    }
+
 
     @Override
-    public Collection<CourseRegisterResponseDto> getCourseRegistersByState(String studentCode, CourseRegisterState state) {
+    public Collection<CourseRegisterOutDto> getCourseRegistersByState(String studentCode, CourseRegisterState state) {
         //check if student exists
         studentRepository.findByCode(studentCode)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));

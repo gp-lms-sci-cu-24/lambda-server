@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
@@ -25,7 +26,7 @@ public interface ICourseRegisterService {
     Collection<CourseRegisterOutDto> studentGetAllCourseRegisters();
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    Collection<CourseRegisterOutDto> adminGetAllCourseRegisters();
+    Collection<CourseRegisterOutDto> adminGetAllCourseRegisters(String studentCode);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     Collection<CourseRegisterOutDto> getCourseRegistersByState(String studentCode, CourseRegisterState state);
@@ -37,10 +38,13 @@ public interface ICourseRegisterService {
     CourseRegisterOutDto getCourseRegister(Long id);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto);
+    CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto , Long courseRegisterId);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
+
+    @PreAuthorize("hasRole('STUDENT')")
+    Collection<CourseRegisterOutDto> getMyReslut(Semester semester , String year);
 
     Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode);
 

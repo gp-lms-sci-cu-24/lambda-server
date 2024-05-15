@@ -59,10 +59,10 @@ public class CourseRegisterController {
         return courseRegisterService
                 .getAllCourseClassStudents(id);
     }
-    @PatchMapping
+    @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseRegisterOutDto updateCourseRegister(@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
-        return courseRegisterService.updateCourseRegister(courseRegisterInDto);
+    public CourseRegisterOutDto updateCourseRegister(@PathVariable("id")Long id ,@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
+        return courseRegisterService.updateCourseRegister(courseRegisterInDto , id);
     }
 
     @PatchMapping(path = "/confirm/{student-code}")
@@ -77,15 +77,22 @@ public class CourseRegisterController {
         return courseRegisterService.studentConfirmCourseRegister();
     }
 
-    @PatchMapping(path = "/grade/{student-code}")
+    @PatchMapping(path = "/grade/{student-code}/{course-class-id}")
     @ResponseStatus(HttpStatus.OK)
-    public MessageResponse addGrade(@PathVariable("student-code") String studentCode, @RequestParam Long grade) {
-        return null ;
+    public MessageResponse addGrade(@PathVariable("student-code") String studentCode ,@PathVariable("course-class-id") Long courseClassId , @RequestBody  CourseRegisterInDto courseRegisterInDto) {
+        return courseRegisterService.addGrade(studentCode , courseClassId , courseRegisterInDto.getGrade());
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{me}/{course-class-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public CourseRegisterOutDto deleteCourseRegister(@PathVariable("id") Long id) {
-        return null ;
+    public MessageResponse deleteMyCourseRegister(@PathVariable("course-class-id") Long courseClassId) {
+        return courseRegisterService.deleteCourseRegister(courseClassId);
     }
+
+    @DeleteMapping(path = "/{student-code}/{course-class-id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public MessageResponse deleteCourseRegisterByStudentCode(@PathVariable("student-code") String studentCode , @PathVariable("course-class-id") Long courseClassId) {
+        return courseRegisterService.deleteCourseRegisterByStudentCode(studentCode , courseClassId);
+    }
+
 }

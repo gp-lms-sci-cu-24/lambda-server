@@ -19,20 +19,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CourseRegisterInDto {
 
-    @NotNull(message = "Course register ID is required", groups = {UpdateValidation.class})
-    private Long courseRegisterId;
+    @NotNull(message = "Rate is required", groups = {UpdateValidation.class})
+    private Long courseClassId;
 
     @NotNull(message = "Course class ID is required", groups = {CreateValidation.class, StudentCreateValidation.class})
     @Null(message = "Course class ID must be null during update or student create", groups = {UpdateValidation.class})
     @JsonProperty("course_code")
     private String courseCode;
 
-    @NotNull(message = "Group number is required", groups = {CreateValidation.class, StudentCreateValidation.class})
+    @NotNull(message = "Group number is required", groups = {CreateValidation.class})
     private  Integer groupNumber;
 
     @NotNull(message = "Student ID is required", groups = {CreateValidation.class})
     @Null(message = "Student ID must be null during update", groups = {UpdateValidation.class})
     private String studentCode;
+
+    @NotNull(message = "Rate is required", groups = {UpdateValidation.class})
+    private Long grade;
 
 
     public interface UpdateValidation {
