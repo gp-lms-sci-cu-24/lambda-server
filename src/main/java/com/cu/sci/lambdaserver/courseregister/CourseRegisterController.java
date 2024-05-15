@@ -61,16 +61,16 @@ public class CourseRegisterController {
                 .getAllCourseClassStudents(id);
     }
 
-    @GetMapping(path = "/reslut/{semester}/{year}")
+    @GetMapping(path = "/result/{year}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<CourseRegisterOutDto> getAllCourseRegistersBySemesterAndYear(@PathVariable Semester semester , @PathVariable String year) {
+    public Collection<CourseRegisterOutDto> getAllCourseRegistersBySemesterAndYear(@RequestParam Semester semester , @PathVariable String year) {
         return courseRegisterService.getMyReslut(semester , year);
     }
 
-    @PatchMapping(path = "/{id}")
+    @PatchMapping(path = "/{course-register-id}/{course-class-id}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseRegisterOutDto updateCourseRegister(@PathVariable("id")Long id ,@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
-        return courseRegisterService.updateCourseRegister(courseRegisterInDto , id);
+    public CourseRegisterOutDto updateCourseRegister(@PathVariable("course-register-id")Long courseRegisterId , @PathVariable("course-class-id") Long courseClassId) {
+        return courseRegisterService.updateCourseRegister(courseClassId , courseRegisterId);
     }
 
     @PatchMapping(path = "/confirm/{student-code}")
@@ -91,7 +91,7 @@ public class CourseRegisterController {
         return courseRegisterService.addGrade(studentCode , courseClassId , courseRegisterInDto.getGrade());
     }
 
-    @DeleteMapping(path = "/{me}/{course-class-id}")
+    @DeleteMapping(path = "/me/{course-class-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public MessageResponse deleteMyCourseRegister(@PathVariable("course-class-id") Long courseClassId) {
         return courseRegisterService.deleteCourseRegister(courseClassId);

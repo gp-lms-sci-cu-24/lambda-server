@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CourseRegisterInDto {
 
-    @NotNull(message = "Rate is required", groups = {UpdateValidation.class})
-    private Long courseClassId;
 
     @NotNull(message = "Course class ID is required", groups = {CreateValidation.class, StudentCreateValidation.class})
     @Null(message = "Course class ID must be null during update or student create", groups = {UpdateValidation.class})

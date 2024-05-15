@@ -21,7 +21,7 @@ public interface CourseRegisterRepository extends JpaRepository<CourseRegister, 
 
     Collection<CourseRegister> findAllByStudent_CodeAndState(String studentCode, CourseRegisterState state);
 
-    Collection<CourseRegister> findByCourseClassYearAndCourseClassCourseSemesterAndStudentCode(String Year , Semester semester , String studentCode);
+    Collection<CourseRegister> findByCourseClassYearAndCourseClassCourseSemesterAndStudentIdAndStateIn(String Year, Semester semester, Long studentId, Collection<CourseRegisterState> states);
 
     Optional<CourseRegister> findByCourseClass_CourseClassIdAndStudent_CodeAndState(Long courseClassId, String studentCode , CourseRegisterState state);
 

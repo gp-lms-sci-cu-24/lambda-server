@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Year;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -227,15 +228,23 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
     @Override
-    public CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto, Long courseRegisterId) {
+    public CourseRegisterOutDto updateCourseRegister(Long courseClassId, Long courseRegisterId) {
 
 
-        CourseClass courseClass = courseClassRepository.findById(courseRegisterInDto.getCourseClassId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this Id " + courseRegisterInDto.getCourseClassId()));
+        CourseClass courseClass = courseClassRepository.findById(courseClassId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this Id " +courseClassId));
+
+        Optional<CourseRegister> courseRegisterOptional = courseRegisterRepository.findByCourseClassCourseAndState(courseClass.getCourse(), CourseRegisterState.REGISTERING);
+        if (courseRegisterOptional.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Register With The Same Course already exists");
+        }
 
         Optional<CourseRegister> courseRegister = courseRegisterRepository.findById(courseRegisterId);
         if (courseRegister.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found ");
+        }
+        if(!(courseRegister.get().getState().equals(CourseRegisterState.REGISTERING))){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Register is already confirmed");
         }
 
         courseRegister.get().setCourseClass(courseClass);
@@ -323,8 +332,15 @@ public class CourseRegisterService implements ICourseRegisterService {
     public Collection<CourseRegisterOutDto> getMyReslut(Semester semester, String year) {
         User user = iAuthenticationFacade.getAuthenticatedUser();
 
-        return courseRegisterRepository.findByCourseClassYearAndCourseClassCourseSemesterAndStudentCode(user.getUsername(), semester, year)
-                .stream().map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
+        List<CourseRegisterOutDto> courseRegisterOutDtos = courseRegisterRepository
+                .findByCourseClassYearAndCourseClassCourseSemesterAndStudentIdAndStateIn(year , semester , user.getId() , List.of(CourseRegisterState.PASSED, CourseRegisterState.FAILED))
+                .stream().map(courseRegisterOutDtoMapper::mapTo).toList();
+
+        if (courseRegisterOutDtos.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No course registrations found for student with code: " + user.getUsername());
+        }
+        System.out.println(courseRegisterOutDtos);
+        return courseRegisterOutDtos;
 
     }
 

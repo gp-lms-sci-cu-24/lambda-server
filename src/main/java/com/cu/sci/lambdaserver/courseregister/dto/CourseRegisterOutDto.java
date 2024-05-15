@@ -17,6 +17,8 @@ public class CourseRegisterOutDto {
 
     private Long courseRegisterId;
 
+    private Long courseClassId;
+
     private CourseClassDto courseClass;
 
     private String studentCode;

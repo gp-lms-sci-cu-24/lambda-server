@@ -38,7 +38,7 @@ public interface ICourseRegisterService {
     CourseRegisterOutDto getCourseRegister(Long id);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    CourseRegisterOutDto updateCourseRegister(CourseRegisterInDto courseRegisterInDto , Long courseRegisterId);
+    CourseRegisterOutDto updateCourseRegister(Long courseClassId , Long courseRegisterId);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
