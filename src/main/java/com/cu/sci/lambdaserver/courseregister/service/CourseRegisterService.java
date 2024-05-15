@@ -38,8 +38,6 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final CourseClassRepository courseClassRepository;
     private final CourseRepository courseRepository;
     private final CourseRegisterOutDtoMapper courseRegisterResponseDtoMapper;
-
-    private final CourseRegisterInDtoMapper courseRegisterInDtoMapper;
     private final CourseRegisterOutDtoMapper courseRegisterOutDtoMapper;
     private final IMapper<Student, StudentDto> studentDtoIMapper;
     private final IAuthenticationFacade iAuthenticationFacade;

@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
+import com.cu.sci.lambdaserver.utils.enums.Semester;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -59,6 +60,13 @@ public class CourseRegisterController {
         return courseRegisterService
                 .getAllCourseClassStudents(id);
     }
+
+    @GetMapping(path = "/reslut/{semester}/{year}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<CourseRegisterOutDto> getAllCourseRegistersBySemesterAndYear(@PathVariable Semester semester , @PathVariable String year) {
+        return courseRegisterService.getMyReslut(semester , year);
+    }
+
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CourseRegisterOutDto updateCourseRegister(@PathVariable("id")Long id ,@Validated(CourseRegisterInDto.UpdateValidation.class) @RequestBody CourseRegisterInDto courseRegisterInDto) {
