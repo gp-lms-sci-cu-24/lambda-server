@@ -26,7 +26,7 @@ public interface ICourseRegisterService {
     Collection<CourseRegisterOutDto> studentGetAllCourseRegisters();
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    Collection<CourseRegisterOutDto> adminGetAllCourseRegisters(String studentCode);
+    Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     Collection<CourseRegisterOutDto> getCourseRegistersByState(String studentCode, CourseRegisterState state);
@@ -46,7 +46,7 @@ public interface ICourseRegisterService {
     @PreAuthorize("hasRole('STUDENT')")
     Collection<CourseRegisterOutDto> getMyReslut(Semester semester , String year);
 
-    Collection<CourseRegisterOutDto> getStudentRegisteredCourses(String studentCode);
+
 
     @PreAuthorize("hasRole('STUDENT')")
     MessageResponse deleteCourseRegister(Long courseClassId);

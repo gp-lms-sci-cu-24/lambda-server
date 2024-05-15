@@ -181,14 +181,6 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
     }
 
-    @Override
-    public Collection<CourseRegisterOutDto> adminGetAllCourseRegisters(String studentCode) {
-        Student student = studentRepository.findByCode(studentCode)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code " + studentCode));
-        return courseRegisterRepository.findAllByStudentId(student.getId()).stream()
-                .map(courseRegisterOutDtoMapper::mapTo).collect(Collectors.toList());
-    }
-
 
     @Override
     public MessageResponse addGrade(String studentCode, Long courseClassId, Long grade) {
