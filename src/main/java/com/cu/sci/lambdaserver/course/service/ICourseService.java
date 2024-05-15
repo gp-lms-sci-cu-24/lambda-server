@@ -2,29 +2,43 @@ package com.cu.sci.lambdaserver.course.service;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.List;
 import java.util.Set;
 
 public interface ICourseService {
+
+    @PreAuthorize("hasRole('ADMIN')")
     Page<CourseDto> getCourses(Integer pageNo, Integer pageSize);
 
-    Course getCourse(Long courseId);
+    @PreAuthorize("hasRole('ADMIN')")
+    Course getCourse(String courseCode);
 
+    @PreAuthorize("hasRole('ADMIN')")
     CourseDto createCourse(CreateCourseDto createCourseDto);
 
-    Course deleteCourse(Long courseId);
+    @PreAuthorize("hasRole('ADMIN')")
+    Course deleteCourse(String courseCode);
 
-    Course updateCourse(Long courseId, Course course);
+    @PreAuthorize("hasRole('ADMIN')")
+    Course updateCourse(String courseCode, Course course);
 
-    Course addPrerequisite(Long courseId, Long prerequisiteId);
+    @PreAuthorize("hasRole('ADMIN')")
+    Course addPrerequisite(String courseCode, String prerequisiteCode);
 
-    Set<Course> getPrerequisite(Long id);
+    @PreAuthorize("hasRole('ADMIN')")
+    Set<Course> getPrerequisite(String courseCode);
 
-    Set<Course> getAllPrerequisites(Long courseId);
+    @PreAuthorize("hasRole('ADMIN')")
+    Set<Course> getAllPrerequisites(String courseCode);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    Course removePrerequisite(String courseCode, String prerequisiteCode);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    DepartmentCoursesCollectingDto changeMandatoryAndSemester(String courseCode, String departmentCode, Boolean mandatory, String semester);
+
 }

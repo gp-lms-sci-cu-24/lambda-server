@@ -36,7 +36,7 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<DepartmentCourses> departmentCoursesSet;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Course> coursePrerequisites;
 
     @Override
@@ -54,41 +54,5 @@ public class Course {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-    //[
-    //    {
-    //        "id": 1,
-    //        "name": "number 2",
-    //        "code": "comp494",
-    //        "info": "computer science",
-    //        "creditHours": 3
-    //    },
-    //    {
-    //        "id": 2,
-    //        "name": "number 1",
-    //        "code": "comp493",
-    //        "info": "computer science",
-    //        "creditHours": 3
-    //    },
-    //    {
-    //        "id": 12,
-    //        "name": "number 3",
-    //        "code": "comp495",
-    //        "info": "computer science",
-    //        "creditHours": 3
-    //    },
-    //    {
-    //        "id": 13,
-    //        "name": "number 4",
-    //        "code": "comp496",
-    //        "info": "computer science",
-    //        "creditHours": 3
-    //    },
-    //    {
-    //        "id": 14,
-    //        "name": "number 5",
-    //        "code": "comp497",
-    //        "info": "computer science",
-    //        "creditHours": 3
-    //    }
-    //]
+
 }
