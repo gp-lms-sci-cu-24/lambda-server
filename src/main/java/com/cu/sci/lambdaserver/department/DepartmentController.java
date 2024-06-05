@@ -2,9 +2,8 @@ package com.cu.sci.lambdaserver.department;
 
 
 import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
-import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.CreateUpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
-import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -24,7 +23,7 @@ public class DepartmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DepartmentDto createDepartment(@RequestBody @Valid CreateDepartmentDto departmentDto) {
+    public DepartmentDto createDepartment(@RequestBody @Valid CreateUpdateDepartmentDto departmentDto) {
         return departmentService.createDepartment(departmentDto);
     }
 
@@ -41,14 +40,14 @@ public class DepartmentController {
     }
 
 
-    @PatchMapping(path = "/{code}")
+    @PutMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
-    public UpdateDepartmentDto updateDepartment(@PathVariable String code, @RequestBody UpdateDepartmentDto departmentDto) {
+    public DepartmentDto updateDepartment(@PathVariable String code, @RequestBody @Valid CreateUpdateDepartmentDto departmentDto) {
         return departmentService.updateDepartmentByCode(code, departmentDto);
     }
 
     @DeleteMapping(path = "/{code}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public MessageResponse deleteDepartment(@PathVariable String code) {
         return departmentService.deleteDepartmentByCode(code);
     }

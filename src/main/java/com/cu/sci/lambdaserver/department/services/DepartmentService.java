@@ -4,9 +4,8 @@ import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
-import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.CreateUpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
-import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -38,8 +36,7 @@ public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final IMapper<Department, DepartmentDto> departmentMapper;
-    private final IMapper<Department, CreateDepartmentDto> createDepartmentDtoiMapper;
-    private final IMapper<Department, UpdateDepartmentDto> updateDepartmentDtoiMapper;
+    private final IMapper<Department, CreateUpdateDepartmentDto> createDepartmentDtoiMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
     private final IMapper<DepartmentCourses, DepartmentCoursesCollectingDto> departmentCoursesCollectingMapper;
 
@@ -47,7 +44,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public DepartmentDto createDepartment(CreateDepartmentDto department) {
+    public DepartmentDto createDepartment(CreateUpdateDepartmentDto department) {
         // check if department is already exist
         Boolean foundedDepartmentByCode = departmentRepository
                 .existsByCodeIgnoreCase(department.getCode());
@@ -99,32 +96,38 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public UpdateDepartmentDto updateDepartmentByCode(String code, UpdateDepartmentDto departmentDto) {
+    public DepartmentDto updateDepartmentByCode(String code, CreateUpdateDepartmentDto dto) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, " department not found with this code ");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with this code.");
+        }
+        Department department = foundedDepartment.get();
+
+        if (!department.getName().equalsIgnoreCase(dto.getName())) {
+            Boolean foundedDepartmentByName = departmentRepository
+                    .existsByNameIgnoreCase(dto.getName());
+            if (foundedDepartmentByName) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Department name is already exist.");
+            }
+        }
+        if (!department.getCode().equalsIgnoreCase(dto.getCode())) {
+            Boolean foundedDepartmentByCode = departmentRepository
+                    .existsByCodeIgnoreCase(dto.getCode());
+            if (foundedDepartmentByCode) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Department code is already exist.");
+            }
         }
 
-        // check update values if they equal old values
-        if (Objects.equals(foundedDepartment.get().getCode(), departmentDto.getCode()) ||
-                Objects.equals(foundedDepartment.get().getName(), departmentDto.getName())
-        ) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "You can't use old code or name.");
-        }
 
+        department.setCode(dto.getCode());
+        department.setName(dto.getName());
+        department.setInfo(dto.getInfo());
+        department.setGraduationCreditHours(dto.getGraduationCreditHours());
 
-        // update department and save it
-        foundedDepartment.map(department -> {
-            Optional.ofNullable(departmentDto.getName()).ifPresent(department::setName);
-            Optional.ofNullable(departmentDto.getInfo()).ifPresent(department::setInfo);
-            Optional.ofNullable(departmentDto.getCode()).ifPresent(department::setCode);
-            return departmentRepository.save(department);
-        });
-
-        // convert saved department to dto
-        return updateDepartmentDtoiMapper.mapTo(foundedDepartment.get());
+        Department updated = departmentRepository.save(department);
+        return departmentMapper.mapTo(updated);
     }
 
 

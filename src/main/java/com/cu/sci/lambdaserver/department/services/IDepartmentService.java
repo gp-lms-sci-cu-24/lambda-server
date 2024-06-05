@@ -1,9 +1,8 @@
 package com.cu.sci.lambdaserver.department.services;
 
 import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
-import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.CreateUpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
-import com.cu.sci.lambdaserver.department.dto.UpdateDepartmentDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.Semester;
@@ -23,7 +22,7 @@ public interface IDepartmentService {
      * @return The created department.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    DepartmentDto createDepartment(CreateDepartmentDto department);
+    DepartmentDto createDepartment(CreateUpdateDepartmentDto department);
 
     /**
      * Updates an existing department.
@@ -34,7 +33,7 @@ public interface IDepartmentService {
      * @return The updated department.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    UpdateDepartmentDto updateDepartmentByCode(String code, UpdateDepartmentDto department);
+    DepartmentDto updateDepartmentByCode(String code, CreateUpdateDepartmentDto department);
 
     /**
      * Deletes a department.

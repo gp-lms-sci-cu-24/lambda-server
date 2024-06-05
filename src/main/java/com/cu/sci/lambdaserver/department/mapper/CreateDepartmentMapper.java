@@ -1,13 +1,13 @@
 package com.cu.sci.lambdaserver.department.mapper;
 
 import com.cu.sci.lambdaserver.department.Department;
-import com.cu.sci.lambdaserver.department.dto.CreateDepartmentDto;
+import com.cu.sci.lambdaserver.department.dto.CreateUpdateDepartmentDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CreateDepartmentMapper implements IMapper<Department, CreateDepartmentDto> {
+public class CreateDepartmentMapper implements IMapper<Department, CreateUpdateDepartmentDto> {
 
     private final ModelMapper modelMapper;
 
@@ -16,17 +16,17 @@ public class CreateDepartmentMapper implements IMapper<Department, CreateDepartm
     }
 
     @Override
-    public CreateDepartmentDto mapTo(Department department) {
-        return modelMapper.map(department, CreateDepartmentDto.class);
+    public CreateUpdateDepartmentDto mapTo(Department department) {
+        return modelMapper.map(department, CreateUpdateDepartmentDto.class);
     }
 
     @Override
-    public Department mapFrom(CreateDepartmentDto createDepartmentDto) {
-        return modelMapper.map(createDepartmentDto, Department.class);
+    public Department mapFrom(CreateUpdateDepartmentDto createUpdateDepartmentDto) {
+        return modelMapper.map(createUpdateDepartmentDto, Department.class);
     }
 
     @Override
-    public Department update(CreateDepartmentDto createDepartmentDto, Department department) {
+    public Department update(CreateUpdateDepartmentDto createUpdateDepartmentDto, Department department) {
         return null;
     }
 }
