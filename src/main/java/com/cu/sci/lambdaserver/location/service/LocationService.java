@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.location.service;
 
 import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
+import com.cu.sci.lambdaserver.location.dto.CreateUpdateLocationDto;
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -26,13 +27,21 @@ public class LocationService implements ILocationService {
      * {@inheritDoc}
      */
     @Override
-    public LocationDto createLocation(LocationDto locationDto) {
-        boolean exists = locationRepository.existsByNameIgnoreCase(locationDto.getName());
+    public LocationDto createLocation(CreateUpdateLocationDto dto) {
+        boolean exists = locationRepository.existsByNameIgnoreCase(dto.name());
         if (exists) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Location with name " + locationDto.getName() + " already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Location with name " + dto.name() + " already exists");
         }
+        final String info = dto.info() == null ? "" : dto.info();
 
-        Location location = locationRepository.save(locationMapper.mapFrom(locationDto));
+        Location location = locationRepository.save(Location.builder()
+                .path(dto.path())
+                .name(dto.name())
+                .maxCapacity(dto.maxCapacity())
+                .info(info)
+                .build()
+        );
+
         return locationMapper.mapTo(location);
     }
 
@@ -70,7 +79,7 @@ public class LocationService implements ILocationService {
      * {@inheritDoc}
      */
     @Override
-    public LocationDto updateLocationById(Long id, LocationDto locationDetails) {
+    public LocationDto updateLocationById(Long id, CreateUpdateLocationDto locationDetails) {
         /*@TODO: Logic need to write by better way*/
 
         Optional<Location> location = locationRepository.findById(id);
@@ -79,23 +88,23 @@ public class LocationService implements ILocationService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Location with ID " + id + " does not exist");
         }
 
-        if (!locationDetails.getName().equalsIgnoreCase(location.get().getName())) {
-            Optional<Location> locationByName = locationRepository.findByNameIgnoreCase(locationDetails.getName());
+        if (!locationDetails.name().equalsIgnoreCase(location.get().getName())) {
+            Optional<Location> locationByName = locationRepository.findByNameIgnoreCase(locationDetails.name());
             if (locationByName.isPresent() && !locationByName.get().getId().equals(id)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Location with name " + locationDetails.getName() + " already exists");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Location with name " + locationDetails.name() + " already exists");
             }
         }
 
-        Location updatedLocation = location.map(existingLocation -> {
-            existingLocation.setPath(locationDetails.getPath());
-            existingLocation.setMaxCapacity(locationDetails.getMaxCapacity());
-            existingLocation.setInfo(locationDetails.getInfo());
-            existingLocation.setImage(locationDetails.getImage());
-            existingLocation.setName(locationDetails.getName());
-            return locationRepository.save(existingLocation);
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
+        final String info = locationDetails.info() == null ? "" : locationDetails.info();
 
-        return locationMapper.mapTo(updatedLocation);
+        Location updatedLocation = location.get();
+        updatedLocation.setName(locationDetails.name());
+        updatedLocation.setPath(locationDetails.path());
+        updatedLocation.setMaxCapacity(locationDetails.maxCapacity());
+        updatedLocation.setInfo(info);
+
+        Location saved = locationRepository.save(updatedLocation);
+        return locationMapper.mapTo(saved);
     }
 
     /**

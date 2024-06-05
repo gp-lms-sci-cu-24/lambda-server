@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.location.service;
 
+import com.cu.sci.lambdaserver.location.dto.CreateUpdateLocationDto;
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,7 @@ public interface ILocationService {
      * @return The created LocationDto object.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    LocationDto createLocation(LocationDto location);
+    LocationDto createLocation(CreateUpdateLocationDto location);
 
     /**
      * Updates an existing Location entity by its ID.
@@ -29,7 +30,7 @@ public interface ILocationService {
      * @return The updated LocationDto object.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    LocationDto updateLocationById(Long id, LocationDto location);
+    LocationDto updateLocationById(Long id, CreateUpdateLocationDto location);
 
     /**
      * Deletes a Location entity by its ID.

@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.location;
 
+import com.cu.sci.lambdaserver.location.dto.CreateUpdateLocationDto;
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.location.service.ILocationService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -18,7 +19,7 @@ public class LocationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LocationDto createLocation(@RequestBody @Valid LocationDto locationDto) {
+    public LocationDto createLocation(@RequestBody @Valid CreateUpdateLocationDto locationDto) {
         return locationService.createLocation(locationDto);
     }
 
@@ -34,10 +35,10 @@ public class LocationController {
         return locationService.getLocationById(id);
     }
 
-    @PatchMapping
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public LocationDto updateLocation(@RequestBody LocationDto locationDto) {
-        return locationService.updateLocationById(locationDto.getId(), locationDto);
+    public LocationDto updateLocation(@PathVariable Long id, @RequestBody CreateUpdateLocationDto locationDto) {
+        return locationService.updateLocationById(id, locationDto);
     }
 
     @DeleteMapping(path = "/{id}")
