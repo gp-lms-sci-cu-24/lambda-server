@@ -18,8 +18,6 @@ public class CreateDepartmentDto {
     @NotNull
     private String info;
 
-    private String image;
-
     @NotNull
     private String code;
 
