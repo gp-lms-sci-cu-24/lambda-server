@@ -5,7 +5,7 @@ import com.cu.sci.lambdaserver.chat.entites.ChatRoom;
 public interface IChatRoomService {
 
 
-    void createChatRoom(String firstUserName, String secondUserName);
+    ChatRoom createOrFindChatRoom(String firstUserName, String secondUserName);
 
 
 

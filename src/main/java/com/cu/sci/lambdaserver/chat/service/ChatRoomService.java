@@ -21,7 +21,7 @@ public class ChatRoomService implements IChatRoomService {
 
 
     @Override
-    public void createChatRoom(String firstUserName, String secondUserName) {
+    public ChatRoom createOrFindChatRoom(String firstUserName, String secondUserName) {
 
         User firstUser = userService.loadUserByUsername(firstUserName);
         User secondUser = userService.loadUserByUsername(secondUserName);
@@ -31,8 +31,9 @@ public class ChatRoomService implements IChatRoomService {
             ChatRoom newChatRoom = new ChatRoom();
             newChatRoom.setFirstUser(firstUser);
             newChatRoom.setSecondUser(secondUser);
-            chatRoomRepository.save(newChatRoom);
+            return chatRoomRepository.save(newChatRoom);
         }
 
+        return chatRoom.get();
     }
 }
