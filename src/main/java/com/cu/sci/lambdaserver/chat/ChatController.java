@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.chat;
 
+import com.cu.sci.lambdaserver.chat.dtos.MessageDto;
 import com.cu.sci.lambdaserver.chat.dtos.SendMessageDto;
 import com.cu.sci.lambdaserver.chat.entites.Message;
 import com.cu.sci.lambdaserver.chat.service.MessageService;
@@ -18,8 +19,8 @@ public class ChatController {
 
     @MessageMapping("/chat")
     public void sendMassage(SendMessageDto sendMessage) {
-        Message message = messageService.sendMessage(sendMessage);
-        messagingTemplate.convertAndSendToUser(message.getReceiver().getUsername(), "/queue/messages", message);
+        MessageDto message = messageService.sendMessage(sendMessage);
+        messagingTemplate.convertAndSendToUser(message.getReceiver(), "/queue/messages", message);
     }
 
 }
