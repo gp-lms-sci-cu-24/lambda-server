@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.chat.service;
 
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
-import com.cu.sci.lambdaserver.chat.dtos.SendMessage;
+import com.cu.sci.lambdaserver.chat.dtos.ChatMessage;
 import com.cu.sci.lambdaserver.chat.entites.ChatRoom;
 import com.cu.sci.lambdaserver.chat.entites.Message;
 import com.cu.sci.lambdaserver.chat.repository.MessageRepository;
@@ -24,7 +24,7 @@ public class MessageService implements IMessageService  {
 
 
     @Override
-    public Message sendMessage(SendMessage sendMessage) {
+    public Message sendMessage(ChatMessage sendMessage) {
 
         User sender =  authenticationFacade.getAuthenticatedUser();
         User receiver = userService.loadUserByUsername(sendMessage.getReceiver());
