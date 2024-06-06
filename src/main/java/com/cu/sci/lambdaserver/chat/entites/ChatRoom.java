@@ -25,15 +25,14 @@ public class ChatRoom {
 
     @ManyToOne
     @JoinColumn(name = "user1_id", nullable = false)
-    private User firstUser ;
+    private User firstUser;
 
     @ManyToOne
     @JoinColumn(name = "user2_id", nullable = false)
-    private User secondUser ;
+    private User secondUser;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Message> messages;
-
 
 
 }
