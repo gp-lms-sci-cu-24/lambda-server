@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.chat;
+package com.cu.sci.lambdaserver.chat.config;
 
 
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/user", "/topic");
-        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableSimpleBroker( "/topic");
         registry.setUserDestinationPrefix("/user");
     }
 
