@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.announcement.service;
 
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
@@ -21,6 +22,6 @@ public interface IAnnouncementService {
     AnnouncementDto updateAnnouncement(Long announcementId, CreateAnnouncementDto updateAnnouncementDto);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    void deleteAnnouncement(Long announcementId);
+    MessageResponse deleteAnnouncement(Long announcementId);
 
 }

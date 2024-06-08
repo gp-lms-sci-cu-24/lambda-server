@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.service.AnnouncementService;
 import com.cu.sci.lambdaserver.announcement.service.ISseService;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,20 @@ public class AnnouncementController {
         return announcementService.getAnnouncements().stream().toList();
     }
 
+    @GetMapping("/{announcementId}")
+    public AnnouncementDto getAnnouncement(@PathVariable Long announcementId) {
+        return announcementService.getAnnouncement(announcementId);
+    }
+
+    @PatchMapping("/{announcementId}")
+    public AnnouncementDto updateAnnouncement(@PathVariable Long announcementId, @RequestBody CreateAnnouncementDto updateAnnouncementDto) {
+        return announcementService.updateAnnouncement(announcementId, updateAnnouncementDto);
+    }
+
+    @DeleteMapping("/{announcementId}")
+    public MessageResponse deleteAnnouncement(@PathVariable Long announcementId) {
+        return announcementService.deleteAnnouncement(announcementId);
+    }
 
 
     @GetMapping(value = "/subscribe" , produces = MediaType.TEXT_EVENT_STREAM_VALUE)

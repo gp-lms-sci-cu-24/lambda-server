@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.mapper.CreateAnnouncementMapper;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -71,12 +72,13 @@ public class AnnouncementService implements IAnnouncementService{
 
 
     @Override
-    public void deleteAnnouncement(Long announcementId) {
+    public MessageResponse deleteAnnouncement(Long announcementId) {
         Optional<Announcement> announcement = announcementRepository.findById(announcementId) ;
         if(announcement.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement not found with this id "+ announcementId ) ;
         }
         announcementRepository.delete(announcement.get());
+        return new MessageResponse("Announcement deleted successfully");
     }
 
 }
