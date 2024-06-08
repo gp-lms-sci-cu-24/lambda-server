@@ -1,10 +1,12 @@
 package com.cu.sci.lambdaserver.announcement.service;
 
 
+import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,21 @@ public class SseService implements ISseService{
         emitter.onTimeout(() -> emitters.remove(emitter));
 
         return emitter;
+    }
+
+
+    @Override
+    public void send(AnnouncementDto announcement) {
+
+        for (SseEmitter emitter : emitters) {
+            try {
+                emitter.send(SseEmitter.event().name(announcement.getTitle()).data(announcement.getDescription()));
+            } catch (IOException e) {
+                emitters.remove(emitter);
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
 }
