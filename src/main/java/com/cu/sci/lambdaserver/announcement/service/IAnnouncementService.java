@@ -5,7 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface IAnnouncementService {
 
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','PROFESSOR')")
     AnnouncementDto createAnnouncement(AnnouncementDto createAnnouncementDto);
 
 
