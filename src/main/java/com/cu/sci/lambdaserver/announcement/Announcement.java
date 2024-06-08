@@ -21,10 +21,10 @@ public class Announcement {
     private Long id;
 
     @Column(nullable = false)
-    private String title ;
+    private String title;
 
     @Column(nullable = false)
-    private String description ;
+    private String description;
 
     private LocalDateTime timestamp;
 
