@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateAnnouncementDto {
+public class AnnouncementDto {
 
     private String title ;
 
