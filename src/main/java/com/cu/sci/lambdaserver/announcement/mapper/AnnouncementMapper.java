@@ -14,19 +14,18 @@ public class AnnouncementMapper implements IMapper<Announcement, AnnouncementDto
 
     private final ModelMapper modelMapper;
 
-
     @Override
     public AnnouncementDto mapTo(Announcement announcement) {
         return modelMapper.map(announcement, AnnouncementDto.class);
     }
 
     @Override
-    public Announcement mapFrom(AnnouncementDto createAnnouncementDto) {
-        return modelMapper.map(createAnnouncementDto, Announcement.class);
+    public Announcement mapFrom(AnnouncementDto announcementDto) {
+        return modelMapper.map(announcementDto, Announcement.class);
     }
 
     @Override
-    public Announcement update(AnnouncementDto createAnnouncementDto, Announcement announcement) {
+    public Announcement update(AnnouncementDto announcementDto, Announcement announcement) {
         return null;
     }
 }

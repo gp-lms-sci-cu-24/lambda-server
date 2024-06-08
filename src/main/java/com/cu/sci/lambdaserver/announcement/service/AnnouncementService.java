@@ -3,7 +3,9 @@ package com.cu.sci.lambdaserver.announcement.service;
 import com.cu.sci.lambdaserver.announcement.Announcement;
 import com.cu.sci.lambdaserver.announcement.AnnouncementRepository;
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
+import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
+import com.cu.sci.lambdaserver.announcement.mapper.CreateAnnouncementMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class AnnouncementService implements IAnnouncementService{
 
 
     @Override
-    public AnnouncementDto createAnnouncement(AnnouncementDto createAnnouncementDto) {
+    public AnnouncementDto createAnnouncement(CreateAnnouncementDto createAnnouncementDto) {
         Announcement announcement = Announcement.builder()
                 .title(createAnnouncementDto.getTitle())
                 .description(createAnnouncementDto.getDescription())
@@ -53,7 +55,7 @@ public class AnnouncementService implements IAnnouncementService{
 
 
     @Override
-    public AnnouncementDto updateAnnouncement(Long announcementId, AnnouncementDto updateAnnouncementDto) {
+    public AnnouncementDto updateAnnouncement(Long announcementId, CreateAnnouncementDto updateAnnouncementDto) {
         Optional<Announcement> announcement = announcementRepository.findById(announcementId) ;
         if(announcement.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement not found with this id "+ announcementId ) ;
