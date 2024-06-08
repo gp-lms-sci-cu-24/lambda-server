@@ -26,6 +26,7 @@ public class Announcement {
     @Column(nullable = false)
     private String description;
 
+    @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
 
 
