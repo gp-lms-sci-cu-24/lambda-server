@@ -28,8 +28,8 @@ public class AnnouncementController {
 
     @PostMapping("/send")
     public void send(@RequestBody AnnouncementDto announcementDto ) {
-        announcementService.createAnnouncement(announcementDto);
-        sseService.send(announcementDto);
+        AnnouncementDto savedAnnouncement = announcementService.createAnnouncement(announcementDto);
+        sseService.send(savedAnnouncement);
     }
 
 
