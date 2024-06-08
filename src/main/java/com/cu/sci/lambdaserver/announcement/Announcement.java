@@ -29,5 +29,7 @@ public class Announcement {
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
 
+    private LocalDateTime editedTimestamp;
+
 
 }
