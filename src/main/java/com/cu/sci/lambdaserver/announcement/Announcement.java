@@ -26,7 +26,7 @@ public class Announcement {
     @Column(nullable = false)
     private String description;
 
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp = LocalDateTime.now();
 
 
 }
