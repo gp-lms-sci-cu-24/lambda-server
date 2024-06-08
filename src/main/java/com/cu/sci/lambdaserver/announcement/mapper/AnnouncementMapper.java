@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CreateAnnouncementMapper implements IMapper<Announcement, AnnouncementDto> {
+public class AnnouncementMapper implements IMapper<Announcement, AnnouncementDto> {
 
     private final ModelMapper modelMapper;
 
