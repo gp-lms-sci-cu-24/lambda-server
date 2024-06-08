@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnnouncementService implements IAnnouncementService{
 
-    private AnnouncementRepository announcementRepository;
-    private AnnouncementMapper announcementMapper ;
+    private final AnnouncementRepository announcementRepository;
+    private final AnnouncementMapper announcementMapper ;
 
 
 
