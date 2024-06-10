@@ -38,7 +38,6 @@ public class CourseMapper implements IMapper<Course, CourseDto> {
             }
         }
         return CourseDto.builder()
-                .id(course.getId())
                 .code(course.getCode())
                 .name(course.getName())
                 .info(course.getInfo())

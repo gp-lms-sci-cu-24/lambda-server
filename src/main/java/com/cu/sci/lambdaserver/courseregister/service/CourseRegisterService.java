@@ -97,7 +97,7 @@ public class CourseRegisterService implements ICourseRegisterService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
         }
 
-        Course course = courseRepository.findByCode(courseRegisterInDto.getCourseCode())
+        Course course = courseRepository.findByCodeIgnoreCase(courseRegisterInDto.getCourseCode())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code "));
 
         Optional<CourseRegister> courseRegisterWithSameCourse = courseRegisterRepository.findByCourseClassCourseAndState(course, CourseRegisterState.REGISTERING);

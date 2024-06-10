@@ -37,7 +37,7 @@ public class CourseClassService implements ICourseClassService {
     public CourseClassDto  createCourseClass(CreateCourseClassDto courseClassDto) {
 
         //check if the course exist
-        Optional<Course> course = courseRepository.findByCode(courseClassDto.getCourseCode());
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseClassDto.getCourseCode());
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseClassDto.getCourseCode());
         }
@@ -85,7 +85,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public CourseClassDto getCourseClass(String courseCode , Integer groupNumber) {
         //check if the course exist
-        Optional<Course> course = courseRepository.findByCode(courseCode);
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
@@ -102,7 +102,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public MessageResponse deleteCourseClass(String courseCode , Integer groupNumber) {
         //check if the course exist
-        Optional<Course> course = courseRepository.findByCode(courseCode);
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
@@ -121,7 +121,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public CourseClassDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClassDto) {
 
-        Optional<Course> course = courseRepository.findByCode(courseCode);
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
@@ -144,7 +144,7 @@ public class CourseClassService implements ICourseClassService {
     @Override
     public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, String Year) {
 
-        Optional<Course> course = courseRepository.findByCode(courseCode);
+        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }

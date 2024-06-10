@@ -1,10 +1,11 @@
 package com.cu.sci.lambdaserver.course;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
-import com.cu.sci.lambdaserver.course.dto.CreateCourseDto;
+import com.cu.sci.lambdaserver.course.dto.CreateCourseRequestDto;
 import com.cu.sci.lambdaserver.course.dto.DepartmentCoursesCollectingDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
-import com.cu.sci.lambdaserver.course.service.CourseService;
+import com.cu.sci.lambdaserver.course.service.ICourseService;
+import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,34 +17,33 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = ("/api/v1/course"))
+@RequestMapping(path = ("/api/v1/courses"))
 @RequiredArgsConstructor
 public class CourseController {
-    private final CourseService courseService;
+    private final ICourseService courseService;
     private final IMapper<Course, CourseDto> courseMapper;
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Page<CourseDto> GetCourses(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
-        return courseService.getCourses(pageNo, pageSize);
-    }
-
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public CourseDto getCourseById(@PathVariable(name = "id") String courseCode) {
-        return courseMapper.mapTo(courseService.getCourse(courseCode));
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDto createCourse(@Valid @RequestBody CreateCourseDto course) {
+    public CourseDto createCourse(@Valid @RequestBody CreateCourseRequestDto course) {
         return courseService.createCourse(course);
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping("/{courseCode}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseDto deleteCourse(@PathVariable(name = "id") String courseCode) {
-        return courseMapper.mapTo(courseService.deleteCourse(courseCode));
+    public CourseDto getCourseByCode(@PathVariable String courseCode) {
+        return courseService.getCourseByCode(courseCode);
+    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CourseDto> getCourses(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
+        return courseService.getCourses(pageNo, pageSize);
+    }
+
+    @DeleteMapping("/{courseCode}")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse deleteCourseByCode(@PathVariable String courseCode) {
+        return courseService.deleteCourseByCode(courseCode);
     }
 
     @PutMapping(path = "/update/{id}")

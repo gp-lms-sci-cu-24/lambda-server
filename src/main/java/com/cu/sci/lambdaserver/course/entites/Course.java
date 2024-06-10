@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Getter
@@ -33,11 +33,11 @@ public class Course {
     @Column(nullable = false)
     private Integer creditHours;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Collection<DepartmentCourses> departments;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DepartmentCourses> departments;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    private Collection<Course> coursePrerequisites;
+    private Set<Course> coursePrerequisites;
 
     @Override
     public final boolean equals(Object o) {

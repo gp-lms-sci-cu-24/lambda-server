@@ -16,8 +16,6 @@ import java.util.Collection;
 @AllArgsConstructor
 public class CourseDto {
 
-    private Long id;
-
     @NotBlank(message = "code is mandatory")
     private String name;
 
@@ -26,7 +24,7 @@ public class CourseDto {
 
     private String info;
 
-    @Min(value = -1, message = "creditHours should be non negative")
+    @Min(value = 0, message = "creditHours should be non negative")
     @Max(value = 7, message = "creditHours should be less than 7")
     private Integer creditHours;
 
