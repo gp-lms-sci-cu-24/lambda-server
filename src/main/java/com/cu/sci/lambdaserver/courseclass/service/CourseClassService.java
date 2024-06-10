@@ -10,7 +10,7 @@ import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.mapper.CreateCourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -143,7 +142,7 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, Semester semester, String Year) {
+    public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, String Year) {
 
         Optional<Course> course = courseRepository.findByCode(courseCode);
         if (course.isEmpty()) {

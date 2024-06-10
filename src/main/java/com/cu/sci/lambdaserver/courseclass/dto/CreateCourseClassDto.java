@@ -1,9 +1,8 @@
 package com.cu.sci.lambdaserver.courseclass.dto;
 
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +19,7 @@ public class CreateCourseClassDto {
     private String courseCode;
 
     @NotNull(groups = {CreateValidation.class}, message = "Course Semester cannot be null during creation")
-    private Semester courseSemester;
+    private YearSemester courseSemester;
 
     @NotNull(groups = {CreateValidation.class}, message = "Max Capacity cannot be null during creation")
     private Integer maxCapacity;

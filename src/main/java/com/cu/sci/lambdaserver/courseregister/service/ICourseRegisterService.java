@@ -6,7 +6,7 @@ import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
@@ -44,7 +44,7 @@ public interface ICourseRegisterService {
     Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
 
     @PreAuthorize("hasRole('STUDENT')")
-    Collection<CourseRegisterOutDto> getMyReslut(Semester semester , String year);
+    Collection<CourseRegisterOutDto> getMyReslut(YearSemester semester, String year);
 
     @PreAuthorize("hasRole('STUDENT')")
     MessageResponse deleteCourseRegister(Long courseClassId);

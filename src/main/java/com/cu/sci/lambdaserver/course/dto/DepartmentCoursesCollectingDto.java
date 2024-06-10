@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.course.dto;
 
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class DepartmentCoursesCollectingDto {
 
     private Integer creditHours;
 
-    private Semester semester;
+    private YearSemester semester;
 
     private Boolean mandatory;
 

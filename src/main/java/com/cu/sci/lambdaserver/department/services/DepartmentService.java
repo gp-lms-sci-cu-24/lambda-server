@@ -9,7 +9,7 @@ import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -179,7 +179,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester) {
+    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, YearSemester semester) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {

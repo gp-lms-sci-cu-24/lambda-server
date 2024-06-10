@@ -7,7 +7,7 @@ import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.department.services.IDepartmentService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -61,7 +61,7 @@ public class DepartmentController {
 
     @GetMapping(path = "/{code}/courses", params = "details=true")
     @ResponseStatus(HttpStatus.OK)
-    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Semester semester) {
+    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam YearSemester semester) {
         return departmentService.getCourseDepartmentByCodeAndSemester(code, pageNo, pageSize, semester);
     }
 

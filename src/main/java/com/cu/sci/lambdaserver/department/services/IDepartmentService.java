@@ -5,7 +5,7 @@ import com.cu.sci.lambdaserver.department.dto.CreateUpdateDepartmentDto;
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -93,5 +93,5 @@ public interface IDepartmentService {
      * @param semester The semester to retrieve courses for.
      * @return A page of courses.
      */
-    Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, Semester semester);
+    Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, YearSemester semester);
 }

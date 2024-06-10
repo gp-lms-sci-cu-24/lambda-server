@@ -4,8 +4,8 @@ import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
 import com.cu.sci.lambdaserver.utils.enums.State;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,7 +44,7 @@ public class CourseClass {
     private LocalDateTime publishDate;
 
     @Enumerated(EnumType.STRING)
-    private Semester courseSemester;
+    private YearSemester courseSemester;
 
     private String year ;
 

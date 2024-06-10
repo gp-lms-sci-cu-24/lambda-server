@@ -9,7 +9,6 @@ import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.CourseRegisterRepository;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterOutDto;
-import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterInDtoMapper;
 import com.cu.sci.lambdaserver.courseregister.mapper.CourseRegisterOutDtoMapper;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
@@ -329,7 +328,7 @@ public class CourseRegisterService implements ICourseRegisterService {
     }
 
     @Override
-    public Collection<CourseRegisterOutDto> getMyReslut(Semester semester, String year) {
+    public Collection<CourseRegisterOutDto> getMyReslut(YearSemester semester, String year) {
         User user = iAuthenticationFacade.getAuthenticatedUser();
 
         List<CourseRegisterOutDto> courseRegisterOutDtos = courseRegisterRepository

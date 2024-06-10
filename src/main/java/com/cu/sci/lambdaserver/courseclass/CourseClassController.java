@@ -1,21 +1,21 @@
 package com.cu.sci.lambdaserver.courseclass;
 
-import com.cu.sci.lambdaserver.courseclass.dto.*;
-import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/course-class")
@@ -45,7 +45,7 @@ public class CourseClassController {
 
     @GetMapping("/{course-code}/{semester}/{year}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseClassDto> getCourseClassByCourseCodeAndSemesterAndYear(@PathVariable("course-code") String courseCode, @PathVariable("semester") Semester semester, @PathVariable("year") String year) {
+    public List<CourseClassDto> getCourseClassByCourseCodeAndSemesterAndYear(@PathVariable("course-code") String courseCode, @PathVariable("semester") YearSemester semester, @PathVariable("year") String year) {
         return courseClassService.getCourseClassesByCourseCodeAndSemester(courseCode, semester, year).stream().toList();
     }
 

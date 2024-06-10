@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.course.dto;
 
 
 import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class DepartmentCoursesDto {
 
     private DepartmentDto department;
 
-    private Semester semester;
+    private YearSemester semester;
 
     private Boolean mandatory;
 

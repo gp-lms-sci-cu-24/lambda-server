@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.courseregister.dto;
 
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +15,5 @@ public class GetStudentRegisteredCoursesDto {
     @NotNull
     String code;
     String id;
-    Semester semester;
+    YearSemester semester;
 }

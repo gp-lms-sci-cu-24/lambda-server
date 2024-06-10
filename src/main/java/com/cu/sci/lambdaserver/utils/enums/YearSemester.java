@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.utils.enums;
 
-public enum Semester {
+public enum YearSemester {
     FIRST,
     SECOND,
     SUMMER

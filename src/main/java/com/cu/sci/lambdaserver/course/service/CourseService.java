@@ -10,7 +10,7 @@ import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.course.repositries.DepartmentCoursesRepository;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +91,7 @@ public class CourseService implements ICourseService {
                     .departmentCoursesKey(new DepartmentCoursesKey(department.getId(), courseSaved.getId()))
                     .course(courseSaved)
                     .department(department)
-                    .semester(Semester.FIRST)
+                    .semester(YearSemester.FIRST)
                     .mandatory(false)
                     .build();
 
@@ -206,12 +206,12 @@ public class CourseService implements ICourseService {
         if (departmentCourses.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the course with code : " + courseCode + "doesn't exist in department code : " + departmentCode);
         departmentCourses.get().setMandatory(mandatory);
-        departmentCourses.get().setSemester(Semester.valueOf(semester));
+        departmentCourses.get().setSemester(YearSemester.valueOf(semester));
         departmentCoursesRepository.save(departmentCourses.get());
         return DepartmentCoursesCollectingDto.builder()
                 .code(courseCode)
                 .departmentCode(new ArrayList<>(Collections.singletonList(departmentCode)))
-                .semester(Semester.valueOf(semester))
+                .semester(YearSemester.valueOf(semester))
                 .mandatory(mandatory)
                 .build();
     }

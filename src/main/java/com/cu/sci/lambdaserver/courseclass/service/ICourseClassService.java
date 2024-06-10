@@ -3,7 +3,7 @@ package com.cu.sci.lambdaserver.courseclass.service;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
@@ -26,6 +26,6 @@ public interface ICourseClassService {
     CourseClassDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClass);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, Semester semester, String Year);
+    Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, String Year);
 
 }

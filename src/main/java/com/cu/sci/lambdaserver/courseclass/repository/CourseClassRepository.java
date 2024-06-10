@@ -1,10 +1,8 @@
 package com.cu.sci.lambdaserver.courseclass.repository;
 
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
-import com.cu.sci.lambdaserver.utils.enums.Semester;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -23,5 +21,5 @@ public interface CourseClassRepository extends JpaRepository<CourseClass, Long> 
 
     Optional<CourseClass> findByCourseIdAndGroupNumber(Long courseId, Integer groupNumber);
 
-   Collection<CourseClass> findByCourseIdAndCourseSemesterAndYear(Long courseId , Semester semester , String year) ;
+    Collection<CourseClass> findByCourseIdAndCourseSemesterAndYear(Long courseId, YearSemester semester, String year);
 }
