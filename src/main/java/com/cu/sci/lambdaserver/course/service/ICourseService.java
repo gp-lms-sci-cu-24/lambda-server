@@ -7,7 +7,7 @@ import com.cu.sci.lambdaserver.course.entites.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface ICourseService {
 
@@ -30,10 +30,10 @@ public interface ICourseService {
     Course addPrerequisite(String courseCode, String prerequisiteCode);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Set<Course> getPrerequisite(String courseCode);
+    Collection<Course> getPrerequisite(String courseCode);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Set<Course> getAllPrerequisites(String courseCode);
+    Collection<Course> getAllPrerequisites(String courseCode);
 
     @PreAuthorize("hasRole('ADMIN')")
     Course removePrerequisite(String courseCode, String prerequisiteCode);

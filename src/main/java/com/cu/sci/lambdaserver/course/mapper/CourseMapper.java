@@ -32,8 +32,8 @@ public class CourseMapper implements IMapper<Course, CourseDto> {
                 coursePrerequisitesCode.add(coursePrerequisite.getCode());
             }
         }
-        if (course.getDepartmentCoursesSet() != null) {
-            for (DepartmentCourses departmentCourses : course.getDepartmentCoursesSet()) {
+        if (course.getDepartments() != null) {
+            for (DepartmentCourses departmentCourses : course.getDepartments()) {
                 courseDepartmentDto.add(modelMapper.map(departmentCourses, DepartmentCoursesDto.class));
             }
         }
@@ -43,7 +43,7 @@ public class CourseMapper implements IMapper<Course, CourseDto> {
                 .name(course.getName())
                 .info(course.getInfo())
                 .creditHours(course.getCreditHours())
-                .departmentCoursesSet(courseDepartmentDto)
+                .departments(courseDepartmentDto)
                 .coursePrerequisites(coursePrerequisitesCode)
                 .build();
     }

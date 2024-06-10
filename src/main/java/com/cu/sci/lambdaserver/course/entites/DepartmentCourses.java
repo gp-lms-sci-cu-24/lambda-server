@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.course.entites;
 
 
 import com.cu.sci.lambdaserver.department.Department;
-import com.cu.sci.lambdaserver.utils.enums.YearSemester;
+import com.cu.sci.lambdaserver.utils.enums.DepartmentSemester;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +32,7 @@ public class DepartmentCourses {
     private Course course;
 
     @Enumerated(EnumType.STRING)
-    private YearSemester semester;
+    private DepartmentSemester semester;
 
     @Column(nullable = false)
     private Boolean mandatory;

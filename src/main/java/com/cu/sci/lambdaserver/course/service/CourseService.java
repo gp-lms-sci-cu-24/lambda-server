@@ -10,7 +10,7 @@ import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.course.repositries.DepartmentCoursesRepository;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
-import com.cu.sci.lambdaserver.utils.enums.YearSemester;
+import com.cu.sci.lambdaserver.utils.enums.DepartmentSemester;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +91,7 @@ public class CourseService implements ICourseService {
                     .departmentCoursesKey(new DepartmentCoursesKey(department.getId(), courseSaved.getId()))
                     .course(courseSaved)
                     .department(department)
-                    .semester(YearSemester.FIRST)
+                    .semester(DepartmentSemester.FIRST_SEMESTER)
                     .mandatory(false)
                     .build();
 
@@ -121,7 +121,7 @@ public class CourseService implements ICourseService {
         return courseRepository.findByCode(courseCode).map(currentCourse -> {
             Optional.ofNullable(course.getName()).ifPresent(currentCourse::setName);
             Optional.ofNullable(course.getCreditHours()).ifPresent(currentCourse::setCreditHours);
-            Optional.ofNullable(course.getDepartmentCoursesSet()).ifPresent(currentCourse::setDepartmentCoursesSet);
+            Optional.ofNullable(course.getDepartments()).ifPresent(currentCourse::setDepartments);
             Optional.ofNullable(course.getInfo()).ifPresent(currentCourse::setInfo);
             Optional<Course> courseWithSameCode = courseRepository.findByCode(course.getCode());
             if (courseWithSameCode.isPresent() && !Objects.equals(courseWithSameCode.get().getCode(), courseCode))
@@ -145,12 +145,12 @@ public class CourseService implements ICourseService {
         if (prerequisite.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " the course with code : " + prerequisiteCode + " not found ");
 
-        Set<Course> prerequisitesOfPrerequisite = getAllPrerequisites(prerequisite.get().getCode());
+        Collection<Course> prerequisitesOfPrerequisite = getAllPrerequisites(prerequisite.get().getCode());
 
         if (prerequisitesOfPrerequisite.contains(course.get()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "this would make a cycle ( ambiguous dependencies ) ");
 
-        Set<Course> newPrerequisites = getPrerequisite(course.get().getCode());
+        Collection<Course> newPrerequisites = getPrerequisite(course.get().getCode());
         if (newPrerequisites == null)
             newPrerequisites = new HashSet<>();
         newPrerequisites.add(prerequisite.get());
@@ -159,18 +159,18 @@ public class CourseService implements ICourseService {
         return courseRepository.save(course.get());
     }
 
-    public Set<Course> getPrerequisite(String courseCode) {
+    public Collection<Course> getPrerequisite(String courseCode) {
         Optional<Course> course = courseRepository.findByCode(courseCode);
         if (course.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " the course with code : " + courseCode + " not found ");
         return course.get().getCoursePrerequisites();
     }
 
-    public Set<Course> getAllPrerequisites(String courseCode) {
+    public Collection<Course> getAllPrerequisites(String courseCode) {
         Optional<Course> course = courseRepository.findByCode(courseCode);
         if (course.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " the course with code : " + courseCode + " not found ");
-        Set<Course> prerequisites = course.get().getCoursePrerequisites();
+        Collection<Course> prerequisites = course.get().getCoursePrerequisites();
         Queue<Course> queue = new LinkedList<>(prerequisites);
         while (!queue.isEmpty()) {
             prerequisites.addAll(Objects.requireNonNull(queue.peek()).getCoursePrerequisites());
@@ -190,7 +190,7 @@ public class CourseService implements ICourseService {
         if (prerequisite.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " the course with code : " + prerequisiteCode + " not found ");
 
-        Set<Course> newPrerequisites = getPrerequisite(course.get().getCode());
+        Collection<Course> newPrerequisites = getPrerequisite(course.get().getCode());
         if (!newPrerequisites.contains(prerequisite.get()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " the course with code : " + courseCode + " doesn't have the prerequisite with code : " + prerequisiteCode + ")");
 
@@ -206,12 +206,12 @@ public class CourseService implements ICourseService {
         if (departmentCourses.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the course with code : " + courseCode + "doesn't exist in department code : " + departmentCode);
         departmentCourses.get().setMandatory(mandatory);
-        departmentCourses.get().setSemester(YearSemester.valueOf(semester));
+        departmentCourses.get().setSemester(DepartmentSemester.valueOf(semester));
         departmentCoursesRepository.save(departmentCourses.get());
         return DepartmentCoursesCollectingDto.builder()
                 .code(courseCode)
                 .departmentCode(new ArrayList<>(Collections.singletonList(departmentCode)))
-                .semester(YearSemester.valueOf(semester))
+                .semester(DepartmentSemester.valueOf(semester))
                 .mandatory(mandatory)
                 .build();
     }
