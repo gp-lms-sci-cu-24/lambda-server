@@ -33,7 +33,7 @@ public class AnnouncementController {
         return announcementService.getAnnouncement(announcementId);
     }
 
-    @PatchMapping("/{announcementId}")
+    @PutMapping("/{announcementId}")
     public AnnouncementDto updateAnnouncement(@PathVariable Long announcementId, @RequestBody CreateAnnouncementDto updateAnnouncementDto) {
         return announcementService.updateAnnouncement(announcementId, updateAnnouncementDto);
     }
