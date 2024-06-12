@@ -30,7 +30,7 @@ public class CreateCourseRequestDto {
 
     @Positive(message = "Credit hours must be positive")
     @NotNull(message = "Credit hours is required")
-    @Max(value = 4, message = "Credit hours do not exceed 4 hours")
+    @Max(value = 10, message = "Credit hours do not exceed 10 hours")
     private Integer creditHours;
 
     @NotNull(message = "At least one department is required")

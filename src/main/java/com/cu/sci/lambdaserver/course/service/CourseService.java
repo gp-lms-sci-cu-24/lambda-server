@@ -144,6 +144,15 @@ public class CourseService implements ICourseService {
         return new MessageResponse("Course deleted successfully.");
     }
 
+    public Set<CourseDto> search(String q) {
+        if (q == null || q.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Query string is required");
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Course> courses = courseRepository.findDistinctByNameLikeIgnoreCaseOrCodeLikeIgnoreCase(q, q, pageable);
+        return courses.getContent().stream().map(courseMapper::mapTo).collect(Collectors.toSet());
+    }
+
     @Override
     public Course updateCourse(String courseCode, Course course) {
         return courseRepository.findByCodeIgnoreCase(courseCode).map(currentCourse -> {

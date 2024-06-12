@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Set;
 
 public interface ICourseService {
 
@@ -17,15 +18,15 @@ public interface ICourseService {
     @PreAuthorize("hasRole('ADMIN')")
     CourseDto createCourse(CreateCourseRequestDto createCourseDto);
 
-    @PreAuthorize("hasRole('ADMIN')")
     Page<CourseDto> getCourses(Integer pageNo, Integer pageSize);
 
-    @PreAuthorize("hasRole('ADMIN')")
     CourseDto getCourseByCode(String code);
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     MessageResponse deleteCourseByCode(String courseCode);
+
+    Set<CourseDto> search(String q);
 
     @PreAuthorize("hasRole('ADMIN')")
     Course updateCourse(String courseCode, Course course);

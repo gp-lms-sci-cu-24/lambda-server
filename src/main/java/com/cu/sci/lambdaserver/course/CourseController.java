@@ -46,6 +46,13 @@ public class CourseController {
         return courseService.deleteCourseByCode(courseCode);
     }
 
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<CourseDto> search(@RequestParam() String q) {
+        return courseService.search("%" + q + "%");
+    }
+
+
     @PutMapping(path = "/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CourseDto updateCourse(@Valid @PathVariable(name = "id") String courseCode,
