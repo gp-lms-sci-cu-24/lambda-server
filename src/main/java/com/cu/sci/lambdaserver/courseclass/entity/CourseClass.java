@@ -4,15 +4,14 @@ import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
-import com.cu.sci.lambdaserver.utils.enums.State;
+import com.cu.sci.lambdaserver.utils.entities.DateAudit;
+import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,48 +21,54 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "course_classes")
-public class CourseClass {
-
-    @OneToMany(mappedBy = "courseClass")
-    @ToString.Exclude
-    Collection<CourseRegister> courseRegisters;
-
-    @OneToMany(mappedBy = "courseClass")
-    @ToString.Exclude
-    Collection<TimingRegister> courseClassTimings;
+public class CourseClass extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long courseClassId;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @CreationTimestamp
-    private LocalDateTime publishDate;
-
     @Enumerated(EnumType.STRING)
-    private YearSemester courseSemester;
-
-    private String year ;
+    @Column(nullable = false)
+    private YearSemester semester;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private State courseState = State.ACTIVE;
+    private CourseClassState state = CourseClassState.REGISTER;
 
+    @Column(name = "max_capacity", nullable = false, columnDefinition = "integer default 0")
     private Integer maxCapacity;
 
     @Builder.Default
+    @Column(name = "number_of_students_registered", nullable = false, columnDefinition = "integer default 0")
     private Integer numberOfStudentsRegistered = 0;
 
-    private Integer capacitySoFar;
-
+    @Column(nullable = false, columnDefinition = "integer default 0")
     @Builder.Default
-    @Column(name = "group_number_seq")
-    private Integer groupNumber = -1;
+    private Integer year = 0;
+
+    @Column(name = "group_number_seq", nullable = false)
+    private Integer groupNumber;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "admin_professor_id", nullable = false)
+    private Professor adminProfessor;
 
     @ManyToMany(mappedBy = "CourseClasses")
-    private List<Professor> professors;
+    @ToString.Exclude
+    private Set<Professor> professors;
+
+
+    // not reviewed yet
+    @OneToMany(mappedBy = "courseClass")
+    @ToString.Exclude
+    private Collection<CourseRegister> courseRegisters;
+
+    @OneToMany(mappedBy = "courseClass")
+    @ToString.Exclude
+    private Collection<TimingRegister> courseClassTimings;
 
 }

@@ -111,7 +111,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
         //check course class state
-        if (!courseClass.getCourseState().equals(State.ACTIVE)) {
+        if (!courseClass.getState().equals(CourseClassState.ACTIVE)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not active");
         }
 

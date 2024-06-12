@@ -66,7 +66,7 @@ public class ScheduleService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "professor not found with this id"));
             List<CourseClass> courseClasses = professorService.getCourseClasses(professor.getId());
             for (CourseClass courseClass : courseClasses) {
-                List<CourseClassTiming> timingList = TimingRegisterService.getTimingRegisterByClassId(courseClass.getCourseClassId());
+                List<CourseClassTiming> timingList = TimingRegisterService.getTimingRegisterByClassId(courseClass.getId());
                 for (CourseClassTiming timing : timingList) {
                     schedule.add(
                             ScheduleDto.builder()

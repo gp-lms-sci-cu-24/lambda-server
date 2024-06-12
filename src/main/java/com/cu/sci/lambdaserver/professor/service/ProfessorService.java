@@ -140,7 +140,7 @@ public class ProfessorService implements IProfessorService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found."));
         List<StudentDto> students = new ArrayList<>();
         for (CourseClass courseClass : professor.getCourseClasses()) {
-            students.addAll(courseRegisterService.getAllCourseClassStudents(courseClass.getCourseClassId()));
+            students.addAll(courseRegisterService.getAllCourseClassStudents(courseClass.getId()));
         }
         return students;
     }

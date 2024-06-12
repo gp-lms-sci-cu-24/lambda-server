@@ -3,7 +3,7 @@ package com.cu.sci.lambdaserver.utils.enums;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum State {
+public enum CourseClassState {
     REGISTER,
     ACTIVE,
     INACTIVE,

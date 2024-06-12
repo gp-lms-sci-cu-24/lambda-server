@@ -52,15 +52,15 @@ public class CourseClassService implements ICourseClassService {
 
         courseClassRepository.findTopByCourseIdOrderByGroupNumberDesc(course.get().getId())
                 .ifPresent((courseClass) -> {
-                    if (LocalDateTime.now().getYear() == courseClass.getPublishDate().getYear()
-                            && courseClass.getCourseSemester() == courseClassEntity.getCourseSemester()) {
+                    if (LocalDateTime.now().getYear() == courseClass.getCreatedAt().getYear()
+                            && courseClass.getSemester() == courseClassEntity.getSemester()) {
                         groupNumberSeq.set(courseClass.getGroupNumber() + 1);
                     }
                 });
 
         courseClassEntity.setGroupNumber(groupNumberSeq.get());
         courseClassEntity.setCourse(course.get());
-        courseClassEntity.setYear(year);
+//        courseClassEntity.setYear(year);
         CourseClass courseClass = courseClassRepository.save(courseClassEntity);
 
         CourseClassDto courseClassDtoResponse =  courseClassMapper.mapTo(courseClass);
