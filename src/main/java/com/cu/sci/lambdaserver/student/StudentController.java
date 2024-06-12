@@ -28,6 +28,7 @@ public class StudentController {
     public Collection<StudentDto> createStudents(@RequestBody @Valid CreateStudentsDto createStudentsDto) {
         return studentService.createStudents(createStudentsDto);
     }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<StudentDto> getAllStudents(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
@@ -40,17 +41,18 @@ public class StudentController {
         return studentService.getStudent(code);
     }
 
-    @PatchMapping(path = "/{code}")
+    @PutMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     public StudentDto updateStudent(@PathVariable String code, @RequestBody @Valid UpdateStudentDto studentDto) {
         return studentService.updateStudent(code, studentDto);
     }
 
-    @PatchMapping(path = "/bulk")
+    @PutMapping(path = "/bulk")
     @ResponseStatus(HttpStatus.OK)
     public Collection<StudentDto> updateStudents(@RequestBody @Valid UpdateStudentsDto updateStudentsDto) {
         return studentService.updateStudents(updateStudentsDto);
     }
+
     @DeleteMapping(path = "/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStudent(@PathVariable String code) {

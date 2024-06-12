@@ -1,6 +1,5 @@
 package com.cu.sci.lambdaserver.student.service;
 
-import com.cu.sci.lambdaserver.contactinfo.service.ContactInfoService;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.student.Student;
@@ -33,11 +32,12 @@ public class StudentService implements IStudentService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public void initStudent(Student student, Department department){
-        student.setDepartment(department );
-        student.setUsername(student.getCode() );
+    public void initStudent(Student student, Department department) {
+        student.setDepartment(department);
+        student.setUsername(student.getCode());
         student.setPassword(passwordEncoder.encode(student.getPassword()));
     }
+
     @Override
     public StudentDto creatStudent(CreateStudentRequestDto studentDto) throws ResponseStatusException {
         // check department
@@ -99,13 +99,24 @@ public class StudentService implements IStudentService {
 
         //update student
         student.map(foundStudent -> {
-            Optional.ofNullable(studentDetails.getGpa()).ifPresent(foundStudent::setGpa);
-            Optional.ofNullable(studentDetails.getCreditHours()).ifPresent(foundStudent::setCreditHours);
-            Optional.ofNullable(studentDetails.getLevel()).ifPresent(foundStudent::setLevel);
+            Optional.ofNullable(studentDetails.getFirstName()).ifPresent(foundStudent::setFirstName);
+            Optional.ofNullable(studentDetails.getFatherName()).ifPresent(foundStudent::setFatherName);
+            Optional.ofNullable(studentDetails.getGrandfatherName()).ifPresent(foundStudent::setGrandfatherName);
+            Optional.ofNullable(studentDetails.getLastname()).ifPresent(foundStudent::setLastname);
+            Optional.ofNullable(studentDetails.getAddress()).ifPresent(foundStudent::setAddress);
+            Optional.ofNullable(studentDetails.getJoiningYear()).ifPresent(foundStudent::setJoiningYear);
+            Optional.ofNullable(studentDetails.getGender()).ifPresent(foundStudent::setGender);
+            Optional.ofNullable(studentDetails.getDepartmentCode()).ifPresent(departmentCode -> {
+                Department department = departmentRepository
+                        .findDepartmentByCodeIgnoreCase(departmentCode)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "department not found with this code"));
+                foundStudent.setDepartment(department);
+            });
             return studentRepository.save(foundStudent);
         });
         return studentDtoiMapper.mapTo(student.get());
     }
+
     @Override
     public Collection<StudentDto> createStudents(CreateStudentsDto createStudentsDto) {
         // insert without bulking for 10 k records: 1 minute and 39 seconds
@@ -114,23 +125,22 @@ public class StudentService implements IStudentService {
 
         // do not allow updates in departments
         List<CreateStudentRequestDto> students = createStudentsDto.getStudents();
-        List<Student> studentList = new ArrayList<>(students.size() );
+        List<Student> studentList = new ArrayList<>(students.size());
         Map<String, Department> departmentMap = new HashMap<>();
 
         for (int i = 0; i < students.size(); i++) {
-            Student student = createStudentRequestDtoMapper.mapFrom(students.get(i) );
+            Student student = createStudentRequestDtoMapper.mapFrom(students.get(i));
             Department department;
-            if(departmentMap.containsKey(students.get(i).getDepartmentCode() ) ){
-                department = departmentMap.get(students.get(i).getDepartmentCode() );
-            }
-            else{
+            if (departmentMap.containsKey(students.get(i).getDepartmentCode())) {
+                department = departmentMap.get(students.get(i).getDepartmentCode());
+            } else {
                 System.out.println("calling db to get the department");
                 department = departmentRepository
                         .findDepartmentByCodeIgnoreCase(students.get(i).getDepartmentCode())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "department not found with this code") );
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "department not found with this code"));
                 departmentMap.put(students.get(i).getDepartmentCode(), department);
             }
-            initStudent(student,department);
+            initStudent(student, department);
             studentList.add(student);
         }
         return studentRepository.saveAll(studentList)
@@ -139,16 +149,20 @@ public class StudentService implements IStudentService {
 
     @Override
     public Collection<StudentDto> updateStudents(UpdateStudentsDto updateStudentsDto) {
-        Map<String, UpdateStudentDto> studentMap = updateStudentsDto.getStudents().stream()
-                .collect(Collectors.toMap(UpdateStudentDto::getCode, student -> student) );
-        Collection<Student> dbStudents = studentRepository
-                .getByCodeIn(
-                        updateStudentsDto.getStudents().stream().map(UpdateStudentDto::getCode).collect(Collectors.toList() )
-                );
-        for(Student student: dbStudents){
-            studentMap.get(student.getCode() ).setCode(null);
-            updateStudentDtoIMapper.update(studentMap.get(student.getCode() ), student);
-        }
+
+        // comments because update dto should not contain code as the above update
+
+//        Map<String, UpdateStudentDto> studentMap = updateStudentsDto.getStudents().stream()
+//                .collect(Collectors.toMap(UpdateStudentDto::getCode, student -> student));
+        Collection<Student> dbStudents = List.of(new Student());
+
+//                = studentRepository
+//                .getByCodeIn(
+//                        updateStudentsDto.getStudents().stream().map(UpdateStudentDto::getCode).collect(Collectors.toList())
+//                );
+//        for (Student student : dbStudents) {
+//            updateStudentDtoIMapper.update(studentMap.get(student.getCode()), student);
+//        }
         return studentRepository.saveAll(dbStudents)
                 .stream().map(studentDtoiMapper::mapTo).collect(Collectors.toList());
     }

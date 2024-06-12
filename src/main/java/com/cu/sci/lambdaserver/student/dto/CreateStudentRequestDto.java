@@ -37,14 +37,14 @@ public class CreateStudentRequestDto {
     private String code;
 
     @PositiveOrZero(message = "credit hours must be positive")
-    @Max(value = 146, message = "credit hours do not exceed 164 hours")
+    @Max(value = 148, message = "credit hours do not exceed 148 hours")
     @JsonProperty("credit_hours")
     private Integer creditHours = 0;
 
     @NotNull(message = "address cannot be null")
     private String address;
 
-    @PositiveOrZero(message = "address cannot be null")
+    @PositiveOrZero(message = "gpa cant be negative")
     @Max(value = 4, message = "gpa do not exceed 4.0")
     private Double gpa = 0.0;
 
