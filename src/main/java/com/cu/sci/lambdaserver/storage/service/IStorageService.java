@@ -33,6 +33,17 @@ public interface IStorageService {
     MessageResponse uploadLocationImage(Long locationId, MultipartFile image);
 
     /**
+     * Uploads an image for a course.
+     * This method can only be accessed by users with the 'ADMIN' role.
+     *
+     * @param courseCode The code of the course for which the image is being uploaded.
+     * @param image      The image file to be uploaded.
+     * @return A MessageResponse object containing the URL of the uploaded image and a success message.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    MessageResponse uploadCourseImage(String courseCode , MultipartFile image) ;
+
+    /**
      * Deletes an image for a specific department.
      * This method can only be accessed by users with the 'ADMIN' role.
      *
