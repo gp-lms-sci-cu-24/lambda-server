@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.professor;
 
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,6 +19,22 @@ import java.util.List;
 @Entity
 @Table(name = "professors")
 public class Professor extends User {
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProfessorDegree degree;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @ManyToMany
     @JoinTable(
@@ -25,10 +42,9 @@ public class Professor extends User {
             joinColumns = @JoinColumn(name = "professor_id"),
             inverseJoinColumns = @JoinColumn(name = "course_class_id")
     )
+    @ToString.Exclude
     private List<CourseClass> CourseClasses;
 
-    @Enumerated(EnumType.STRING)
-    private ProfessorDegree degree;
 
     public Professor() {
         setRoles(List.of(Role.PROFESSOR));

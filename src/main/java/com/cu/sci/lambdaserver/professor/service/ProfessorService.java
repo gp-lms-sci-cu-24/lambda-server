@@ -45,11 +45,16 @@ public class ProfessorService implements IProfessorService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There already user with this username");
         }
 
+
         Professor professor = Professor.builder()
+                .gender(professorDto.getGender())
+                .email(professorDto.getEmail())
+                .degree(professorDto.getDegree())
+                .firstName(professorDto.getFirstName())
+                .lastName(professorDto.getLastName())
                 .username(professorDto.getUsername())
                 .password(passwordEncoder.encode(professorDto.getPassword()))
                 .build();
-
         // save it
         professorRepository.save(professor);
 
