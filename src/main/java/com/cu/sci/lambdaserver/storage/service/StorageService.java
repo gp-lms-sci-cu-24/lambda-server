@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.storage.service;
 
+import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.location.Location;
@@ -31,6 +33,7 @@ public class StorageService implements IStorageService {
     private final DepartmentRepository departmentRepository;
     private final StorageFileRepository storageFileRepository;
     private final LocationRepository locationRepository;
+    private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -69,6 +72,25 @@ public class StorageService implements IStorageService {
         final String url = uploadImage(image, options);
         location.setImage(url);
         locationRepository.save(location);
+        return new MessageResponse("Image uploaded successfully");
+    }
+
+    @Override
+    public MessageResponse uploadCourseImage(String courseCode, MultipartFile image) {
+        Course course = courseRepository.findByCodeIgnoreCase(courseCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+
+
+        String publicId = "course_" + courseCode + "_" + UUID.randomUUID();
+        CloudinaryUploadServiceOptions options = CloudinaryUploadServiceOptions
+                .builder()
+                .folder("courses")
+                .publicId(publicId)
+                .build();
+
+        final String url = uploadImage(image, options);
+        course.setImage(url);
+        courseRepository.save(course);
         return new MessageResponse("Image uploaded successfully");
     }
 
