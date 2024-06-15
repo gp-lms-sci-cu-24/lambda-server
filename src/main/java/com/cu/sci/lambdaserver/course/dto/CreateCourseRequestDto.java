@@ -28,6 +28,8 @@ public class CreateCourseRequestDto {
     @NotNull(message = "Course info is required")
     private String info;
 
+    private String image;
+
     @Positive(message = "Credit hours must be positive")
     @NotNull(message = "Credit hours is required")
     @Max(value = 10, message = "Credit hours do not exceed 10 hours")
