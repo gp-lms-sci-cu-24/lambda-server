@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class SseService implements ISseService{
 
 
     // List of active emitters
-    public List<SseEmitter> emitters = new ArrayList<>();
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @Override
     public SseEmitter subscribe() {
@@ -37,7 +38,6 @@ public class SseService implements ISseService{
                 emitter.send(SseEmitter.event().name(announcement.getTitle()).data(announcement.getDescription()));
             } catch (IOException e) {
                 emitters.remove(emitter);
-                throw new RuntimeException(e);
             }
         }
 
