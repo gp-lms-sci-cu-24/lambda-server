@@ -35,7 +35,6 @@ public class AnnouncementService implements IAnnouncementService{
         Announcement announcement = Announcement.builder()
                 .title(createAnnouncementDto.getTitle())
                 .description(createAnnouncementDto.getDescription())
-                .createdAt(LocalDateTime.now())
                 .build();
         return announcementMapper.mapTo(announcementRepository.save(announcement));
     }
@@ -73,7 +72,7 @@ public class AnnouncementService implements IAnnouncementService{
         announcement.map(foundAnnouncement -> {
             Optional.ofNullable(updateAnnouncementDto.getTitle()).ifPresent(foundAnnouncement::setTitle);
             Optional.ofNullable(updateAnnouncementDto.getDescription()).ifPresent(foundAnnouncement::setDescription);
-            foundAnnouncement.setEditedTimestamp(LocalDateTime.now());
+            foundAnnouncement.setEditedAt(LocalDateTime.now());
             return announcementRepository.save(foundAnnouncement);
         });
         return announcementMapper.mapTo(announcement.get());
