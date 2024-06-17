@@ -8,6 +8,9 @@ import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.mapper.CreateAnnouncementMapper;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,15 +35,21 @@ public class AnnouncementService implements IAnnouncementService{
         Announcement announcement = Announcement.builder()
                 .title(createAnnouncementDto.getTitle())
                 .description(createAnnouncementDto.getDescription())
+                .createdAt(LocalDateTime.now())
                 .build();
         return announcementMapper.mapTo(announcementRepository.save(announcement));
     }
 
 
     @Override
-    public Collection<AnnouncementDto> getAnnouncements() {
-        List<Announcement> announcements = announcementRepository.findAll();
-        return announcements.stream().map(announcementMapper::mapTo).collect(Collectors.toList());
+    public Page<AnnouncementDto> getAnnouncements(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Announcement> announcements = announcementRepository.findAll(pageable);
+
+        if(announcements.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No announcements found") ;
+        }
+        return announcements.map(announcementMapper::mapTo);
     }
 
 

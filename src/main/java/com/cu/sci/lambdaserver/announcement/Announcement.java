@@ -27,7 +27,7 @@ public class Announcement {
     private String description;
 
     @Builder.Default
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime editedTimestamp;
 

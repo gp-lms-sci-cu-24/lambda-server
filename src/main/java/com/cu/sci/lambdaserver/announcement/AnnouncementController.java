@@ -7,6 +7,8 @@ import com.cu.sci.lambdaserver.announcement.service.AnnouncementService;
 import com.cu.sci.lambdaserver.announcement.service.ISseService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -24,21 +26,26 @@ public class AnnouncementController {
 
 
     @GetMapping
-    public List<AnnouncementDto> getAnnouncements() {
-        return announcementService.getAnnouncements().stream().toList();
+    @ResponseStatus(HttpStatus.OK)
+    public Page<AnnouncementDto> getAnnouncements(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
+        return announcementService.getAnnouncements(pageNo, pageSize);
     }
 
     @GetMapping("/{announcementId}")
+    @ResponseStatus(HttpStatus.OK)
     public AnnouncementDto getAnnouncement(@PathVariable Long announcementId) {
         return announcementService.getAnnouncement(announcementId);
     }
 
     @PutMapping("/{announcementId}")
+    @ResponseStatus(HttpStatus.OK)
     public AnnouncementDto updateAnnouncement(@PathVariable Long announcementId, @RequestBody CreateAnnouncementDto updateAnnouncementDto) {
         return announcementService.updateAnnouncement(announcementId, updateAnnouncementDto);
     }
 
+
     @DeleteMapping("/{announcementId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public MessageResponse deleteAnnouncement(@PathVariable Long announcementId) {
         return announcementService.deleteAnnouncement(announcementId);
     }
@@ -51,6 +58,7 @@ public class AnnouncementController {
 
 
     @PostMapping("/send")
+    @ResponseStatus(HttpStatus.CREATED)
     public void send(@RequestBody CreateAnnouncementDto announcementDto ) {
         AnnouncementDto savedAnnouncement = announcementService.createAnnouncement(announcementDto);
         sseService.send(savedAnnouncement);
