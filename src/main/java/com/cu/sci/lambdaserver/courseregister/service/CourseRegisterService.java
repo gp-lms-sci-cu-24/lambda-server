@@ -189,7 +189,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
         //get course register
         Optional<CourseRegister> courseRegisterOptional = courseRegisterRepository
-                .findByCourseClass_CourseClassIdAndStudent_CodeAndState(courseClassId, studentCode, CourseRegisterState.STUDYING);
+                .findByCourseClass_IdAndStudent_CodeAndState(courseClassId, studentCode, CourseRegisterState.STUDYING);
 
         if (courseRegisterOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No course register found for student with code: " + studentCode);
@@ -272,7 +272,7 @@ public class CourseRegisterService implements ICourseRegisterService {
         }
 
         Optional<CourseRegister> courseRegister = courseRegisterRepository
-                .findByCourseClass_CourseClassIdAndStudent_CodeAndState(courseClassId,user.getUsername(),CourseRegisterState.REGISTERING) ;
+                .findByCourseClass_IdAndStudent_CodeAndState(courseClassId, user.getUsername(), CourseRegisterState.REGISTERING);
 
         if(courseRegister.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found ");
@@ -300,7 +300,7 @@ public class CourseRegisterService implements ICourseRegisterService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this Id " + courseClassId));
 
         CourseRegister courseRegister = courseRegisterRepository
-                .findByCourseClass_CourseClassIdAndStudent_CodeAndState(courseClassId, studentCode, CourseRegisterState.REGISTERING)
+                .findByCourseClass_IdAndStudent_CodeAndState(courseClassId, studentCode, CourseRegisterState.REGISTERING)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course register not found "));
 
         courseRegisterRepository.delete(courseRegister);
@@ -321,18 +321,18 @@ public class CourseRegisterService implements ICourseRegisterService {
     @Override
     public Collection<StudentDto> getAllCourseClassStudents(Long courseClassId) {
         Collection<CourseRegister> courseRegisters = courseRegisterRepository
-                .findAllByCourseClass_CourseClassId(courseClassId);
+                .findAllByCourseClass_Id(courseClassId);
         Collection<Student> courseClassStudents = courseRegisters.stream()
                 .map(CourseRegister::getStudent).collect(Collectors.toList());
         return courseClassStudents.stream().map(studentDtoIMapper::mapTo).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<CourseRegisterOutDto> getMyReslut(YearSemester semester, String year) {
+    public Collection<CourseRegisterOutDto> getMyReslut(YearSemester semester, Integer year) {
         User user = iAuthenticationFacade.getAuthenticatedUser();
 
         List<CourseRegisterOutDto> courseRegisterOutDtos = courseRegisterRepository
-                .findByCourseClassYearAndCourseClassCourseSemesterAndStudentIdAndStateIn(year , semester , user.getId() , List.of(CourseRegisterState.PASSED, CourseRegisterState.FAILED))
+                .findByCourseClassYearAndCourseClassSemesterAndStudentIdAndStateIn(year, semester, user.getId(), List.of(CourseRegisterState.PASSED, CourseRegisterState.FAILED))
                 .stream().map(courseRegisterOutDtoMapper::mapTo).toList();
 
         if (courseRegisterOutDtos.isEmpty()) {

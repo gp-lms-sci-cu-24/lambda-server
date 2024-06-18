@@ -63,7 +63,7 @@ public class CourseRegisterController {
 
     @GetMapping(path = "/result/{year}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<CourseRegisterOutDto> getAllCourseRegistersBySemesterAndYear(@RequestParam YearSemester semester, @PathVariable String year) {
+    public Collection<CourseRegisterOutDto> getAllCourseRegistersBySemesterAndYear(@RequestParam YearSemester semester, @PathVariable Integer year) {
         return courseRegisterService.getMyReslut(semester , year);
     }
 

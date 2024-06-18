@@ -4,7 +4,6 @@ import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassTimingRepository;
-import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.timingregister.TimingRegisterRepository;
 import com.cu.sci.lambdaserver.timingregister.dto.TimingRegisterInDto;
@@ -42,7 +41,7 @@ public class TimingRegisterService implements ITimingRegisterService {
         CourseClass courseClass = courseClassRepository.findById(courseClassId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this id"));
         if (timingRegisterRepository
-                .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(courseClassId, courseClassTimingId)
+                .findTimingRegisterByCourseClass_IdAndCourseClassTiming_Id(courseClassId, courseClassTimingId)
                 .isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "timing register already exists");
         }
@@ -97,13 +96,13 @@ public class TimingRegisterService implements ITimingRegisterService {
 
     public TimingRegister getTimingRegisterByClassIdAndTimingId(Long classId, Long timingId) {
         return timingRegisterRepository
-                .findTimingRegisterByCourseClass_CourseClassIdAndCourseClassTiming_Id(classId, timingId)
+                .findTimingRegisterByCourseClass_IdAndCourseClassTiming_Id(classId, timingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "timing register was not found with this class and timing id"));
     }
 
     public List<CourseClassTiming> getTimingRegisterByClassId(Long classId) {
-        List<TimingRegister> timingRegisters = timingRegisterRepository.findCourseClassTimTimingRegistersByCourseClass_CourseClassId(classId);
+        List<TimingRegister> timingRegisters = timingRegisterRepository.findCourseClassTimTimingRegistersByCourseClass_Id(classId);
         List<CourseClassTiming> courseClassTimings = new ArrayList<>();
         timingRegisters.forEach(timingRegister -> {
             courseClassTimings.add(timingRegister.getCourseClassTiming());

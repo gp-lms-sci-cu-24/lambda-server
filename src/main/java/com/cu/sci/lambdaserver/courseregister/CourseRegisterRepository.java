@@ -16,12 +16,12 @@ public interface CourseRegisterRepository extends JpaRepository<CourseRegister, 
 
     Optional<CourseRegister> findByCourseClassCourseAndState(Course course , CourseRegisterState state);
 
-    Collection<CourseRegister> findAllByCourseClass_CourseClassId(Long courseClassId);
+    Collection<CourseRegister> findAllByCourseClass_Id(Long courseClassId);
 
     Collection<CourseRegister> findAllByStudent_CodeAndState(String studentCode, CourseRegisterState state);
 
-    Collection<CourseRegister> findByCourseClassYearAndCourseClassCourseSemesterAndStudentIdAndStateIn(String Year, YearSemester semester, Long studentId, Collection<CourseRegisterState> states);
+    Collection<CourseRegister> findByCourseClassYearAndCourseClassSemesterAndStudentIdAndStateIn(Integer Year, YearSemester semester, Long studentId, Collection<CourseRegisterState> states);
 
-    Optional<CourseRegister> findByCourseClass_CourseClassIdAndStudent_CodeAndState(Long courseClassId, String studentCode , CourseRegisterState state);
+    Optional<CourseRegister> findByCourseClass_IdAndStudent_CodeAndState(Long courseClassId, String studentCode, CourseRegisterState state);
 
 }

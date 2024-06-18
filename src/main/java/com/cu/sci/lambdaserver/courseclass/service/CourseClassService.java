@@ -142,14 +142,14 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, String Year) {
+    public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, Integer Year) {
 
         Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
 
-        Collection<CourseClass> courseClasses = courseClassRepository.findByCourseIdAndCourseSemesterAndYear(course.get().getId(), semester, Year);
+        Collection<CourseClass> courseClasses = courseClassRepository.findByCourseIdAndSemesterAndYear(course.get().getId(), semester, Year);
         if(courseClasses.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found with this course code " + courseCode + " and semester " + semester + "and year " + Year);
         }

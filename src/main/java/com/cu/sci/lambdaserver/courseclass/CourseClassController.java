@@ -45,7 +45,7 @@ public class CourseClassController {
 
     @GetMapping("/{course-code}/{semester}/{year}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseClassDto> getCourseClassByCourseCodeAndSemesterAndYear(@PathVariable("course-code") String courseCode, @PathVariable("semester") YearSemester semester, @PathVariable("year") String year) {
+    public List<CourseClassDto> getCourseClassByCourseCodeAndSemesterAndYear(@PathVariable("course-code") String courseCode, @PathVariable("semester") YearSemester semester, @PathVariable("year") Integer year) {
         return courseClassService.getCourseClassesByCourseCodeAndSemester(courseCode, semester, year).stream().toList();
     }
 
