@@ -32,6 +32,11 @@ public class StorageController {
         return storageService.uploadLocationImage(locationId, image);
     }
 
+    @PostMapping("/courses/{courseCode}")
+    public MessageResponse uploadCourseImage(@PathVariable String courseCode, MultipartFile image) {
+        return storageService.uploadCourseImage(courseCode, image);
+    }
+
     @PostMapping("/my/profile")
     public MessageResponse uploadMyProfileImage(MultipartFile image) {
         return storageService.uploadUserImage(authenticationFacade.getAuthenticatedUser(), image);

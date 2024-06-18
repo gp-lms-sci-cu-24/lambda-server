@@ -33,6 +33,9 @@ public class Course {
     @Column(nullable = false)
     private Integer creditHours;
 
+    @Column
+    private String image;
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<DepartmentCourses> departments;
 
