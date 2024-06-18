@@ -119,7 +119,7 @@ public class ProfessorService implements IProfessorService {
         CourseClass courseClass = courseClassRepository.findById(courseClassId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not exist"));
         if (!professor.getCourseClasses().contains(courseClass)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not belong to professor with ID " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not belong to professor with ID " + username);
         }
         professor.getCourseClasses().remove(courseClass);
         return professorRepository.save(professor);
