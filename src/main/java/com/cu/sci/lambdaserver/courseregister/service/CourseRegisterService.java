@@ -54,9 +54,10 @@ public class CourseRegisterService implements ICourseRegisterService {
 
         //update state
         courseRegisters.stream().forEach(courseRegister -> {
-            if (courseRegister.getCourseClass().getYear().equals(Year.now().toString())) {
+            if (courseRegister.getCourseClass().getYear() == Year.now().getValue()) {
                 courseRegister.setState(CourseRegisterState.STUDYING);
             }
+
             courseRegisterRepository.save(courseRegister);
         });
     }
@@ -115,7 +116,7 @@ public class CourseRegisterService implements ICourseRegisterService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not active");
         }
 
-        if (!(courseClass.getYear().equals(Year.now().toString()))) {
+        if (!(courseClass.getYear() == Year.now().getValue())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Class is not available for this year");
         }
 
