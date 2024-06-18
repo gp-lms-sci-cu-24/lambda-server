@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum CourseClassState {
-    REGISTER,
-    ACTIVE,
+    REGISTRATION,
+    IN_PROGRESS,
     INACTIVE,
     FINISHED
 }

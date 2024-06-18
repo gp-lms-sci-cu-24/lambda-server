@@ -1,10 +1,6 @@
 package com.cu.sci.lambdaserver.courseclass;
 
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
+import com.cu.sci.lambdaserver.courseclass.dto.*;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassService;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -18,16 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/course-class")
+@RequestMapping("/api/v1/classes")
 @RequiredArgsConstructor
 public class CourseClassController {
-    private final CourseClassMapper courseClassMapper;
     private final CourseClassService courseClassService;
     private final CourseClassTimingService courseClassTimingService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseClassDto createCourseClass(@Validated(CreateCourseClassDto.CreateValidation.class) @RequestBody CreateCourseClassDto courseClassDto) {
+    public CourseClassDto createCourseClass(@Valid @RequestBody CreateCourseClassRequestDto courseClassDto) {
         return courseClassService.createCourseClass(courseClassDto);
     }
 

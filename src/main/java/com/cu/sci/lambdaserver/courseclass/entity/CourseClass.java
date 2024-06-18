@@ -3,7 +3,6 @@ package com.cu.sci.lambdaserver.courseclass.entity;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.professor.Professor;
-import com.cu.sci.lambdaserver.timingregister.TimingRegister;
 import com.cu.sci.lambdaserver.utils.entities.DateAudit;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
@@ -22,13 +21,13 @@ import java.util.Set;
 @Entity
 @Table(name = "course_classes")
 public class CourseClass extends DateAudit {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "timing_seq")
+    @SequenceGenerator(name = "timing_seq", sequenceName = "timing_seq", allocationSize = 10)
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false, updatable = false)
     private Course course;
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +36,7 @@ public class CourseClass extends DateAudit {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private CourseClassState state = CourseClassState.REGISTER;
+    private CourseClassState state = CourseClassState.REGISTRATION;
 
     @Column(name = "max_capacity", nullable = false, columnDefinition = "integer default 0")
     private Integer maxCapacity;
@@ -61,14 +60,16 @@ public class CourseClass extends DateAudit {
     @ToString.Exclude
     private Set<Professor> professors;
 
+    @OneToMany(mappedBy = "courseClass")
+    private Set<CourseClassTiming> timings;
 
     // not reviewed yet
     @OneToMany(mappedBy = "courseClass")
     @ToString.Exclude
     private Collection<CourseRegister> courseRegisters;
 
-    @OneToMany(mappedBy = "courseClass")
-    @ToString.Exclude
-    private Collection<TimingRegister> courseClassTimings;
+//    @OneToMany(mappedBy = "courseClass")
+//    @ToString.Exclude
+//    private Collection<TimingRegister> courseClassTimings;
 
 }

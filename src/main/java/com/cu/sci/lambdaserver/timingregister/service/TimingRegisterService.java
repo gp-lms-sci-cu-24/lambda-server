@@ -32,6 +32,7 @@ public class TimingRegisterService implements ITimingRegisterService {
     private final TimingRegisterInDtoMapper timingRegisterInDtoMapper;
 
     @Override
+    @Deprecated
     public TimingRegister createTimingRegister(TimingRegisterInDto timingRegisterInDto) {
         Long courseClassId = timingRegisterInDto.getCourseClassId();
         Long courseClassTimingId = timingRegisterInDto.getCourseClassTimingId();
@@ -47,14 +48,14 @@ public class TimingRegisterService implements ITimingRegisterService {
         }
         // this needs more work
         Integer sum = 0;
-        for (Integer c : courseClassTiming
-                .getCourseClassTimings()
-                .stream()
-                .map(TimingRegister::getCourseClass)
-                .map(CourseClass::getMaxCapacity)
-                .toList()) {
-            sum += c;
-        }
+//        for (Integer c : courseClassTiming
+//                .getCourseClassTimings()
+//                .stream()
+//                .map(TimingRegister::getCourseClass)
+//                .map(CourseClass::getMaxCapacity)
+//                .toList()) {
+//            sum += c;
+//        }
         log.info("Student: {}", sum);
 
         if (sum + courseClass.getMaxCapacity() > courseClassTiming.getLocation().getMaxCapacity()) {

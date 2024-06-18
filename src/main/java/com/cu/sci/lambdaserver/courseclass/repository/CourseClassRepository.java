@@ -1,12 +1,18 @@
 package com.cu.sci.lambdaserver.courseclass.repository;
 
+import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.location.Location;
+import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Time;
+import java.time.DayOfWeek;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface CourseClassRepository extends JpaRepository<CourseClass, Long> {
@@ -22,6 +28,13 @@ public interface CourseClassRepository extends JpaRepository<CourseClass, Long> 
     Optional<CourseClass> findByCourseIdAndGroupNumber(Long courseId, Integer groupNumber);
 
     Collection<CourseClass> findByCourseIdAndSemesterAndYear(Long courseId, YearSemester semester, Integer year);
+
+    int countDistinctByCourseAndYearAndSemester(Course course, Integer year, YearSemester semester);
+
+    /**
+     * Used To check intersection in Timing
+     */
+    Set<CourseClass> findByStateInAndTimings_LocationAndTimings_DayAndTimings_StartTimeBeforeAndTimings_EndTimeAfter(Collection<CourseClassState> states, Location location, DayOfWeek day, Time startTime, Time endTime);
 
 //    Optional<CourseClass> findByCourse_CodeContainsIgnoreCase(@Nullable String code);
 }
