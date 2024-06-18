@@ -44,7 +44,7 @@ public interface ICourseRegisterService {
     Collection<StudentDto> getAllCourseClassStudents(Long courseClassId);
 
     @PreAuthorize("hasRole('STUDENT')")
-    Collection<CourseRegisterOutDto> getMyReslut(YearSemester semester, String year);
+    Collection<CourseRegisterOutDto> getMyReslut(YearSemester semester, Integer year);
 
     @PreAuthorize("hasRole('STUDENT')")
     MessageResponse deleteCourseRegister(Long courseClassId);

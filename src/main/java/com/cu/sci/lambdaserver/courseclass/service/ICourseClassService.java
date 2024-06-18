@@ -26,6 +26,6 @@ public interface ICourseClassService {
     CourseClassDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClass);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, String Year);
+    Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, Integer Year);
 
 }

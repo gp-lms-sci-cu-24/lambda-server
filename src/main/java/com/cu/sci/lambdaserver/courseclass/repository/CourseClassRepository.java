@@ -21,5 +21,7 @@ public interface CourseClassRepository extends JpaRepository<CourseClass, Long> 
 
     Optional<CourseClass> findByCourseIdAndGroupNumber(Long courseId, Integer groupNumber);
 
-    Collection<CourseClass> findByCourseIdAndCourseSemesterAndYear(Long courseId, YearSemester semester, String year);
+    Collection<CourseClass> findByCourseIdAndSemesterAndYear(Long courseId, YearSemester semester, Integer year);
+
+//    Optional<CourseClass> findByCourse_CodeContainsIgnoreCase(@Nullable String code);
 }

@@ -43,6 +43,7 @@ public class CourseMapper implements IMapper<Course, CourseDto> {
                 .info(course.getInfo())
                 .creditHours(course.getCreditHours())
                 .departments(courseDepartmentDto)
+                .image(course.getImage())
                 .coursePrerequisites(coursePrerequisitesCode)
                 .build();
     }
