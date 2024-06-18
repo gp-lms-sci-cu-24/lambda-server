@@ -37,40 +37,40 @@ public class ProfessorController {
         return professorService.getAllProfessors(pageNo, pageSize);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public ProfessorDto getProfessor(@PathVariable("id") Long id) {
-        return professorService.getProfessor(id);
+    public ProfessorDto getProfessor(@PathVariable("username") String username) {
+        return professorService.getProfessor(username);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(path = "/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public ProfessorDto updateProfessor(@PathVariable("id") Long id, @Valid @RequestBody Professor professor) {
-        return professorService.updateProfessor(id, professor);
+    public ProfessorDto updateProfessor(@PathVariable("username") String username, @Valid @RequestBody Professor professor) {
+        return professorService.updateProfessor(username, professor);
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProfessor(@PathVariable("id") Long id) {
-        professorService.deleteProfessor(id);
+    public void deleteProfessor(@PathVariable("username") String username) {
+        professorService.deleteProfessor(username);
     }
 
-    @GetMapping(path = "/{id}/course-classes")
+    @GetMapping(path = "/{username}/course-classes")
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseClassDto> getCourseClasses(@PathVariable Long id) {
-        return professorService.getCourseClasses(id).stream().map(courseClassMapper::mapTo).collect(Collectors.toList());
+    public List<CourseClassDto> getCourseClasses(@PathVariable String username) {
+        return professorService.getCourseClasses(username).stream().map(courseClassMapper::mapTo).collect(Collectors.toList());
     }
 
-    @PostMapping(path = "/{id}/course-classes/{courseClassId}")
+    @PostMapping(path = "/{username}/course-classes/{courseClassId}")
     @ResponseStatus(HttpStatus.OK)
-    public Professor addCourseClass(@PathVariable Long id, @PathVariable Long courseClassId) {
-        return professorService.assignCourseClass(id, courseClassId);
+    public Professor addCourseClass(@PathVariable String username, @PathVariable Long courseClassId) {
+        return professorService.assignCourseClass(username, courseClassId);
     }
 
-    @DeleteMapping(path = "/{id}/course-classes/{courseClassId}")
+    @DeleteMapping(path = "/{username}/course-classes/{courseClassId}")
     @ResponseStatus(HttpStatus.OK)
-    public Professor removeCourseClass(@PathVariable Long id, @PathVariable Long courseClassId) {
-        return professorService.removeCourseClass(id, courseClassId);
+    public Professor removeCourseClass(@PathVariable String username, @PathVariable Long courseClassId) {
+        return professorService.removeCourseClass(username, courseClassId);
     }
 
     @GetMapping(path = "/my-students")

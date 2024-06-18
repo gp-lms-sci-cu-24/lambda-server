@@ -71,8 +71,8 @@ public class ProfessorService implements IProfessorService {
     }
 
     @Override
-    public ProfessorDto getProfessor(Long id) {
-        Optional<Professor> professor = professorRepository.findById(id);
+    public ProfessorDto getProfessor(String username) {
+        Optional<Professor> professor = professorRepository.findByUsername(username);
         if (professor.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found");
         }
@@ -80,42 +80,42 @@ public class ProfessorService implements IProfessorService {
     }
 
     @Override
-    public ProfessorDto updateProfessor(Long id, Professor professorDetails) {
-        return professorMapper.mapTo(professorRepository.findById(id).map(professorRepository::save).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with ID " + id + " does not exist")));
+    public ProfessorDto updateProfessor(String username, Professor professorDetails) {
+        return professorMapper.mapTo(professorRepository.findByUsername(username).map(professorRepository::save).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist")));
     }
 
     @Override
-    public void deleteProfessor(Long id) {
-        if (!professorRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with ID " + id + " does not exist");
+    public void deleteProfessor(String username) {
+        if (!professorRepository.existsByUsername(username)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist");
         }
-        professorRepository.deleteById(id);
+        professorRepository.existsByUsername(username);
     }
 
     @Override
-    public List<CourseClass> getCourseClasses(Long id) {
-        return professorRepository.findById(id).map(Professor::getCourseClasses)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with ID " + id + " does not exist"));
+    public List<CourseClass> getCourseClasses(String username) {
+        return professorRepository.findByUsername(username).map(Professor::getCourseClasses)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist"));
     }
 
     @Override
-    public Professor assignCourseClass(Long id, Long courseClassId) {
-        Professor professor = professorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with ID " + id + " does not exist"));
+    public Professor assignCourseClass(String username, Long courseClassId) {
+        Professor professor = professorRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist"));
         CourseClass courseClass = courseClassRepository.findById(courseClassId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not exist"));
         if (professor.getCourseClasses().contains(courseClass)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "CourseClass with ID " + courseClassId + " already exists in professor with ID " + id);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CourseClass with ID " + courseClassId + " already exists in professor with ID " + username);
         }
         professor.getCourseClasses().add(courseClass);
         return professorRepository.save(professor);
     }
 
     @Override
-    public Professor removeCourseClass(Long id, Long courseClassId) {
-        Professor professor = professorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with ID " + id + " does not exist"));
+    public Professor removeCourseClass(String username, Long courseClassId) {
+        Professor professor = professorRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with ID " + username + " does not exist"));
         CourseClass courseClass = courseClassRepository.findById(courseClassId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not exist"));
         if (!professor.getCourseClasses().contains(courseClass)) {

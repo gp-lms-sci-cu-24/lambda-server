@@ -34,7 +34,7 @@ public class ProfileService {
         if (user.getRoles().contains(Role.STUDENT)) {
             return studentService.getStudent(user.getUsername());
         } else if (user.getRoles().contains(Role.PROFESSOR)) {
-            return professorService.getProfessor(user.getId());
+            return professorService.getProfessor(user.getUsername());
         } else {
             return userMapper.mapTo(user);
         }

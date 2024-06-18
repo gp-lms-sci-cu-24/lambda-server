@@ -19,22 +19,22 @@ public interface IProfessorService {
     Page<Professor> getAllProfessors(Integer pageNo, Integer pageSize);
 
     @PreAuthorize("hasRole('ADMIN')")
-    ProfessorDto getProfessor(Long id);
+    ProfessorDto getProfessor(String username);
 
     @PreAuthorize("hasRole('ADMIN')")
-    ProfessorDto updateProfessor(Long id, Professor professor);
+    ProfessorDto updateProfessor(String username, Professor professor);
 
     @PreAuthorize("hasRole('ADMIN')")
-    void deleteProfessor(Long id);
+    void deleteProfessor(String username);
 
     @PreAuthorize("hasRole('ADMIN')")
-    List<CourseClass> getCourseClasses(Long id);
+    List<CourseClass> getCourseClasses(String username);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Professor assignCourseClass(Long id, Long courseClassId);
+    Professor assignCourseClass(String username, Long courseClassId);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Professor removeCourseClass(Long id, Long courseClassId);
+    Professor removeCourseClass(String username, Long courseClassId);
 
     @PreAuthorize("hasRole('PROFESSOR')")
     Collection<StudentDto> getMyStudents();

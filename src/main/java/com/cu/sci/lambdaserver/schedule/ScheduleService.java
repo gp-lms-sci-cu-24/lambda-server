@@ -64,7 +64,7 @@ public class ScheduleService {
         } else if (user.hasRole(Role.valueOf("PROFESSOR"))) {
             Professor professor = professorRepository.findById(user.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "professor not found with this id"));
-            List<CourseClass> courseClasses = professorService.getCourseClasses(professor.getId());
+            List<CourseClass> courseClasses = professorService.getCourseClasses(professor.getUsername());
             for (CourseClass courseClass : courseClasses) {
                 List<CourseClassTiming> timingList = TimingRegisterService.getTimingRegisterByClassId(courseClass.getCourseClassId());
                 for (CourseClassTiming timing : timingList) {
