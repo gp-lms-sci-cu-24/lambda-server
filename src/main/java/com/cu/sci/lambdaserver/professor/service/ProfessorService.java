@@ -71,6 +71,14 @@ public class ProfessorService implements IProfessorService {
     }
 
     @Override
+    public Collection<Professor> getAllProfessorsByFirstName(String name) {
+        Collection<Professor> prof = professorRepository.findAllByFirstNameIgnoreCase(name);
+        if (prof.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Professors found");
+        return prof;
+    }
+
+    @Override
     public ProfessorDto getProfessor(String username) {
         Optional<Professor> professor = professorRepository.findByUsername(username);
         if (professor.isEmpty()) {

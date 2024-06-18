@@ -19,6 +19,9 @@ public interface IProfessorService {
     Page<Professor> getAllProfessors(Integer pageNo, Integer pageSize);
 
     @PreAuthorize("hasRole('ADMIN')")
+    Collection<Professor> getAllProfessorsByFirstName(String name);
+
+    @PreAuthorize("hasRole('ADMIN')")
     ProfessorDto getProfessor(String username);
 
     @PreAuthorize("hasRole('ADMIN')")

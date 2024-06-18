@@ -4,7 +4,6 @@ import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
-import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
 import com.cu.sci.lambdaserver.professor.service.IProfessorService;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import jakarta.validation.Valid;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "api/v1/professors")
 @RequiredArgsConstructor
 public class ProfessorController {
-    private final ProfessorMapper professorMapper;
     private final IProfessorService professorService;
     private final CourseClassMapper courseClassMapper;
 
@@ -35,6 +33,12 @@ public class ProfessorController {
     @ResponseStatus(HttpStatus.OK)
     public Page<Professor> getAllProfessors(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         return professorService.getAllProfessors(pageNo, pageSize);
+    }
+
+    @GetMapping(path = "/search/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Professor> getAllProfessorsByFirstName(@PathVariable("name") String name) {
+        return professorService.getAllProfessorsByFirstName(name);
     }
 
     @GetMapping(path = "/{username}")
