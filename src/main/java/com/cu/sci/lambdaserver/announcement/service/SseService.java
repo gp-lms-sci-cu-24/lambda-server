@@ -55,8 +55,6 @@ public class SseService implements ISseService{
     @Override
     public SseEmitter userSubscribe(String userName) {
 
-
-
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         userEmitters.put(userName, emitter);
         emitter.onCompletion(() -> emitters.remove(emitter));
