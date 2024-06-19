@@ -21,7 +21,7 @@ public interface IProfessorService {
     @PreAuthorize("hasRole('ADMIN')")
     Collection<Professor> getAllProfessorsByFirstName(String name);
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     ProfessorDto getProfessor(String username);
 
     @PreAuthorize("hasRole('ADMIN')")

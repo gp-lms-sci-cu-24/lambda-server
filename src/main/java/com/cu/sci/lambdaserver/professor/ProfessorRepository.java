@@ -13,4 +13,6 @@ public interface ProfessorRepository extends UserAbstractionRepository<Professor
     boolean existsByUsername(String username);
 
     Collection<Professor> findAllByFirstNameIgnoreCase(String name);
+
+    void deleteByUsername(String username);
 }

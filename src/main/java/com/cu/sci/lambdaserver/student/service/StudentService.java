@@ -1,10 +1,13 @@
 package com.cu.sci.lambdaserver.student.service;
 
+import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.department.Department;
 import com.cu.sci.lambdaserver.department.DepartmentRepository;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.student.dto.*;
+import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +30,9 @@ public class StudentService implements IStudentService {
     private final StudentRepository studentRepository;
     private final DepartmentRepository departmentRepository;
     private final IMapper<Student, CreateStudentRequestDto> createStudentRequestDtoMapper;
-    private final IMapper<Student, UpdateStudentDto> updateStudentDtoIMapper;
     private final IMapper<Student, StudentDto> studentDtoiMapper;
     private final PasswordEncoder passwordEncoder;
-
+    private final IAuthenticationFacade authenticationFacade;
 
     public void initStudent(Student student, Department department) {
         student.setDepartment(department);
@@ -80,6 +82,10 @@ public class StudentService implements IStudentService {
 
     @Override
     public StudentDto getStudent(String code) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        if (user.hasRole(Role.STUDENT) && !user.getUsername().equals(code)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to access this resource");
+        }
         Optional<Student> student = studentRepository.findByCode(code);
         if (student.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, " student not found with this code ");
@@ -128,17 +134,17 @@ public class StudentService implements IStudentService {
         List<Student> studentList = new ArrayList<>(students.size());
         Map<String, Department> departmentMap = new HashMap<>();
 
-        for (int i = 0; i < students.size(); i++) {
-            Student student = createStudentRequestDtoMapper.mapFrom(students.get(i));
+        for (CreateStudentRequestDto createStudentRequestDto : students) {
+            Student student = createStudentRequestDtoMapper.mapFrom(createStudentRequestDto);
             Department department;
-            if (departmentMap.containsKey(students.get(i).getDepartmentCode())) {
-                department = departmentMap.get(students.get(i).getDepartmentCode());
+            if (departmentMap.containsKey(createStudentRequestDto.getDepartmentCode())) {
+                department = departmentMap.get(createStudentRequestDto.getDepartmentCode());
             } else {
                 System.out.println("calling db to get the department");
                 department = departmentRepository
-                        .findDepartmentByCodeIgnoreCase(students.get(i).getDepartmentCode())
+                        .findDepartmentByCodeIgnoreCase(createStudentRequestDto.getDepartmentCode())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "department not found with this code"));
-                departmentMap.put(students.get(i).getDepartmentCode(), department);
+                departmentMap.put(createStudentRequestDto.getDepartmentCode(), department);
             }
             initStudent(student, department);
             studentList.add(student);

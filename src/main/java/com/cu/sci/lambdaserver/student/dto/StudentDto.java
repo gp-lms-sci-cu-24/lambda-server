@@ -5,11 +5,9 @@ import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @Data
 @NoArgsConstructor
@@ -39,8 +37,5 @@ public class StudentDto extends UserDto {
     private String joiningYear;
 
     private DepartmentDto department;
-
-    private String profilePicture;
-
-
+    
 }

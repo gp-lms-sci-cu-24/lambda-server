@@ -14,7 +14,7 @@ public interface IStudentService {
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
     Page<StudentDto> getAllStudents(Integer pageNo, Integer pageSize);
 
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
     StudentDto getStudent(String code);
 
     @PreAuthorize("hasRole('ADMIN')")
