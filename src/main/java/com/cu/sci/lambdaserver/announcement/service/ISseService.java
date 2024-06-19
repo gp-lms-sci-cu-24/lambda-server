@@ -1,15 +1,16 @@
 package com.cu.sci.lambdaserver.announcement.service;
 
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
-import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface ISseService {
 
-    SseEmitter subscribe();
+    SseEmitter generalSubscribe();
+
+    SseEmitter userSubscribe(String userName);
 
     void send(AnnouncementDto announcement);
 
-
+    void sendToUser(String userName, AnnouncementDto announcement);
 
 }
