@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.List;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -53,7 +51,20 @@ public class AnnouncementController {
 
     @GetMapping(value = "/subscribe" , produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe() {
-        return sseService.subscribe();
+        return sseService.generalSubscribe();
+    }
+
+
+    @GetMapping(value = "/subscribe/{username}" , produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribeToUser(@PathVariable(value = "username") String userName) {
+        return sseService.userSubscribe(userName);
+    }
+
+    @PostMapping("/send/{username}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void sendToUser(@PathVariable(value = "username") String userName, @RequestBody CreateAnnouncementDto announcementDto ) {
+        AnnouncementDto savedAnnouncement = announcementService.createAnnouncement(announcementDto);
+        sseService.sendToUser(userName, savedAnnouncement);
     }
 
 
