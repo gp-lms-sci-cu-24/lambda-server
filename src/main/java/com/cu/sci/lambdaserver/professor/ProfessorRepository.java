@@ -10,9 +10,6 @@ import java.util.Optional;
 public interface ProfessorRepository extends UserAbstractionRepository<Professor> {
     Optional<Professor> findByUsername(String username);
 
-    boolean existsByUsername(String username);
-
     Collection<Professor> findAllByFirstNameIgnoreCase(String name);
 
-    void deleteByUsername(String username);
 }

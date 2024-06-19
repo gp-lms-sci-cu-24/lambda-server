@@ -101,10 +101,11 @@ public class ProfessorService implements IProfessorService {
 
     @Override
     public void deleteProfessor(String username) {
-        if (!professorRepository.existsByUsername(username)) {
+        Optional<Professor> professor = professorRepository.findByUsername(username);
+        if (professor.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist");
         }
-        professorRepository.deleteByUsername(username);
+        professorRepository.delete(professor.get());
     }
 
     @Override
