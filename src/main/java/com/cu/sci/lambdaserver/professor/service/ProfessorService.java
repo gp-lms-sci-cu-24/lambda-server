@@ -46,16 +46,16 @@ public class ProfessorService implements IProfessorService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There already user with this username");
         }
 
+        Professor professor = new Professor();
+        
+        professor.setGender(professorDto.getGender());
+        professor.setEmail(professorDto.getEmail());
+        professor.setDegree(professorDto.getDegree());
+        professor.setFirstName(professorDto.getFirstName());
+        professor.setLastName(professorDto.getLastName());
+        professor.setUsername(professorDto.getUsername());
+        professor.setPassword(passwordEncoder.encode(professorDto.getPassword()));
 
-        Professor professor = Professor.builder()
-                .gender(professorDto.getGender())
-                .email(professorDto.getEmail())
-                .degree(professorDto.getDegree())
-                .firstName(professorDto.getFirstName())
-                .lastName(professorDto.getLastName())
-                .username(professorDto.getUsername())
-                .password(passwordEncoder.encode(professorDto.getPassword()))
-                .build();
         // save it
         professorRepository.save(professor);
 
@@ -95,8 +95,18 @@ public class ProfessorService implements IProfessorService {
 
     @Override
     public ProfessorDto updateProfessor(String username, Professor professorDetails) {
-        return professorMapper.mapTo(professorRepository.findByUsername(username).map(professorRepository::save).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist")));
+        Optional<Professor> professor = professorRepository.findByUsername(username);
+        if (professor.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist");
+        }
+        Professor professorData = professor.get();
+        professorData.setFirstName(professorDetails.getFirstName());
+        professorData.setLastName(professorDetails.getLastName());
+        professorData.setEmail(professorDetails.getEmail());
+        professorData.setGender(professorDetails.getGender());
+        professorData.setDegree(professorDetails.getDegree());
+
+        return professorMapper.mapTo(professorRepository.save(professorData));
     }
 
     @Override
