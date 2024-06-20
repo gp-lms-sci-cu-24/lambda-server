@@ -1,10 +1,14 @@
 package com.cu.sci.lambdaserver.announcement.service;
 
 import com.cu.sci.lambdaserver.announcement.entites.Announcement;
+import com.cu.sci.lambdaserver.announcement.entites.SpecificAnnouncement;
 import com.cu.sci.lambdaserver.announcement.repositories.AnnouncementRepository;
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
+import com.cu.sci.lambdaserver.announcement.repositories.SpecificAnnouncementRepository;
+import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.user.UserRepository;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,24 +19,87 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+
+import static com.cu.sci.lambdaserver.utils.enums.AnnouncementType.*;
+import static com.cu.sci.lambdaserver.utils.enums.Role.PROFESSOR;
+import static com.cu.sci.lambdaserver.utils.enums.Role.STUDENT;
 
 @Service
 @RequiredArgsConstructor
 public class AnnouncementService implements IAnnouncementService{
 
     private final AnnouncementRepository announcementRepository;
+    private final SpecificAnnouncementRepository specificAnnouncementRepository;
+    private final UserRepository userRepository;
     private final AnnouncementMapper announcementMapper ;
 
 
 
     @Override
     public AnnouncementDto createAnnouncement(CreateAnnouncementDto createAnnouncementDto) {
-        Announcement announcement = Announcement.builder()
+
+
+        Announcement announcement = Announcement
+                .builder()
                 .title(createAnnouncementDto.getTitle())
                 .description(createAnnouncementDto.getDescription())
-                .build();
-        return announcementMapper.mapTo(announcementRepository.save(announcement));
+                .type(createAnnouncementDto.getType())
+                .build() ;
+
+        announcementRepository.save(announcement);
+
+
+        //check if the announcement type is STUDENT_ONLY
+         if(createAnnouncementDto.getType()==STUDENT_ONLY){
+             List<User> students = userRepository.findAllByRolesContaining(STUDENT).stream().toList() ;
+                students.forEach(student -> {
+                    SpecificAnnouncement specificAnnouncement = SpecificAnnouncement
+                            .builder()
+                            .title(createAnnouncementDto.getTitle())
+                            .description(createAnnouncementDto.getDescription())
+                            .type(createAnnouncementDto.getType())
+                            .user(student)
+                            .build() ;
+                    specificAnnouncementRepository.save(specificAnnouncement);
+                });
+        }
+
+         //check if the announcement type is PROFESSOR_ONLY
+        if(createAnnouncementDto.getType()==PROFESSOR_ONLY){
+            List<User> professors = userRepository.findAllByRolesContaining(PROFESSOR).stream().toList() ;
+            professors.forEach(prof -> {
+                SpecificAnnouncement specificAnnouncement = SpecificAnnouncement
+                        .builder()
+                        .title(createAnnouncementDto.getTitle())
+                        .description(createAnnouncementDto.getDescription())
+                        .type(createAnnouncementDto.getType())
+                        .user(prof)
+                        .build() ;
+                specificAnnouncementRepository.save(specificAnnouncement);
+            });
+        }
+
+        //check if the announcement type is SPECIFIC_USER
+
+        if(createAnnouncementDto.getType()==SPECIFIC_USER) {
+            Optional<User> user = userRepository.findByUsernameIgnoreCase(createAnnouncementDto.getUserName());
+            if (user.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with this username " + createAnnouncementDto.getUserName());
+            }
+
+            SpecificAnnouncement specificAnnouncement = SpecificAnnouncement
+                    .builder()
+                    .title(createAnnouncementDto.getTitle())
+                    .description(createAnnouncementDto.getDescription())
+                    .type(createAnnouncementDto.getType())
+                    .user(user.get())
+                    .build();
+            specificAnnouncementRepository.save(specificAnnouncement);
+        }
+
+        return null ;
     }
 
 

@@ -27,4 +27,6 @@ public class AnnouncementDto {
 
     private LocalDateTime editedAt ;
 
+    private String userName ;
+
 }

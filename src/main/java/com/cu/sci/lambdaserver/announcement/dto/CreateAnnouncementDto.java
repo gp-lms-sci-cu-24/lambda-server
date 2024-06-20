@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -27,5 +29,8 @@ public class CreateAnnouncementDto {
     @NotNull(message = "Type cannot be null")
     @NotBlank(message = "Type is required")
     private AnnouncementType type;
+
+    private String userName ;
+
 
 }
