@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.professor;
 
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
@@ -61,7 +61,7 @@ public class ProfessorController {
 
     @GetMapping(path = "/{username}/course-classes")
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseClassResponseDto> getCourseClasses(@PathVariable String username) {
+    public List<CourseClassDto> getCourseClasses(@PathVariable String username) {
         return professorService.getCourseClasses(username).stream().map(courseClassMapper::mapTo).collect(Collectors.toList());
     }
 

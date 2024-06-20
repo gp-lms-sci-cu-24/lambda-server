@@ -1,34 +1,28 @@
 package com.cu.sci.lambdaserver.courseclass.dto;
 
-import com.cu.sci.lambdaserver.course.entites.Course;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import lombok.AllArgsConstructor;
+import com.cu.sci.lambdaserver.course.dto.CourseDto;
+import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
+import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
+import com.cu.sci.lambdaserver.utils.enums.YearSemester;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Builder
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CourseClassDto {
-
-    @NotNull(groups = {CreateCourseClassDto.UpdateValidation.class}, message = "Course Class ID cannot be null during update")
-    private Long courseClassId;
-
-    @NotNull(groups = {CreateCourseClassDto.CreateValidation.class}, message = "Course Semester cannot be null during creation")
-    @Null(groups = {CreateCourseClassDto.UpdateValidation.class}, message = "Course Semester must be null during update")
-    private String courseSemester;
-
-    @Null(groups = {CreateCourseClassDto.UpdateValidation.class, CreateCourseClassDto.CreateValidation.class}, message = "Course State cannot be set by dto")
-    private String courseState;
-
-    @NotNull(groups = {CreateCourseClassDto.CreateValidation.class}, message = "Max Capacity cannot be null during creation")
+    private Long id;
+    private CourseDto course;
+    private YearSemester semester;
+    private CourseClassState state;
     private Integer maxCapacity;
-
-    private String  courseCode;
-
+    private Integer numberOfStudentsRegistered;
+    private Integer year;
     private Integer groupNumber;
-
+    private ProfessorDto adminProfessor;
+    private Set<ProfessorDto> professors;
+    private Set<CourseClassTimingDto> timings;
 }

@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.user.User;
@@ -17,13 +17,13 @@ public interface ICourseClassService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    CourseClassResponseDto createCourseClass(CreateCourseClassRequestDto courseClass);
+    CourseClassDto createCourseClass(CreateCourseClassRequestDto courseClass);
 
-    Page<CourseClassResponseDto> getAllCourseClasses(Integer pageNo, Integer pageSize, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername);
+    Page<CourseClassDto> getAllCourseClasses(Integer pageNo, Integer pageSize, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername);
 
-    Page<CourseClassResponseDto> getCourseClassByCourse(Integer pageNo, Integer pageSize, String courseCode, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername);
+    Page<CourseClassDto> getCourseClassByCourse(Integer pageNo, Integer pageSize, String courseCode, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername);
 
-    CourseClassResponseDto getCourseClassByCourseAndYearAndSemesterAndGroup(String course, Integer years, YearSemester semesters, Integer groupNumber);
+    CourseClassDto getCourseClassByCourseAndYearAndSemesterAndGroup(String course, Integer years, YearSemester semesters, Integer groupNumber);
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")

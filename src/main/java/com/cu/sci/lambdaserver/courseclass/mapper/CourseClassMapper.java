@@ -2,7 +2,7 @@ package com.cu.sci.lambdaserver.courseclass.mapper;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class CourseClassMapper implements IMapper<CourseClass, CourseClassResponseDto> {
+public class CourseClassMapper implements IMapper<CourseClass, CourseClassDto> {
     private final IMapper<Course, CourseDto> courseMapper;
     private final IMapper<Professor, ProfessorDto> professorMapper;
     private final IMapper<CourseClassTiming, CourseClassTimingDto> courseClassTimingMapper;
 
     @Override
-    public CourseClassResponseDto mapTo(CourseClass courseClass) {
+    public CourseClassDto mapTo(CourseClass courseClass) {
         return mapTo(courseClass, Set.of(Include.ADMIN_PROFESSOR));
     }
 
-    public CourseClassResponseDto mapTo(CourseClass courseClass, Set<Include> includes) {
-        CourseClassResponseDto dto = CourseClassResponseDto.builder()
+    public CourseClassDto mapTo(CourseClass courseClass, Set<Include> includes) {
+        CourseClassDto dto = CourseClassDto.builder()
                 .id(courseClass.getId())
                 .semester(courseClass.getSemester())
                 .state(courseClass.getState())
@@ -76,12 +76,12 @@ public class CourseClassMapper implements IMapper<CourseClass, CourseClassRespon
     }
 
     @Override
-    public CourseClass mapFrom(CourseClassResponseDto courseClassDto) {
+    public CourseClass mapFrom(CourseClassDto courseClassDto) {
         throw new UnsupportedOperationException("not supported Yet");
     }
 
     @Override
-    public CourseClass update(CourseClassResponseDto courseClassDto, CourseClass courseClass) {
+    public CourseClass update(CourseClassDto courseClassDto, CourseClass courseClass) {
         throw new UnsupportedOperationException("Update not supported");
     }
 

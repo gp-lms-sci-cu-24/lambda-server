@@ -1,7 +1,6 @@
 package com.cu.sci.lambdaserver.courseregister.dto;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.enums.CourseRegisterState;
 import com.cu.sci.lambdaserver.utils.enums.Rate;
 import lombok.AllArgsConstructor;

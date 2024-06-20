@@ -3,7 +3,7 @@ package com.cu.sci.lambdaserver.courseclass.service;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
@@ -55,7 +55,7 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public CourseClassResponseDto createCourseClass(CreateCourseClassRequestDto dto) {
+    public CourseClassDto createCourseClass(CreateCourseClassRequestDto dto) {
 
         // Values from the request
         int year = Optional.ofNullable(dto.year()).orElse(Year.now().getValue());
@@ -146,7 +146,7 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public Page<CourseClassResponseDto> getAllCourseClasses(
+    public Page<CourseClassDto> getAllCourseClasses(
             Integer pageNo,
             Integer pageSize,
             Set<CourseClassMapper.Include> include,
@@ -180,7 +180,7 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public Page<CourseClassResponseDto> getCourseClassByCourse(Integer pageNo, Integer pageSize, String courseCode, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername) {
+    public Page<CourseClassDto> getCourseClassByCourse(Integer pageNo, Integer pageSize, String courseCode, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername) {
         boolean courseFound = courseRepository.existsByCodeIgnoreCase(courseCode);
         if (!courseFound) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
@@ -213,7 +213,7 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public CourseClassResponseDto getCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
+    public CourseClassDto getCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
         boolean courseFound = courseRepository.existsByCodeIgnoreCase(courseCode);
         if (!courseFound) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);

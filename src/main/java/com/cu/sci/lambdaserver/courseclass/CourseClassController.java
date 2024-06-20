@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.courseclass;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
@@ -30,13 +30,13 @@ public class CourseClassController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseClassResponseDto createCourseClass(@Valid @RequestBody CreateCourseClassRequestDto courseClassDto) {
+    public CourseClassDto createCourseClass(@Valid @RequestBody CreateCourseClassRequestDto courseClassDto) {
         return courseClassService.createCourseClass(courseClassDto);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<CourseClassResponseDto> getAllCourseClasses(
+    public Page<CourseClassDto> getAllCourseClasses(
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "20") Integer pageSize,
             @RequestParam(defaultValue = "") Set<CourseClassMapper.Include> includes,
@@ -51,7 +51,7 @@ public class CourseClassController {
 
     @GetMapping("{courseCode}")
     @ResponseStatus(HttpStatus.OK)
-    public Page<CourseClassResponseDto> getAllCourseClassesByCourseCode(
+    public Page<CourseClassDto> getAllCourseClassesByCourseCode(
             @PathVariable("courseCode") String courseCode,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "20") Integer pageSize,
@@ -66,7 +66,7 @@ public class CourseClassController {
 
     @GetMapping("{courseCode}/{year}")
     @ResponseStatus(HttpStatus.OK)
-    public Page<CourseClassResponseDto> getAllCourseClassesByCourseCodeAndYear(
+    public Page<CourseClassDto> getAllCourseClassesByCourseCodeAndYear(
             @PathVariable("courseCode") String courseCode,
             @PathVariable("year") Integer year,
             @RequestParam(defaultValue = "0") Integer pageNo,
@@ -81,7 +81,7 @@ public class CourseClassController {
 
     @GetMapping("{courseCode}/{year}/{semester}")
     @ResponseStatus(HttpStatus.OK)
-    public Page<CourseClassResponseDto> getAllCourseClassesByCourseCodeAndYearAndSemester(
+    public Page<CourseClassDto> getAllCourseClassesByCourseCodeAndYearAndSemester(
             @PathVariable("courseCode") String courseCode,
             @PathVariable("year") Integer year,
             @PathVariable("semester") YearSemester semester,
@@ -96,7 +96,7 @@ public class CourseClassController {
 
     @GetMapping("{courseCode}/{year}/{semester}/{group}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseClassResponseDto getCourseClassesByCourseCodeAndYearAndSemesterAndGroup(
+    public CourseClassDto getCourseClassesByCourseCodeAndYearAndSemesterAndGroup(
             @PathVariable("courseCode") String courseCode,
             @PathVariable("year") Integer year,
             @PathVariable("semester") YearSemester semester,

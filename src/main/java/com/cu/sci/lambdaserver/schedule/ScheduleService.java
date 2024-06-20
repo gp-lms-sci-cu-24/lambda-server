@@ -46,16 +46,16 @@ public class ScheduleService {
                     student.getCode()
             );
             for (CourseRegisterOutDto courseClass : courseRegister) {
-                List<CourseClassTiming> timingList = TimingRegisterService.getTimingRegisterByClassId(courseClass.getCourseClass().getCourseClassId());
+                List<CourseClassTiming> timingList = TimingRegisterService.getTimingRegisterByClassId(courseClass.getCourseClass().getId());
                 for (CourseClassTiming timing : timingList) {
                     schedule.add(
                             ScheduleDto.builder()
                                     .day(timing.getDay().toString())
                                     .endTime(timing.getEndTime().getTime())
                                     .startTime(timing.getStartTime().getTime())
-                                    .lecCode(timing.getType() + " " + courseClass.getCourseClass().getCourseCode())
+                                    .lecCode(timing.getType() + " " + courseClass.getCourseClass().getCourse().getCode())
                                     .location(locationMapper.mapTo(timing.getLocation()))
-                                    .courseCode(courseClass.getCourseClass().getCourseCode())
+                                    .courseCode(courseClass.getCourseClass().getCourse().getCode())
                                     .courseGroup(courseClass.getCourseClass().getGroupNumber().toString())
                                     .build()
                     );
