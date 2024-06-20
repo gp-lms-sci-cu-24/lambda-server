@@ -2,8 +2,10 @@ package com.cu.sci.lambdaserver.announcement.service;
 
 
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
+import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.UserRepository;
 import com.cu.sci.lambdaserver.user.service.UserService;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -88,7 +90,7 @@ public class SseService implements ISseService{
      * @Body AnnouncementDto announcement
      */
     @Override
-    public void send(AnnouncementDto announcement) {
+    public void sendToAll(AnnouncementDto announcement) {
 
         for (SseEmitter emitter : emitters) {
             try {
@@ -100,12 +102,12 @@ public class SseService implements ISseService{
 
     }
 
+
     /**
      * Send announcement to a specific user
      * @param userName
      * @Body announcement
      */
-
     @Override
     public void sendToUser(String userName, AnnouncementDto announcement) {
 
@@ -124,6 +126,22 @@ public class SseService implements ISseService{
             queueEventForUser(userName, announcement);
         }
     }
+
+
+    /**
+     * Send announcement to a specific role
+     * @param role
+     * @Body announcement
+     */
+    @Override
+    public void sendToRole(Role role, AnnouncementDto announcement) {
+        List<User> users = userRepository.findAllByRolesContaining(role).stream().toList() ;
+        for (User user : users) {
+            sendToUser(user.getUsername(), announcement);
+        }
+    }
+
+
 
     private void queueEventForUser(String userName, AnnouncementDto announcement) {
         userEventQueues.computeIfAbsent(userName, k -> new LinkedList<>()).add(announcement);
