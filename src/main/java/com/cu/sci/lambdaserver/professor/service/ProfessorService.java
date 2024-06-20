@@ -12,6 +12,7 @@ import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.UserRepository;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -80,6 +81,11 @@ public class ProfessorService implements IProfessorService {
 
     @Override
     public ProfessorDto getProfessor(String username) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        if (user.hasRole(Role.PROFESSOR) && !user.getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to access this resource");
+        }
+
         Optional<Professor> professor = professorRepository.findByUsername(username);
         if (professor.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found");
@@ -95,10 +101,11 @@ public class ProfessorService implements IProfessorService {
 
     @Override
     public void deleteProfessor(String username) {
-        if (!professorRepository.existsByUsername(username)) {
+        Optional<Professor> professor = professorRepository.findByUsername(username);
+        if (professor.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist");
         }
-        professorRepository.existsByUsername(username);
+        professorRepository.delete(professor.get());
     }
 
     @Override
