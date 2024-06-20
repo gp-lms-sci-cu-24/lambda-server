@@ -11,10 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
@@ -24,11 +21,13 @@ public class SseService implements ISseService{
    private final UserRepository userRepository ;
 
 
+
     // List of active emitters
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     //Map of user emitters
-    private final Map<String, SseEmitter> userEmitters = new HashMap<>() ;
+    private final Map<String, SseEmitter> userEmitters = new HashMap<>();
+    private final Map<String, Queue<AnnouncementDto>> userEventQueues = new HashMap<>();
 
 
     /**
@@ -57,8 +56,27 @@ public class SseService implements ISseService{
 
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         userEmitters.put(userName, emitter);
-        emitter.onCompletion(() -> emitters.remove(emitter));
-        emitter.onTimeout(() -> emitters.remove(emitter));
+
+        emitter.onCompletion(() -> {
+            userEmitters.remove(userName);
+        });
+
+        emitter.onTimeout(() -> {
+            userEmitters.remove(userName);
+        });
+
+
+        Queue<AnnouncementDto> eventQueue = userEventQueues.get(userName);
+        if (eventQueue != null) {
+            while (!eventQueue.isEmpty()) {
+                AnnouncementDto announcement = eventQueue.poll();
+                try {
+                    emitter.send(SseEmitter.event().name(announcement.getTitle()).data(announcement.getDescription()));
+                } catch (IOException e) {
+                    userEmitters.remove(userName);
+                }
+            }
+        }
 
         return emitter;
     }
@@ -91,18 +109,24 @@ public class SseService implements ISseService{
     @Override
     public void sendToUser(String userName, AnnouncementDto announcement) {
 
-        if(!userRepository.existsByUsernameIgnoreCase(userName)){
+        if (!userRepository.existsByUsernameIgnoreCase(userName)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         SseEmitter emitter = userEmitters.get(userName);
-        if(emitter != null){
+        if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name(announcement.getTitle()).data(announcement.getDescription()));
             } catch (IOException e) {
                 userEmitters.remove(userName);
             }
+        } else {
+            queueEventForUser(userName, announcement);
         }
+    }
+
+    private void queueEventForUser(String userName, AnnouncementDto announcement) {
+        userEventQueues.computeIfAbsent(userName, k -> new LinkedList<>()).add(announcement);
     }
 
 }
