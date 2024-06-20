@@ -14,9 +14,11 @@ import com.cu.sci.lambdaserver.location.Location;
 import com.cu.sci.lambdaserver.location.LocationRepository;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.ProfessorRepository;
+import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import com.cu.sci.lambdaserver.utils.helpers.CollectionHelper;
 import lombok.RequiredArgsConstructor;
@@ -222,7 +224,7 @@ public class CourseClassService implements ICourseClassService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
         }
 
-        return courseClassMapper.mapTo(courseClass.get());
+        return courseClassMapper.mapTo(courseClass.get(), Set.of(CourseClassMapper.Include.values()));
     }
     @Override
     public MessageResponse deleteCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
@@ -246,6 +248,69 @@ public class CourseClassService implements ICourseClassService {
 
         return new MessageResponse("course class deleted successfully");
     }
+
+    @Override
+    public MessageResponse addProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(User user, String courseCode, Integer year, YearSemester semester, Integer groupNumber, String professorUsername) {
+        boolean courseIsExists = courseRepository.existsByCodeIgnoreCase(courseCode);
+        if (!courseIsExists) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+        Optional<CourseClass> courseClassOptional = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semester, year, courseCode, groupNumber);
+        CourseClass courseClass = courseClassOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber));
+
+        // check if prof is admin or not
+        if (user.hasRole(Role.PROFESSOR) && !courseClass.getAdminProfessor().getUsername().equals(user.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You aren't the admin professor of this course class");
+        }
+
+
+        Optional<Professor> professorOptional = professorRepository.findByUsernameIgnoreCase(professorUsername);
+        Professor professor = professorOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "professor not found with this username " + professorUsername));
+
+        if (courseClass.getAdminProfessor().equals(professor) ||
+                courseClass.getProfessors().contains(professor)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This professor is already assigned to this course class");
+        }
+
+
+        professor.getCourseClasses().add(courseClass);
+        professorRepository.save(professor);
+
+        return new MessageResponse(String.format("professor %s added to course class %s", professorUsername, courseCode));
+    }
+
+    @Override
+    public MessageResponse removeProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(User user, String courseCode, Integer year, YearSemester semester, Integer groupNumber, String professorUsername) {
+        boolean courseIsExists = courseRepository.existsByCodeIgnoreCase(courseCode);
+        if (!courseIsExists) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+        Optional<CourseClass> courseClassOptional = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semester, year, courseCode, groupNumber);
+        CourseClass courseClass = courseClassOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber));
+
+        // check if prof is admin or not
+        if (user.hasRole(Role.PROFESSOR) && !courseClass.getAdminProfessor().getUsername().equals(user.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You aren't the admin professor of this course class");
+        }
+
+
+        Optional<Professor> professorOptional = professorRepository.findByUsernameIgnoreCase(professorUsername);
+        Professor professor = professorOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "professor not found with this username " + professorUsername));
+
+        if (courseClass.getAdminProfessor().equals(professor) ||
+                !courseClass.getProfessors().contains(professor)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This professor is not assigned to this course class");
+        }
+
+
+        professor.getCourseClasses().remove(courseClass);
+        professorRepository.save(professor);
+
+        return new MessageResponse(String.format("professor %s removed from course class %s", professorUsername, courseCode));
+    }
+
+
+
 
 //    @Override
 //    public CourseClassResponseDto getCourseClass(String courseCode , Integer groupNumber) {

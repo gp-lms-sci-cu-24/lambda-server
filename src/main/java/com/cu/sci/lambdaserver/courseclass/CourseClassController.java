@@ -1,11 +1,13 @@
 package com.cu.sci.lambdaserver.courseclass;
 
+import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
 import com.cu.sci.lambdaserver.courseclass.service.ICourseClassService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+import com.cu.sci.lambdaserver.utils.dto.UsernameRequestDto;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.validation.Valid;
@@ -24,6 +26,7 @@ import java.util.Set;
 public class CourseClassController {
     private final ICourseClassService courseClassService;
     private final CourseClassTimingService courseClassTimingService;
+    private final IAuthenticationFacade authenticationFacade;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -93,7 +96,7 @@ public class CourseClassController {
 
     @GetMapping("{courseCode}/{year}/{semester}/{group}")
     @ResponseStatus(HttpStatus.OK)
-    public CourseClassResponseDto getAllCourseClassesByCourseCodeAndYearAndSemester(
+    public CourseClassResponseDto getCourseClassesByCourseCodeAndYearAndSemesterAndGroup(
             @PathVariable("courseCode") String courseCode,
             @PathVariable("year") Integer year,
             @PathVariable("semester") YearSemester semester,
@@ -104,13 +107,41 @@ public class CourseClassController {
 
     @DeleteMapping("{courseCode}/{year}/{semester}/{group}")
     @ResponseStatus(HttpStatus.OK)
-    public MessageResponse deleteAllCourseClassesByCourseCodeAndYearAndSemester(
+    public MessageResponse deleteCourseClassesByCourseCodeAndYearAndSemesterAndGroup(
             @PathVariable("courseCode") String courseCode,
             @PathVariable("year") Integer year,
             @PathVariable("semester") YearSemester semester,
             @PathVariable("group") Integer group
     ) {
         return courseClassService.deleteCourseClassByCourseAndYearAndSemesterAndGroup(courseCode, year, semester, group);
+    }
+
+    @PostMapping("{courseCode}/{year}/{semester}/{group}/professors")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse addProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(
+            @PathVariable("courseCode") String courseCode,
+            @PathVariable("year") Integer year,
+            @PathVariable("semester") YearSemester semester,
+            @PathVariable("group") Integer group,
+            @RequestBody @Valid UsernameRequestDto usernameRequestDto
+    ) {
+        return courseClassService.addProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(
+                authenticationFacade.getAuthenticatedUser()
+                , courseCode, year, semester, group, usernameRequestDto.username());
+    }
+
+    @DeleteMapping("{courseCode}/{year}/{semester}/{group}/professors")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse removeProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(
+            @PathVariable("courseCode") String courseCode,
+            @PathVariable("year") Integer year,
+            @PathVariable("semester") YearSemester semester,
+            @PathVariable("group") Integer group,
+            @RequestBody @Valid UsernameRequestDto usernameRequestDto
+    ) {
+        return courseClassService.removeProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(
+                authenticationFacade.getAuthenticatedUser()
+                , courseCode, year, semester, group, usernameRequestDto.username());
     }
 
 

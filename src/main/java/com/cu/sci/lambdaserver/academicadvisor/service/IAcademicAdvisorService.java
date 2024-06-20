@@ -1,11 +1,11 @@
 package com.cu.sci.lambdaserver.academicadvisor.service;
 
 import com.cu.sci.lambdaserver.academicadvisor.AdvisorType;
-import com.cu.sci.lambdaserver.academicadvisor.dto.UsernameRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+import com.cu.sci.lambdaserver.utils.dto.UsernameRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 

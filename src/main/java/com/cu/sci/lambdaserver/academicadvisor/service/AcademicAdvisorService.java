@@ -2,7 +2,6 @@ package com.cu.sci.lambdaserver.academicadvisor.service;
 
 import com.cu.sci.lambdaserver.academicadvisor.AcademicAdvisorRepository;
 import com.cu.sci.lambdaserver.academicadvisor.AdvisorType;
-import com.cu.sci.lambdaserver.academicadvisor.dto.UsernameRequestDto;
 import com.cu.sci.lambdaserver.academicadvisor.entities.AcademicAdvisor;
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.professor.Professor;
@@ -15,6 +14,7 @@ import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.UserRepository;
 import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+import com.cu.sci.lambdaserver.utils.dto.UsernameRequestDto;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;

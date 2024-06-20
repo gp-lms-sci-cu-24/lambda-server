@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.courseclass.service;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
+import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
@@ -27,6 +28,16 @@ public interface ICourseClassService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     MessageResponse deleteCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer year, YearSemester semester, Integer groupNumber);
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
+    MessageResponse addProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(User authenticatedUser, String courseCode, Integer year, YearSemester semester, Integer groupNumber, String professorUsername);
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
+    MessageResponse removeProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(User authenticatedUser, String courseCode, Integer year, YearSemester semester, Integer groupNumber, String professorUsername);
+
+
 
 //    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN','ACADEMIC_ADVISOR')")
 //    CourseClassResponseDto getCourseClass(String courseCode , Integer groupNumber);
