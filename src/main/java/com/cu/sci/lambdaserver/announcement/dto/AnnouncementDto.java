@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.announcement.dto;
 
 
+import com.cu.sci.lambdaserver.utils.enums.AnnouncementType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class AnnouncementDto {
     private String title ;
 
     private String description ;
+
+    private AnnouncementType type;
 
     private LocalDateTime createdAt ;
 
