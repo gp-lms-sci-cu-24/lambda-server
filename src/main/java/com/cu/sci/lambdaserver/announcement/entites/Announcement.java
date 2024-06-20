@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Builder
 @Entity
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
