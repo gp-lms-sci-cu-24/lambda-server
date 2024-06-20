@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.announcement.mapper;
 
 
-import com.cu.sci.lambdaserver.announcement.Announcement;
+import com.cu.sci.lambdaserver.announcement.entites.Announcement;
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;

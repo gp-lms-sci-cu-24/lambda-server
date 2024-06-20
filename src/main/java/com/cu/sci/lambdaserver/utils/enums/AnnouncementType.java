@@ -6,4 +6,5 @@ public enum AnnouncementType {
     STUDENT,
     PROFESSOR,
     ADMIN,
+    SPECIFIC_USER
 }

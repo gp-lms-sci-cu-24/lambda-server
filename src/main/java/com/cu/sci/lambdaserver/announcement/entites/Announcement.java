@@ -1,8 +1,10 @@
-package com.cu.sci.lambdaserver.announcement;
+package com.cu.sci.lambdaserver.announcement.entites;
 
 
+import com.cu.sci.lambdaserver.utils.enums.AnnouncementType;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -10,8 +12,11 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Builder
 @Entity
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "announcements")
 public class Announcement {
 
@@ -25,6 +30,9 @@ public class Announcement {
 
     @Column(nullable = false)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private AnnouncementType type;
 
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

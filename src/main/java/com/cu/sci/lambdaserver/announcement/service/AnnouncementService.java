@@ -1,11 +1,10 @@
 package com.cu.sci.lambdaserver.announcement.service;
 
-import com.cu.sci.lambdaserver.announcement.Announcement;
+import com.cu.sci.lambdaserver.announcement.entites.Announcement;
 import com.cu.sci.lambdaserver.announcement.AnnouncementRepository;
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
-import com.cu.sci.lambdaserver.announcement.mapper.CreateAnnouncementMapper;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
