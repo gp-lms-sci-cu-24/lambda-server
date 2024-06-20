@@ -6,11 +6,11 @@ import com.cu.sci.lambdaserver.user.dto.UserDto;
 import com.cu.sci.lambdaserver.utils.enums.Gender;
 import com.cu.sci.lambdaserver.utils.enums.Level;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

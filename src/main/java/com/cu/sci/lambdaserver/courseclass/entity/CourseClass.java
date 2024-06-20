@@ -60,7 +60,7 @@ public class CourseClass extends DateAudit {
     @ToString.Exclude
     private Set<Professor> professors;
 
-    @OneToMany(mappedBy = "courseClass")
+    @OneToMany(mappedBy = "courseClass", cascade = CascadeType.ALL)
     private Set<CourseClassTiming> timings;
 
     // not reviewed yet

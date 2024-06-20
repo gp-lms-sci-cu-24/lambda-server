@@ -7,13 +7,13 @@ import org.hibernate.proxy.HibernateProxy;
 import java.util.Objects;
 import java.util.Set;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "courses")
 public class Course {
     @Id
@@ -36,7 +36,8 @@ public class Course {
     @Column
     private String image;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private Set<DepartmentCourses> departments;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
@@ -59,3 +60,4 @@ public class Course {
     }
 
 }
+

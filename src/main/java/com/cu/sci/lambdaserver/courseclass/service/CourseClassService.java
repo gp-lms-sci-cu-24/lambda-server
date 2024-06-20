@@ -3,13 +3,11 @@ package com.cu.sci.lambdaserver.courseclass.service;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassResponseDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
-import com.cu.sci.lambdaserver.courseclass.mapper.CreateCourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassTimingRepository;
 import com.cu.sci.lambdaserver.location.Location;
@@ -20,18 +18,24 @@ import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
+import com.cu.sci.lambdaserver.utils.helpers.CollectionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Time;
 import java.time.Year;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +43,7 @@ import java.util.Set;
 public class CourseClassService implements ICourseClassService {
 
     private final CourseClassMapper courseClassMapper;
-    private final CreateCourseClassMapper createCourseClassMapper ;
+
     // repostiories
     private final CourseClassRepository courseClassRepository;
     private final CourseRepository courseRepository;
@@ -49,7 +53,7 @@ public class CourseClassService implements ICourseClassService {
 
 
     @Override
-    public CourseClassDto createCourseClass(CreateCourseClassRequestDto dto) {
+    public CourseClassResponseDto createCourseClass(CreateCourseClassRequestDto dto) {
 
         // Values from the request
         int year = Optional.ofNullable(dto.year()).orElse(Year.now().getValue());
@@ -77,10 +81,6 @@ public class CourseClassService implements ICourseClassService {
         dto.timings().forEach(timingDto -> {
             Optional<Location> location = locationRepository.findById(timingDto.locationId());
 
-//            log.info(timingDto);
-            log.info("size: {}", typeUsed);
-            log.info("contain {}", typeUsed.contains(timingDto.type()));
-            log.info("type {}", timingDto.type());
 
             if (typeUsed.contains(timingDto.type())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Class types must be distinct.");
@@ -139,100 +139,172 @@ public class CourseClassService implements ICourseClassService {
             courseClassTimingRepository.save(t);
         });
 
-        CourseClassDto courseClassDtoResponse =  courseClassMapper.mapTo(courseClass);
-        courseClassDtoResponse.setCourseCode(course.get().getCode());
-        return  courseClassDtoResponse;
-
+        return courseClassMapper.mapTo(courseClass);
     }
 
 
     @Override
-    public Collection<CourseClassDto> getAllCourseClasses() {
+    public Page<CourseClassResponseDto> getAllCourseClasses(
+            Integer pageNo,
+            Integer pageSize,
+            Set<CourseClassMapper.Include> include,
+            Set<CourseClassState> state,
+            Set<YearSemester> semesters,
+            Set<Integer> years,
+            String professorUsername
+    ) {
 
-        Collection<CourseClass> courseClasses =  courseClassRepository.findAll() ;
-        if(courseClasses.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found");
+        final Set<CourseClassState> finalState = CollectionHelper.clearNullsSet(state);
+        final Set<CourseClassMapper.Include> finalInclude = CollectionHelper.clearNullsSet(include);
+        final Set<YearSemester> finalSemesters = CollectionHelper.clearNullsSet(semesters);
+        final Set<Integer> finalYears = CollectionHelper.clearNullsSet(years);
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, defultSort());
+        Page<CourseClass> courseClasses;
+
+        if (!finalYears.isEmpty() && !professorUsername.isEmpty()) {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndYearInAndAdminProfessorUsernameIgnoreCase(pageable, finalState, finalSemesters, finalYears, professorUsername);
+        } else if (!finalYears.isEmpty()) {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndYearIn(pageable, finalState, finalSemesters, finalYears);
+        } else if (!professorUsername.isEmpty()) {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndAdminProfessorUsernameIgnoreCase(pageable, finalState, finalSemesters, professorUsername);
+        } else {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterIn(pageable, finalState, finalSemesters);
         }
 
-        return courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
+        return courseClasses.map((c) -> courseClassMapper.mapTo(c, finalInclude));
+
     }
 
 
     @Override
-    public CourseClassDto getCourseClass(String courseCode , Integer groupNumber) {
-        //check if the course exist
-        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
-        if (course.isEmpty()) {
+    public Page<CourseClassResponseDto> getCourseClassByCourse(Integer pageNo, Integer pageSize, String courseCode, Set<CourseClassMapper.Include> include, Set<CourseClassState> state, Set<YearSemester> semesters, Set<Integer> years, String professorUsername) {
+        boolean courseFound = courseRepository.existsByCodeIgnoreCase(courseCode);
+        if (!courseFound) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
 
-        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+        final Set<CourseClassState> finalState = CollectionHelper.clearNullsSet(state);
+        final Set<CourseClassMapper.Include> finalInclude = CollectionHelper.clearNullsSet(include);
+        final Set<YearSemester> finalSemesters = CollectionHelper.clearNullsSet(semesters);
+        final Set<Integer> finalYears = CollectionHelper.clearNullsSet(years);
+
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, defultSort());
+        Page<CourseClass> courseClasses;
+
+        if (!finalYears.isEmpty() && !professorUsername.isEmpty()) {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndYearInAndCourseCodeIsAndAdminProfessorUsernameIgnoreCase(
+                    pageable, finalState, finalSemesters, finalYears, courseCode, professorUsername
+            );
+        } else if (!finalYears.isEmpty()) {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndYearInAndCourseCodeIs(pageable, finalState, finalSemesters, finalYears, courseCode);
+        } else if (!professorUsername.isEmpty()) {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndCourseCodeIsAndAdminProfessorUsernameIgnoreCase(pageable, finalState, finalSemesters, courseCode, professorUsername);
+        } else {
+            courseClasses = courseClassRepository.findAllByStateInAndSemesterInAndCourseCodeIs(pageable, finalState, finalSemesters, courseCode);
+        }
+
+        return courseClasses.map((c) -> courseClassMapper.mapTo(c, finalInclude));
+    }
+
+
+
+    @Override
+    public CourseClassResponseDto getCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
+        boolean courseFound = courseRepository.existsByCodeIgnoreCase(courseCode);
+        if (!courseFound) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+        }
+
+        Optional<CourseClass> courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semesters, years, courseCode, groupNumber);
         if (courseClass.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
         }
 
         return courseClassMapper.mapTo(courseClass.get());
     }
-
-
     @Override
-    public MessageResponse deleteCourseClass(String courseCode , Integer groupNumber) {
-        //check if the course exist
+    public MessageResponse deleteCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
         Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
         if (course.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
 
-        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+        Optional<CourseClass> courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semesters, years, courseCode, groupNumber);
         if (courseClass.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
         }
 
         courseClassRepository.delete(courseClass.get());
+        Set<CourseClass> classes = courseClassRepository.findAllByCourseAndYearAndSemester(course.get(), years, semesters, defultSort());
+        AtomicInteger group = new AtomicInteger(0);
+        classes.forEach(el -> {
+            el.setGroupNumber(group.incrementAndGet());
+            courseClassRepository.save(el);
+        });
 
         return new MessageResponse("course class deleted successfully");
     }
 
-
-    @Override
-    public CourseClassDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClassDto) {
-
-        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
-        if (course.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
-        }
-
-        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
-        if (courseClass.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
-        }
-
-        CourseClass courseClassUpdating = createCourseClassMapper.update(courseClassDto, courseClass.get());
-
-        courseClassRepository.save(courseClassUpdating);
-
-        return courseClassMapper.mapTo(courseClassUpdating);
+//    @Override
+//    public CourseClassResponseDto getCourseClass(String courseCode , Integer groupNumber) {
+//        //check if the course exist
+//        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+//        if (course.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+//        }
+//
+//        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+//        if (courseClass.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
+//        }
+//
+//        return courseClassMapper.mapTo(courseClass.get());
+//    }
 
 
-    }
+//    @Override
+//    public CourseClassResponseDto updateCourseClass(String courseCode, Integer groupNumber, CreateCourseClassDto courseClassDto) {
+//
+////        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+////        if (course.isEmpty()) {
+////            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+////        }
+////
+////        Optional<CourseClass> courseClass = courseClassRepository.findByCourseIdAndGroupNumber(course.get().getId(), groupNumber);
+////        if (courseClass.isEmpty()) {
+////            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
+////        }
+////
+////        CourseClass courseClassUpdating = createCourseClassMapper.update(courseClassDto, courseClass.get());
+////
+////        courseClassRepository.save(courseClassUpdating);
+////
+////        return courseClassMapper.mapTo(courseClassUpdating);
+//
+//        throw new UnsupportedOperationException("Update not supported yet");
+//
+//    }
 
 
-    @Override
-    public Collection<CourseClassDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, Integer Year) {
+//    @Override
+//    public Collection<CourseClassResponseDto> getCourseClassesByCourseCodeAndSemester(String courseCode, YearSemester semester, Integer Year) {
+//
+//        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
+//        if (course.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
+//        }
+//
+//        Collection<CourseClass> courseClasses = courseClassRepository.findByCourseIdAndSemesterAndYear(course.get().getId(), semester, Year);
+//        if(courseClasses.isEmpty()){
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found with this course code " + courseCode + " and semester " + semester + "and year " + Year);
+//        }
+//        System.out.println(courseClasses);
+//
+//        return  courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
+//    }
 
-        Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
-        if (course.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
-        }
-
-        Collection<CourseClass> courseClasses = courseClassRepository.findByCourseIdAndSemesterAndYear(course.get().getId(), semester, Year);
-        if(courseClasses.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course classes not found with this course code " + courseCode + " and semester " + semester + "and year " + Year);
-        }
-        System.out.println(courseClasses);
-
-        return  courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
-    }
 
 
     private boolean isValidTiming(CourseClassTiming timing, Course course) {
@@ -248,5 +320,14 @@ public class CourseClassService implements ICourseClassService {
         return courseClasses.stream().allMatch(
                 courseClass -> courseClass.getCourse().equals(course)
         );
+    }
+
+    private Sort defultSort() {
+        return Sort.by(List.of(
+                Sort.Order.desc("year"),
+                Sort.Order.desc("semester"),
+                Sort.Order.by("course.code"),
+                Sort.Order.asc("groupNumber")
+        ));
     }
 }
