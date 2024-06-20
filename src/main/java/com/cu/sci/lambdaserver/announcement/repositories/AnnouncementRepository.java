@@ -1,8 +1,10 @@
-package com.cu.sci.lambdaserver.announcement;
+package com.cu.sci.lambdaserver.announcement.repositories;
 
 import com.cu.sci.lambdaserver.announcement.entites.Announcement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long>, PagingAndSortingRepository<Announcement, Long>{
 }

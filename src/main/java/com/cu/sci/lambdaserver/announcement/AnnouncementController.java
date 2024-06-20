@@ -72,7 +72,7 @@ public class AnnouncementController {
     @ResponseStatus(HttpStatus.CREATED)
     public void send(@RequestBody CreateAnnouncementDto announcementDto ) {
         AnnouncementDto savedAnnouncement = announcementService.createAnnouncement(announcementDto);
-        sseService.send(savedAnnouncement);
+        sseService.sendToAll(savedAnnouncement);
     }
 
 

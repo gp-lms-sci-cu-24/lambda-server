@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.announcement.service;
 
 import com.cu.sci.lambdaserver.announcement.entites.Announcement;
-import com.cu.sci.lambdaserver.announcement.AnnouncementRepository;
+import com.cu.sci.lambdaserver.announcement.repositories.AnnouncementRepository;
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
