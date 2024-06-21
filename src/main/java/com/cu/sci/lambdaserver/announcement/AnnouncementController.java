@@ -60,19 +60,11 @@ public class AnnouncementController {
         return sseService.userSubscribe(userName);
     }
 
-    @PostMapping("/send/{username}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void sendToUser(@PathVariable(value = "username") String userName, @RequestBody CreateAnnouncementDto announcementDto ) {
-        AnnouncementDto savedAnnouncement = announcementService.createAnnouncement(announcementDto);
-        sseService.sendToUser(userName, savedAnnouncement);
-    }
-
 
     @PostMapping("/send")
     @ResponseStatus(HttpStatus.CREATED)
-    public void send(@RequestBody CreateAnnouncementDto announcementDto ) {
-        AnnouncementDto savedAnnouncement = announcementService.createAnnouncement(announcementDto);
-        sseService.sendToAll(savedAnnouncement);
+    public MessageResponse send(@RequestBody CreateAnnouncementDto announcementDto ) {
+        return announcementService.createAnnouncement(announcementDto);
     }
 
 

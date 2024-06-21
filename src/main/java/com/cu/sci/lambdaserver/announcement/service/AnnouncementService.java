@@ -2,6 +2,8 @@ package com.cu.sci.lambdaserver.announcement.service;
 
 import com.cu.sci.lambdaserver.announcement.entites.Announcement;
 import com.cu.sci.lambdaserver.announcement.entites.SpecificAnnouncement;
+import com.cu.sci.lambdaserver.announcement.mapper.CreateAnnouncementMapper;
+import com.cu.sci.lambdaserver.announcement.mapper.SpecificAnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.repositories.AnnouncementRepository;
 import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
@@ -31,75 +33,59 @@ import static com.cu.sci.lambdaserver.utils.enums.Role.STUDENT;
 public class AnnouncementService implements IAnnouncementService{
 
     private final AnnouncementRepository announcementRepository;
-    private final SpecificAnnouncementRepository specificAnnouncementRepository;
     private final UserRepository userRepository;
+    private final SpecificAnnouncementRepository specificAnnouncementRepository;
     private final AnnouncementMapper announcementMapper ;
+    private final CreateAnnouncementMapper createAnnouncementMapper ;
+    private final SpecificAnnouncementMapper specificAnnouncementMapper ;
+    private final SseService sseService ;
 
 
 
     @Override
-    public AnnouncementDto createAnnouncement(CreateAnnouncementDto createAnnouncementDto) {
+    public MessageResponse createAnnouncement(CreateAnnouncementDto createAnnouncementDto) {
 
+        AnnouncementDto announcementDto = null ;
 
-        Announcement announcement = Announcement
-                .builder()
-                .title(createAnnouncementDto.getTitle())
-                .description(createAnnouncementDto.getDescription())
-                .type(createAnnouncementDto.getType())
-                .build() ;
-
-        announcementRepository.save(announcement);
-
-
-        //check if the announcement type is STUDENT_ONLY
-         if(createAnnouncementDto.getType()==STUDENT_ONLY){
-             List<User> students = userRepository.findAllByRolesContaining(STUDENT).stream().toList() ;
-                students.forEach(student -> {
-                    SpecificAnnouncement specificAnnouncement = SpecificAnnouncement
-                            .builder()
-                            .title(createAnnouncementDto.getTitle())
-                            .description(createAnnouncementDto.getDescription())
-                            .type(createAnnouncementDto.getType())
-                            .user(student)
-                            .build() ;
-                    specificAnnouncementRepository.save(specificAnnouncement);
-                });
+        //if type is general or student only or professor only
+        if(createAnnouncementDto.getType()!=SPECIFIC_USER){
+            Announcement announcement = createAnnouncementMapper.mapFrom(createAnnouncementDto);
+            announcementDto = announcementMapper.mapTo(announcementRepository.save(announcement));
         }
 
-         //check if the announcement type is PROFESSOR_ONLY
-        if(createAnnouncementDto.getType()==PROFESSOR_ONLY){
-            List<User> professors = userRepository.findAllByRolesContaining(PROFESSOR).stream().toList() ;
-            professors.forEach(prof -> {
-                SpecificAnnouncement specificAnnouncement = SpecificAnnouncement
-                        .builder()
-                        .title(createAnnouncementDto.getTitle())
-                        .description(createAnnouncementDto.getDescription())
-                        .type(createAnnouncementDto.getType())
-                        .user(prof)
-                        .build() ;
-                specificAnnouncementRepository.save(specificAnnouncement);
-            });
-        }
-
-        //check if the announcement type is SPECIFIC_USER
-
-        if(createAnnouncementDto.getType()==SPECIFIC_USER) {
+        //if type is specific
+         if(createAnnouncementDto.getType().equals(SPECIFIC_USER)){
             Optional<User> user = userRepository.findByUsernameIgnoreCase(createAnnouncementDto.getUserName());
-            if (user.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with this username " + createAnnouncementDto.getUserName());
+            if(user.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with this username "+ createAnnouncementDto.getUserName() ) ;
             }
-
-            SpecificAnnouncement specificAnnouncement = SpecificAnnouncement
-                    .builder()
-                    .title(createAnnouncementDto.getTitle())
-                    .description(createAnnouncementDto.getDescription())
-                    .type(createAnnouncementDto.getType())
-                    .user(user.get())
-                    .build();
-            specificAnnouncementRepository.save(specificAnnouncement);
+            SpecificAnnouncement specificAnnouncement = specificAnnouncementMapper.mapFrom(createAnnouncementDto);
+            specificAnnouncement.setUser(user.get());
+            announcementDto = announcementMapper.mapTo(specificAnnouncementRepository.save(specificAnnouncement));
         }
 
-        return null ;
+
+
+
+        //send events to users
+        if(announcementDto.getType()==GENERAL){
+            sseService.sendToAll(announcementDto);
+        }
+
+        if(announcementDto.getType()==SPECIFIC_USER){
+            sseService.sendToUser(announcementDto.getUserName(),announcementDto);
+        }
+
+        if(announcementDto.getType()==STUDENT_ONLY){
+            sseService.sendToRole(STUDENT,announcementDto);
+        }
+
+        if(announcementDto.getType()==PROFESSOR_ONLY){
+            sseService.sendToRole(PROFESSOR,announcementDto);
+        }
+
+        return new MessageResponse("Announcement created successfully");
+
     }
 
 
