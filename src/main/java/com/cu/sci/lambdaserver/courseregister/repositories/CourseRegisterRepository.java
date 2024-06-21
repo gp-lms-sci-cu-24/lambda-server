@@ -1,12 +1,14 @@
 package com.cu.sci.lambdaserver.courseregister.repositories;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseregister.entities.CourseRegister;
 import com.cu.sci.lambdaserver.student.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -24,6 +26,8 @@ public interface CourseRegisterRepository extends JpaRepository<CourseRegister, 
 //    Optional<CourseRegister> findByCourseClass_IdAndStudent_CodeAndState(Long courseClassId, String studentCode, CourseRegisterState state);
 
     boolean existsByStudentAndCourseClassCourse(Student student, Course course);
+
+    Optional<CourseRegister> findByStudentAndCourseClass(Student student, CourseClass courseClass);
 
     Set<CourseRegister> findAllByStudent(Student student);
 

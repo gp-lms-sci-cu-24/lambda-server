@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.courseregister.service;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -22,6 +23,25 @@ public interface ICourseRegisterService {
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
     boolean canRegister(Set<String> passed, Set<String> prerequisites);
 
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
+    MessageResponse takeASeatAtCourseClass(String student, String course, Integer years, YearSemester semester, Integer groupNumber);
+
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
+    MessageResponse registerCourseClass(String student, String course, Integer years, YearSemester semesters, Integer groupNumber);
+
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
+    MessageResponse removeCourseClass(String student, String course, Integer years, YearSemester semesters, Integer groupNumber);
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
+    Set<CourseClassDto> getRegisteredCourseClasses(String student);
+
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
     boolean canRegister(Set<Course> passed, Course course);
 
@@ -30,25 +50,6 @@ public interface ICourseRegisterService {
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
     boolean isCourseClassCollision(Student student, CourseClass courseClass);
-
-    @Transactional
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
-    MessageResponse takeASeatAtCourseClass(String student, String course, Integer years, YearSemester semester, Integer groupNumber);
-
-    @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
-    MessageResponse registerCourseClass(String student, String course, Integer years, YearSemester semesters, Integer groupNumber);
-
-
-//    @Transactional
-//    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-//    MessageResponse removeCourseClass(String student,String course, Integer years, YearSemester semesters, Integer groupNumber);
-//
-//
-//    @Transactional
-//    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-//    MessageResponse getRegisteredCourseClasses(String student);
 
 
 //    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN','ACADEMIC_ADVISOR')")

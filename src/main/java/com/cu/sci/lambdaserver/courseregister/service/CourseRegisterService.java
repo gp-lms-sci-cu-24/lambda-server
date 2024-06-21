@@ -4,6 +4,7 @@ import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
@@ -44,6 +45,7 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final ICourseClassTimingService courseClassTimingService;
 
     private final IMapper<Course, CourseDto> courseMapper;
+    private final IMapper<CourseClass, CourseClassDto> courseClassMapper;
 
     private final CourseRepository courseRepository;
     private final CourseRegisterRepository courseRegisterRepository;
@@ -94,62 +96,6 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
         return canRegister.stream().map(courseMapper::mapTo).collect(Collectors.toSet());
-    }
-
-    @Override
-    public boolean canRegister(Set<String> passed, Set<String> prerequisites) {
-        boolean can = true;
-        for (String prerequisite : prerequisites) {
-            can &= passed.contains(prerequisite);
-        }
-        return can;
-    }
-
-    @Override
-    public boolean canRegister(Set<Course> passed, Course course) {
-        return canRegister(
-                passed.stream().map(Course::getCode)
-                        .collect(Collectors.toSet()),
-                course
-                        .getCoursePrerequisites()
-                        .stream().map(Course::getCode)
-                        .collect(Collectors.toSet())
-        );
-    }
-
-    @Override
-    public boolean canRegister(Student student, CourseClass courseClass) {
-        Course course = courseClass.getCourse();
-
-        return course.getDepartments().stream().map(
-                        d -> d.getDepartment().getCode().toUpperCase()
-                ).collect(Collectors.toSet())
-                .contains(student.getDepartment().getCode().toUpperCase())
-                && canRegister(
-                courseResultRepository.findByStudentAndState(student, CourseResultState.PASSED)
-                        .stream().map(
-                                courseResult -> courseResult.getCourseClass().getCourse()
-                        ).collect(Collectors.toSet()),
-                course
-        );
-
-    }
-
-    @Override
-    public boolean isCourseClassCollision(Student student, CourseClass courseClass) {
-        boolean intersect = false;
-        Set<CourseClassTiming> timings = courseClass.getTimings();
-        Set<CourseClass> registered = courseRegisterRepository.findAllByStudent(student).stream().map(CourseRegister::getCourseClass).collect(Collectors.toSet());
-
-        for (CourseClass regClas : registered) {
-            for (CourseClassTiming regTime : regClas.getTimings()) {
-                for (CourseClassTiming time : timings) {
-                    intersect |= courseClassTimingService.isIntersect(time, regTime);
-                }
-            }
-        }
-
-        return intersect;
     }
 
     @Override
@@ -274,6 +220,120 @@ public class CourseRegisterService implements ICourseRegisterService {
 
         return new MessageResponse("Course Registered Successfully");
     }
+
+    @Override
+    public MessageResponse removeCourseClass(String studentUsername, String course, Integer years, YearSemester semester, Integer groupNumber) {
+        checkAccessRegisterOrResultResource(studentUsername);
+
+        Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
+                .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Student Not Found!")));
+
+        CourseClass courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIsAllIgnoreCase(semester, years, course, groupNumber)
+                .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Course Class Not Found!")));
+
+        CourseRegister register = courseRegisterRepository.findByStudentAndCourseClass(student, courseClass)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "Course isn't registered"));
+
+        courseClass.setNumberOfStudentsRegistered(courseClass.getNumberOfStudentsRegistered() - 1);
+        student.setCreditHoursSemester(
+                student.getCreditHoursSemester()
+                        - courseClass.getCourse().getCreditHours()
+        );
+
+        courseClassRepository.save(courseClass);
+        studentRepository.save(student);
+        courseRegisterRepository.delete(register);
+
+
+        // registration logs
+        courseRegisterLogRepository.save(CourseRegisterLog.builder()
+                .action(CourseRegisterLog.Action.REMOVE)
+                .student(student)
+                .byUser(authenticationFacade.getAuthenticatedUser())
+                .description(String.format(
+                        "Course %s(%s) at Year: %d, Semester: %s group: %d",
+                        courseClass.getCourse().getName(),
+                        courseClass.getCourse().getCode(),
+                        courseClass.getYear(),
+                        courseClass.getSemester().toString(),
+                        courseClass.getGroupNumber()
+                ))
+                .build());
+
+        return new MessageResponse("Course removed Successfully");
+    }
+
+    @Override
+    public Set<CourseClassDto> getRegisteredCourseClasses(String studentUsername) {
+        checkAccessRegisterOrResultResource(studentUsername);
+
+        Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
+                .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Student Not Found!")));
+
+        Set<CourseRegister> registers = courseRegisterRepository.findAllByStudent(student);
+
+        return registers.stream().map(reg ->
+                courseClassMapper.mapTo(reg.getCourseClass())
+        ).collect(Collectors.toSet());
+    }
+
+
+    @Override
+    public boolean canRegister(Set<String> passed, Set<String> prerequisites) {
+        boolean can = true;
+        for (String prerequisite : prerequisites) {
+            can &= passed.contains(prerequisite);
+        }
+        return can;
+    }
+
+    @Override
+    public boolean canRegister(Set<Course> passed, Course course) {
+        return canRegister(
+                passed.stream().map(Course::getCode)
+                        .collect(Collectors.toSet()),
+                course
+                        .getCoursePrerequisites()
+                        .stream().map(Course::getCode)
+                        .collect(Collectors.toSet())
+        );
+    }
+
+    @Override
+    public boolean canRegister(Student student, CourseClass courseClass) {
+        Course course = courseClass.getCourse();
+
+        return course.getDepartments().stream().map(
+                        d -> d.getDepartment().getCode().toUpperCase()
+                ).collect(Collectors.toSet())
+                .contains(student.getDepartment().getCode().toUpperCase())
+                && canRegister(
+                courseResultRepository.findByStudentAndState(student, CourseResultState.PASSED)
+                        .stream().map(
+                                courseResult -> courseResult.getCourseClass().getCourse()
+                        ).collect(Collectors.toSet()),
+                course
+        );
+
+    }
+
+    @Override
+    public boolean isCourseClassCollision(Student student, CourseClass courseClass) {
+        boolean intersect = false;
+        Set<CourseClassTiming> timings = courseClass.getTimings();
+        Set<CourseClass> registered = courseRegisterRepository.findAllByStudent(student).stream().map(CourseRegister::getCourseClass).collect(Collectors.toSet());
+
+        for (CourseClass regClas : registered) {
+            for (CourseClassTiming regTime : regClas.getTimings()) {
+                for (CourseClassTiming time : timings) {
+                    intersect |= courseClassTimingService.isIntersect(time, regTime);
+                }
+            }
+        }
+
+        return intersect;
+    }
+
 
     /*-----------------------------------------------------------
             private Methods

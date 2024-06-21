@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.courseregister;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedCourseRegisterResultService;
 import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -15,11 +16,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CourseRegisterResultController {
 
-    //    private final CourseRegisterSessionRepository courseRegisterSessionRepository;
-//    private final CourseClassRepository courseClassRepository;
-//    private final StudentRepository studentRepository;
     private final ICourseRegisterService courseRegisterService;
     private final IAuthenticatedCourseRegisterResultService authenticatedCourseRegisterResultService;
+
+    @GetMapping("register/me/class")
+    public Set<CourseClassDto> getMyRegisteredCourseClass() {
+        return authenticatedCourseRegisterResultService.getRegisteredCourseClassesToMe();
+    }
 
     @GetMapping("register/me/courses")
     public Set<CourseDto> getAvailableCoursesForMe() {
@@ -46,9 +49,24 @@ public class CourseRegisterResultController {
         return authenticatedCourseRegisterResultService.registerCourseClassToMe(course, year, semester, groupNumber);
     }
 
+    @DeleteMapping("register/me/class/{course}/{year}/{semester}/{groupNumber}")
+    public MessageResponse removeRegisterForMe(
+            @PathVariable String course,
+            @PathVariable Integer year,
+            @PathVariable YearSemester semester,
+            @PathVariable Integer groupNumber
+    ) {
+        return authenticatedCourseRegisterResultService.removeCourseClassForMe(course, year, semester, groupNumber);
+    }
+
     @GetMapping("register/courses/{student}")
     public Set<CourseDto> getAvailableCourses(@PathVariable String student) {
         return courseRegisterService.getStudentAvailableCourses(student);
+    }
+
+    @GetMapping("register/class/{student}")
+    public Set<CourseClassDto> getRegisteredCourseClass(@PathVariable String student) {
+        return courseRegisterService.getRegisteredCourseClasses(student);
     }
 
     @PostMapping("register/seat/{course}/{year}/{semester}/{groupNumber}/{student}")
@@ -72,6 +90,19 @@ public class CourseRegisterResultController {
     ) {
         return courseRegisterService.registerCourseClass(student, course, year, semester, groupNumber);
     }
+
+    @DeleteMapping("register/class/{course}/{year}/{semester}/{groupNumber}/{student}")
+    public MessageResponse removeRegisterForStudent(
+            @PathVariable String course,
+            @PathVariable Integer year,
+            @PathVariable YearSemester semester,
+            @PathVariable Integer groupNumber,
+            @PathVariable String student
+    ) {
+        return courseRegisterService.removeCourseClass(student, course, year, semester, groupNumber);
+    }
+
+
 
 
 //    @PostMapping
