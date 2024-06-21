@@ -3,7 +3,7 @@ package com.cu.sci.lambdaserver.professor.service;
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
-import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
+import com.cu.sci.lambdaserver.courseregister.service.impl.CourseRegisterService;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.ProfessorRepository;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;

@@ -1,9 +1,10 @@
-package com.cu.sci.lambdaserver.courseregister.service;
+package com.cu.sci.lambdaserver.courseregister.service.impl;
 
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseregister.config.CourseRegisterConfigProperties;
 import com.cu.sci.lambdaserver.courseregister.entities.CourseRegisterSession;
 import com.cu.sci.lambdaserver.courseregister.repositories.CourseRegisterSessionRepository;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseClassSession;
 import com.cu.sci.lambdaserver.student.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.schedule;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
-import com.cu.sci.lambdaserver.courseregister.service.CourseRegisterService;
+import com.cu.sci.lambdaserver.courseregister.service.impl.CourseRegisterService;
 import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
 import com.cu.sci.lambdaserver.professor.ProfessorRepository;
 import com.cu.sci.lambdaserver.professor.service.ProfessorService;

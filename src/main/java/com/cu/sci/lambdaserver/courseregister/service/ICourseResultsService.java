@@ -10,25 +10,17 @@ import java.util.Set;
 
 public interface ICourseResultsService {
     @Transactional
-    @PreAuthorize("hasAnyRole('STUDENT')")
-    Set<CourseResultDto> getMyResult();
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
+    Set<CourseResultDto> getStudentResult(String studentUsername);
 
     @Transactional
-    @PreAuthorize("hasAnyRole('STUDENT')")
-    Set<CourseResultDto> getMyResult(Integer year, Set<YearSemester> semester);
-
-    @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    Set<CourseResultDto> getStudentResult(String student);
-
-    @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR')")
-    Set<CourseResultDto> getStudentResult(String student, Integer year, Set<YearSemester> semester);
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','STUDENT')")
+    Set<CourseResultDto> getStudentResult(String studentUsername, Integer year, Set<YearSemester> semester);
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN')")
     MessageResponse finishCourseClassForStudent(
-            String student, Integer year, Set<YearSemester> semester, Integer group, Integer grade
+            String studentUsername, Integer year, Set<YearSemester> semester, Integer group, Integer grade
     );
 
 }

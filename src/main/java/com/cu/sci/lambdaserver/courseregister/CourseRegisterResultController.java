@@ -2,8 +2,11 @@ package com.cu.sci.lambdaserver.courseregister;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedCourseRegisterResultService;
+import com.cu.sci.lambdaserver.courseregister.dto.CourseResultDto;
+import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedCourseRegisterService;
+import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedCourseResultsService;
 import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseResultsService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +20,19 @@ import java.util.Set;
 public class CourseRegisterResultController {
 
     private final ICourseRegisterService courseRegisterService;
-    private final IAuthenticatedCourseRegisterResultService authenticatedCourseRegisterResultService;
+    private final ICourseResultsService courseResultsService;
+    private final IAuthenticatedCourseRegisterService authenticatedCourseRegisterService;
+    private final IAuthenticatedCourseResultsService authenticatedCourseResultsService;
+
 
     @GetMapping("register/me/class")
     public Set<CourseClassDto> getMyRegisteredCourseClass() {
-        return authenticatedCourseRegisterResultService.getRegisteredCourseClassesToMe();
+        return authenticatedCourseRegisterService.getRegisteredCourseClassesToMe();
     }
 
     @GetMapping("register/me/courses")
     public Set<CourseDto> getAvailableCoursesForMe() {
-        return authenticatedCourseRegisterResultService.getMyAvailableCourses();
+        return authenticatedCourseRegisterService.getMyAvailableCourses();
     }
 
     @PostMapping("register/me/seat/{course}/{year}/{semester}/{groupNumber}")
@@ -36,7 +42,7 @@ public class CourseRegisterResultController {
             @PathVariable YearSemester semester,
             @PathVariable Integer groupNumber
     ) {
-        return authenticatedCourseRegisterResultService.takeASeatToMeAtCourseClass(course, year, semester, groupNumber);
+        return authenticatedCourseRegisterService.takeASeatToMeAtCourseClass(course, year, semester, groupNumber);
     }
 
     @PostMapping("register/me/class/{course}/{year}/{semester}/{groupNumber}")
@@ -46,7 +52,7 @@ public class CourseRegisterResultController {
             @PathVariable YearSemester semester,
             @PathVariable Integer groupNumber
     ) {
-        return authenticatedCourseRegisterResultService.registerCourseClassToMe(course, year, semester, groupNumber);
+        return authenticatedCourseRegisterService.registerCourseClassToMe(course, year, semester, groupNumber);
     }
 
     @DeleteMapping("register/me/class/{course}/{year}/{semester}/{groupNumber}")
@@ -56,7 +62,7 @@ public class CourseRegisterResultController {
             @PathVariable YearSemester semester,
             @PathVariable Integer groupNumber
     ) {
-        return authenticatedCourseRegisterResultService.removeCourseClassForMe(course, year, semester, groupNumber);
+        return authenticatedCourseRegisterService.removeCourseClassForMe(course, year, semester, groupNumber);
     }
 
     @GetMapping("register/courses/{student}")
@@ -102,6 +108,55 @@ public class CourseRegisterResultController {
         return courseRegisterService.removeCourseClass(student, course, year, semester, groupNumber);
     }
 
+    /* -------------------
+         Result
+     --------------------- */
+    @GetMapping("result/me")
+    public Set<CourseResultDto> getMyResult() {
+        return authenticatedCourseResultsService.getMyResult();
+    }
+
+    @GetMapping("result/me/{year}")
+    public Set<CourseResultDto> getMyResultByYear(
+            @PathVariable Integer year,
+            @RequestParam(defaultValue = "FIRST,SECOND,SUMMER") Set<YearSemester> semesters
+    ) {
+        return authenticatedCourseResultsService.getMyResult(year, semesters);
+    }
+
+    @GetMapping("result/me/{year}/{semester}")
+    public Set<CourseResultDto> getMyResultByYearAndSemester(
+            @PathVariable Integer year,
+            @PathVariable YearSemester semester
+    ) {
+        return authenticatedCourseResultsService.getMyResult(year, Set.of(semester));
+    }
+
+
+    @GetMapping("result/student/{student}")
+    public Set<CourseResultDto> getStudentResult(
+            @PathVariable String student
+    ) {
+        return courseResultsService.getStudentResult(student);
+    }
+
+    @GetMapping("result/student/{student}/{year}")
+    public Set<CourseResultDto> getStudentResultByYear(
+            @PathVariable String student,
+            @PathVariable Integer year,
+            @RequestParam(defaultValue = "FIRST,SECOND,SUMMER") Set<YearSemester> semesters
+    ) {
+        return courseResultsService.getStudentResult(student, year, semesters);
+    }
+
+    @GetMapping("result/student/{student}/{year}/{semester}")
+    public Set<CourseResultDto> getStudentResultByYearAndSemester(
+            @PathVariable String student,
+            @PathVariable Integer year,
+            @PathVariable YearSemester semester
+    ) {
+        return courseResultsService.getStudentResult(student, year, Set.of(semester));
+    }
 
 
 

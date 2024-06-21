@@ -1,6 +1,5 @@
-package com.cu.sci.lambdaserver.courseregister.service;
+package com.cu.sci.lambdaserver.courseregister.service.impl;
 
-import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
@@ -16,13 +15,15 @@ import com.cu.sci.lambdaserver.courseregister.repositories.CourseRegisterLogRepo
 import com.cu.sci.lambdaserver.courseregister.repositories.CourseRegisterRepository;
 import com.cu.sci.lambdaserver.courseregister.repositories.CourseRegisterSessionRepository;
 import com.cu.sci.lambdaserver.courseregister.repositories.CourseResultRepository;
+import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedAccessService;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseClassSession;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseRegistrationLogService;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
-import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;
 import com.cu.sci.lambdaserver.utils.enums.CourseResultState;
-import com.cu.sci.lambdaserver.utils.enums.Role;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +41,10 @@ import java.util.stream.Collectors;
 public class CourseRegisterService implements ICourseRegisterService {
     private final CourseRegisterLogRepository courseRegisterLogRepository;
 
-    private final IAuthenticationFacade authenticationFacade;
     private final ICourseClassSession courseClassSession;
     private final ICourseClassTimingService courseClassTimingService;
+    private final IAuthenticatedAccessService authenticatedAccessService;
+    private final ICourseRegistrationLogService courseRegistrationLogService;
 
     private final IMapper<Course, CourseDto> courseMapper;
     private final IMapper<CourseClass, CourseClassDto> courseClassMapper;
@@ -56,7 +58,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     @Override
     public Set<CourseDto> getStudentAvailableCourses(String studentUsername) {
-        checkAccessRegisterOrResultResource(studentUsername);
+        authenticatedAccessService.checkAccessRegisterOrResultResource(studentUsername);
 
         Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
@@ -100,7 +102,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     @Override
     public MessageResponse takeASeatAtCourseClass(String studentUsername, String course, Integer years, YearSemester semester, Integer groupNumber) {
-        checkAccessRegisterOrResultResource(studentUsername);
+        authenticatedAccessService.checkAccessRegisterOrResultResource(studentUsername);
 
         Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
                 .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Student Not Found!")));
@@ -140,7 +142,7 @@ public class CourseRegisterService implements ICourseRegisterService {
 
     @Override
     public MessageResponse registerCourseClass(String studentUsername, String course, Integer years, YearSemester semester, Integer groupNumber) {
-        checkAccessRegisterOrResultResource(studentUsername);
+        authenticatedAccessService.checkAccessRegisterOrResultResource(studentUsername);
 
         Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
                 .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Student Not Found!")));
@@ -203,27 +205,18 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
         // registration logs
-        courseRegisterLogRepository.save(CourseRegisterLog.builder()
-                .action(CourseRegisterLog.Action.ADD)
-                .student(student)
-                .byUser(authenticationFacade.getAuthenticatedUser())
-                .description(String.format(
-                        "Course %s(%s) at Year: %d, Semester: %s group: %d",
-                        courseClass.getCourse().getName(),
-                        courseClass.getCourse().getCode(),
-                        courseClass.getYear(),
-                        courseClass.getSemester().toString(),
-                        courseClass.getGroupNumber()
-                ))
-                .build());
-
+        courseRegistrationLogService.log(
+                CourseRegisterLog.Action.ADD,
+                student,
+                courseClass
+        );
 
         return new MessageResponse("Course Registered Successfully");
     }
 
     @Override
     public MessageResponse removeCourseClass(String studentUsername, String course, Integer years, YearSemester semester, Integer groupNumber) {
-        checkAccessRegisterOrResultResource(studentUsername);
+        authenticatedAccessService.checkAccessRegisterOrResultResource(studentUsername);
 
         Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
                 .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Student Not Found!")));
@@ -246,26 +239,18 @@ public class CourseRegisterService implements ICourseRegisterService {
 
 
         // registration logs
-        courseRegisterLogRepository.save(CourseRegisterLog.builder()
-                .action(CourseRegisterLog.Action.REMOVE)
-                .student(student)
-                .byUser(authenticationFacade.getAuthenticatedUser())
-                .description(String.format(
-                        "Course %s(%s) at Year: %d, Semester: %s group: %d",
-                        courseClass.getCourse().getName(),
-                        courseClass.getCourse().getCode(),
-                        courseClass.getYear(),
-                        courseClass.getSemester().toString(),
-                        courseClass.getGroupNumber()
-                ))
-                .build());
+        courseRegistrationLogService.log(
+                CourseRegisterLog.Action.REMOVE,
+                student,
+                courseClass
+        );
 
         return new MessageResponse("Course removed Successfully");
     }
 
     @Override
     public Set<CourseClassDto> getRegisteredCourseClasses(String studentUsername) {
-        checkAccessRegisterOrResultResource(studentUsername);
+        authenticatedAccessService.checkAccessRegisterOrResultResource(studentUsername);
 
         Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
                 .orElseThrow((() -> new ResponseStatusException(HttpStatus.CONFLICT, "Student Not Found!")));
@@ -339,25 +324,6 @@ public class CourseRegisterService implements ICourseRegisterService {
             private Methods
      ----------------------------------------------------------- **/
 
-    private void checkAccessRegisterOrResultResource(String studentUsername) {
-
-        User user = authenticationFacade.getAuthenticatedUser();
-
-        if (user.hasRole(Role.STUDENT)) {
-            if (!user.getUsername().equalsIgnoreCase(studentUsername))
-                throw forbiddenException();
-        } else if (
-                !user.hasRole(Role.ADMIN) &&
-                        !user.hasRole(Role.STUDENT_AFFAIR) &&
-                        !user.hasRole(Role.ACADEMIC_ADVISOR)
-        ) {
-            throw forbiddenException();
-        }
-    }
-
-    private ResponseStatusException forbiddenException() {
-        return new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to access this resource");
-    }
 
 //    void confirmCourseRegister(String studentCode) {
 //        //get course register

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-public interface IAuthenticatedCourseRegisterResultService {
+public interface IAuthenticatedCourseRegisterService {
     @Transactional
     @PreAuthorize("hasAnyRole('STUDENT')")
     Set<CourseDto> getMyAvailableCourses();
