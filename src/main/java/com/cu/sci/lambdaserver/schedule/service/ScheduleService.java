@@ -1,26 +1,68 @@
-package com.cu.sci.lambdaserver.schedule;
+package com.cu.sci.lambdaserver.schedule.service;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
-import com.cu.sci.lambdaserver.courseregister.service.impl.CourseRegisterService;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
+import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
 import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
-import com.cu.sci.lambdaserver.professor.ProfessorRepository;
+import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.service.ProfessorService;
-import com.cu.sci.lambdaserver.student.StudentRepository;
+import com.cu.sci.lambdaserver.schedule.ScheduleDto;
+import com.cu.sci.lambdaserver.schedule.ScheduleMapper;
+import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.timingregister.service.TimingRegisterService;
+import com.cu.sci.lambdaserver.user.User;
+import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class ScheduleService {
+public class ScheduleService implements IScheduleService {
     private final IAuthenticationFacade authenticationFacade;
-    private final CourseRegisterService courseRegisterService;
+    private final ICourseRegisterService courseRegisterService;
+    private final ScheduleMapper scheduleMapper;
     private final ProfessorService professorService;
     private final TimingRegisterService TimingRegisterService;
     private final LocationMapper locationMapper;
 
-    private final StudentRepository studentRepository;
-    private final ProfessorRepository professorRepository;
+
+    @Override
+    public Set<ScheduleDto> getMySchedule() {
+        User user = authenticationFacade.getAuthenticatedUser();
+        if (user.hasRole(Role.STUDENT)) {
+            return getMySchedule((Student) user);
+        } else if (user.hasRole(Role.PROFESSOR)) {
+            return getMySchedule((Professor) user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't access this resource");
+        }
+
+    }
+
+    @Override
+    public Set<ScheduleDto> getMySchedule(Student student) {
+        Set<CourseClassDto> registered = courseRegisterService.getRegisteredCourseClasses(student.getUsername());
+        Set<ScheduleDto> schedule = new HashSet<>();
+        for (CourseClassDto courseClass : registered) {
+            Set<CourseClassTimingDto> timings = courseClass.getTimings();
+            for (CourseClassTimingDto timing : timings) {
+                schedule.add(scheduleMapper.map(courseClass.getCourse(), timing, courseClass.getGroupNumber()));
+            }
+        }
+
+        return schedule;
+    }
+
+    @Override
+    public Set<ScheduleDto> getMySchedule(Professor professor) {
+        throw new UnsupportedOperationException("Not Implemented Yet");
+    }
 
 //    public List<ScheduleDto> getSchedule() {
 //        User user = authenticationFacade.getAuthenticatedUser();

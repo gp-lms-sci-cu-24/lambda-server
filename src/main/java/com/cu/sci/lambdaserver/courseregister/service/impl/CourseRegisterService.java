@@ -6,6 +6,7 @@ import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseclass.service.ICourseClassTimingService;
 import com.cu.sci.lambdaserver.courseregister.entities.CourseRegister;
@@ -47,7 +48,7 @@ public class CourseRegisterService implements ICourseRegisterService {
     private final ICourseRegistrationLogService courseRegistrationLogService;
 
     private final IMapper<Course, CourseDto> courseMapper;
-    private final IMapper<CourseClass, CourseClassDto> courseClassMapper;
+    private final CourseClassMapper courseClassMapper;
 
     private final CourseRepository courseRepository;
     private final CourseRegisterRepository courseRegisterRepository;
@@ -258,8 +259,11 @@ public class CourseRegisterService implements ICourseRegisterService {
         Set<CourseRegister> registers = courseRegisterRepository.findAllByStudent(student);
 
         return registers.stream().map(reg ->
-                courseClassMapper.mapTo(reg.getCourseClass())
-        ).collect(Collectors.toSet());
+                        courseClassMapper.mapTo(reg.getCourseClass(),
+                                Set.of(CourseClassMapper.Include.TIMINGS,
+                                        CourseClassMapper.Include.COURSE
+                                )))
+                .collect(Collectors.toSet());
     }
 
 
