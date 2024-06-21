@@ -9,7 +9,6 @@ import com.cu.sci.lambdaserver.professor.ProfessorRepository;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.mapper.ProfessorMapper;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.UserRepository;
 import com.cu.sci.lambdaserver.utils.enums.Role;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -140,28 +138,28 @@ public class ProfessorService implements IProfessorService {
         return professorRepository.save(professor);
     }
 
-    @Override
-    public Collection<StudentDto> getMyStudentsInCourseClass(Long courseClassId) {
-        User user = authenticationFacade.getAuthenticatedUser();
-        Professor professor = professorRepository.findById(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found."));
-        CourseClass courseClass = courseClassRepository.findById(courseClassId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not exist"));
-        if (!professor.getCourseClasses().contains(courseClass)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "CourseClass with ID " + courseClassId + " does not belong to professor with ID " + user.getId());
-        }
-        return courseRegisterService.getAllCourseClassStudents(courseClassId);
-    }
-
-    @Override
-    public Collection<StudentDto> getMyStudents() {
-        User user = authenticationFacade.getAuthenticatedUser();
-        Professor professor = professorRepository.findById(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found."));
-        List<StudentDto> students = new ArrayList<>();
-        for (CourseClass courseClass : professor.getCourseClasses()) {
-            students.addAll(courseRegisterService.getAllCourseClassStudents(courseClass.getId()));
-        }
-        return students;
-    }
+//    @Override
+//    public Collection<StudentDto> getMyStudentsInCourseClass(Long courseClassId) {
+//        User user = authenticationFacade.getAuthenticatedUser();
+//        Professor professor = professorRepository.findById(user.getId())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found."));
+//        CourseClass courseClass = courseClassRepository.findById(courseClassId)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CourseClass with ID " + courseClassId + " does not exist"));
+//        if (!professor.getCourseClasses().contains(courseClass)) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "CourseClass with ID " + courseClassId + " does not belong to professor with ID " + user.getId());
+//        }
+//        return courseRegisterService.getAllCourseClassStudents(courseClassId);
+//    }
+//
+//    @Override
+//    public Collection<StudentDto> getMyStudents() {
+//        User user = authenticationFacade.getAuthenticatedUser();
+//        Professor professor = professorRepository.findById(user.getId())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found."));
+//        List<StudentDto> students = new ArrayList<>();
+//        for (CourseClass courseClass : professor.getCourseClasses()) {
+//            students.addAll(courseRegisterService.getAllCourseClassStudents(courseClass.getId()));
+//        }
+//        return students;
+//    }
 }

@@ -1,19 +1,18 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingInDto;
-import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingOutDto;
-
-import java.util.List;
+import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
 
 public interface ICourseClassTimingService {
-    CourseClassTimingOutDto addCourseClassTiming(CourseClassTimingInDto courseClassTimingInDto);
+    boolean isIntersect(CourseClassTiming time1, CourseClassTiming time2);
 
-    List<CourseClassTimingOutDto> getAllCourseClassTiming();
-
-    CourseClassTimingOutDto getCourseClassTimingById(Long id);
-
-    CourseClassTimingOutDto updateCourseClassTiming(Long id, CourseClassTimingInDto courseClassTimingInDto);
-
-    CourseClassTimingOutDto deleteCourseClassTiming(Long id);
+//    CourseClassTimingOutDto addCourseClassTiming(CourseClassTimingInDto courseClassTimingInDto);
+//
+//    List<CourseClassTimingOutDto> getAllCourseClassTiming();
+//
+//    CourseClassTimingOutDto getCourseClassTimingById(Long id);
+//
+//    CourseClassTimingOutDto updateCourseClassTiming(Long id, CourseClassTimingInDto courseClassTimingInDto);
+//
+//    CourseClassTimingOutDto deleteCourseClassTiming(Long id);
 
 }

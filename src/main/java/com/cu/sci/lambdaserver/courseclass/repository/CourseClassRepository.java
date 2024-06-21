@@ -46,7 +46,7 @@ public interface CourseClassRepository extends JpaRepository<CourseClass, Long> 
 
     Page<CourseClass> findAllByStateInAndSemesterInAndYearInAndCourseCodeIsAndAdminProfessorUsernameIgnoreCase(Pageable pageable, Set<CourseClassState> states, Set<YearSemester> semesters, Set<Integer> years, String courseCode, String adminProfessorUsername);
 
-    Optional<CourseClass> findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(YearSemester semester, Integer year, String courseCode, Integer groupNumber);
+    Optional<CourseClass> findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIsAllIgnoreCase(YearSemester semester, Integer year, String courseCode, Integer groupNumber);
 
     Optional<CourseClass> findByCourseIdAndGroupNumber(Long courseId, Integer groupNumber);
 
@@ -58,6 +58,7 @@ public interface CourseClassRepository extends JpaRepository<CourseClass, Long> 
      */
     Set<CourseClass> findByStateInAndTimings_LocationAndTimings_DayAndTimings_StartTimeBeforeAndTimings_EndTimeAfter(Collection<CourseClassState> states, Location location, DayOfWeek day, Time startTime, Time endTime);
 
+    long countByCourseAndState(Course course, CourseClassState state);
 //    Collection<CourseClass> findByCourseIdAndSemesterAndYear(Long courseId, YearSemester semester, Integer year);
 
 //    Optional<CourseClass> findByCourse_CodeContainsIgnoreCase(@Nullable String code);

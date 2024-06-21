@@ -4,7 +4,6 @@ import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -39,9 +38,9 @@ public interface IProfessorService {
     @PreAuthorize("hasRole('ADMIN')")
     Professor removeCourseClass(String username, Long courseClassId);
 
-    @PreAuthorize("hasRole('PROFESSOR')")
-    Collection<StudentDto> getMyStudents();
+//    @PreAuthorize("hasRole('PROFESSOR')")
+//    Collection<StudentDto> getMyStudents();
 
-    @PreAuthorize("hasRole('PROFESSOR')")
-    Collection<StudentDto> getMyStudentsInCourseClass(Long courseClassId);
+//    @PreAuthorize("hasRole('PROFESSOR')")
+//    Collection<StudentDto> getMyStudentsInCourseClass(Long courseClassId);
 }

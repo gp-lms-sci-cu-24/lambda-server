@@ -5,7 +5,6 @@ import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.service.IProfessorService;
-import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,16 +76,16 @@ public class ProfessorController {
         return professorService.removeCourseClass(username, courseClassId);
     }
 
-    @GetMapping(path = "/my-students")
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<StudentDto> getMyStudents() {
-        return professorService.getMyStudents();
-    }
-
-    @GetMapping(path = "/my-students/{courseClassId}")
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<StudentDto> getMyStudentsInCourseClass(@PathVariable Long courseClassId) {
-        return professorService.getMyStudentsInCourseClass(courseClassId);
-    }
+//    @GetMapping(path = "/my-students")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Collection<StudentDto> getMyStudents() {
+//        return professorService.getMyStudents();
+//    }
+//
+//    @GetMapping(path = "/my-students/{courseClassId}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Collection<StudentDto> getMyStudentsInCourseClass(@PathVariable Long courseClassId) {
+//        return professorService.getMyStudentsInCourseClass(courseClassId);
+//    }
 
 }

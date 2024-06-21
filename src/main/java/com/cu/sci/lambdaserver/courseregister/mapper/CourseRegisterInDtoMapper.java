@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.courseregister.mapper;
 
-import com.cu.sci.lambdaserver.courseregister.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseRegisterInDto;
+import com.cu.sci.lambdaserver.courseregister.entities.CourseRegister;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.courseclass.entity;
 
 import com.cu.sci.lambdaserver.course.entites.Course;
-import com.cu.sci.lambdaserver.courseregister.CourseRegister;
+import com.cu.sci.lambdaserver.courseregister.entities.CourseRegister;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.utils.entities.DateAudit;
 import com.cu.sci.lambdaserver.utils.enums.CourseClassState;

@@ -219,7 +219,7 @@ public class CourseClassService implements ICourseClassService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
 
-        Optional<CourseClass> courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semesters, years, courseCode, groupNumber);
+        Optional<CourseClass> courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIsAllIgnoreCase(semesters, years, courseCode, groupNumber);
         if (courseClass.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
         }
@@ -233,7 +233,7 @@ public class CourseClassService implements ICourseClassService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
 
-        Optional<CourseClass> courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semesters, years, courseCode, groupNumber);
+        Optional<CourseClass> courseClass = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIsAllIgnoreCase(semesters, years, courseCode, groupNumber);
         if (courseClass.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber);
         }
@@ -255,7 +255,7 @@ public class CourseClassService implements ICourseClassService {
         if (!courseIsExists) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
-        Optional<CourseClass> courseClassOptional = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semester, year, courseCode, groupNumber);
+        Optional<CourseClass> courseClassOptional = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIsAllIgnoreCase(semester, year, courseCode, groupNumber);
         CourseClass courseClass = courseClassOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber));
 
         // check if prof is admin or not
@@ -285,7 +285,7 @@ public class CourseClassService implements ICourseClassService {
         if (!courseIsExists) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "course not found with this code " + courseCode);
         }
-        Optional<CourseClass> courseClassOptional = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIs(semester, year, courseCode, groupNumber);
+        Optional<CourseClass> courseClassOptional = courseClassRepository.findBySemesterIsAndYearIsAndCourseCodeIsAndGroupNumberIsAllIgnoreCase(semester, year, courseCode, groupNumber);
         CourseClass courseClass = courseClassOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "course class not found with this group number " + groupNumber));
 
         // check if prof is admin or not
