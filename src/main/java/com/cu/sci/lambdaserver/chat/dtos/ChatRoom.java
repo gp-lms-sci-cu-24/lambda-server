@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.chat.dtos;
-
-public class ChatRoom {
-}
+//package com.cu.sci.lambdaserver.chat.dtos;
+//
+//public class ChatRoom {
+//}
