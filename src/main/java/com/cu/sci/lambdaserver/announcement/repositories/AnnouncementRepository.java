@@ -11,5 +11,5 @@ import java.util.Collection;
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long>, PagingAndSortingRepository<Announcement, Long>{
 
-    Collection<Announcement> findAllByTypeIgnoreCase(AnnouncementType type);
+    Collection<Announcement> findAllByType(AnnouncementType type);
 }
