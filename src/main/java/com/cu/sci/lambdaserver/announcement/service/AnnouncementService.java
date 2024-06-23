@@ -22,12 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.cu.sci.lambdaserver.utils.enums.AnnouncementType.*;
-import static com.cu.sci.lambdaserver.utils.enums.Role.PROFESSOR;
-import static com.cu.sci.lambdaserver.utils.enums.Role.STUDENT;
+import static com.cu.sci.lambdaserver.utils.enums.Role.*;
 
 @Service
 @RequiredArgsConstructor
@@ -95,30 +95,31 @@ public class AnnouncementService implements IAnnouncementService{
     public Page<AnnouncementDto> getAnnouncements(Integer pageNo, Integer pageSize) {
         User authenticatedUser = authenticationFacade.getAuthenticatedUser();
 
-        List<Announcement> announcementsResult = List.of();
+        List<Announcement> announcementsResult = new ArrayList<>();
 
         //get specific announcements for the authenticated user
         List<SpecificAnnouncement> specificAnnouncements = specificAnnouncementRepository.findAllByUser(authenticatedUser).stream().toList();
+        System.out.println(specificAnnouncements);
         if (!specificAnnouncements.isEmpty()) {
             announcementsResult.addAll(specificAnnouncements);
         }
 
         //add general announcements to the list
-        List<Announcement> generalAnnouncements = announcementRepository.findAllByTypeIgnoreCase(GENERAL).stream().toList();
+        List<Announcement> generalAnnouncements = announcementRepository.findAllByType(GENERAL).stream().toList();
         if (!generalAnnouncements.isEmpty()) {
             announcementsResult.addAll(generalAnnouncements);
         }
 
-        if (authenticatedUser.getRoles().contains(STUDENT)) {
+        if (authenticatedUser.getRoles().contains(STUDENT) || authenticatedUser.getRoles().contains(ADMIN)) {
             announcementsResult.addAll(announcementRepository
-                    .findAllByTypeIgnoreCase(STUDENT_ONLY)
+                    .findAllByType(STUDENT_ONLY)
                     .stream()
                     .toList());
         }
 
-        if (authenticatedUser.getRoles().contains(PROFESSOR)) {
+        if (authenticatedUser.getRoles().contains(PROFESSOR) || authenticatedUser.getRoles().contains(ADMIN)) {
             announcementsResult.addAll(announcementRepository
-                    .findAllByTypeIgnoreCase(PROFESSOR_ONLY)
+                    .findAllByType(PROFESSOR_ONLY)
                     .stream()
                     .toList());
         }

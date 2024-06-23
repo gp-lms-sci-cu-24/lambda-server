@@ -25,7 +25,7 @@ public class AnnouncementController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<AnnouncementDto> getAnnouncements(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
+    public Page<AnnouncementDto> getAnnouncements(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
         return announcementService.getAnnouncements(pageNo, pageSize);
     }
 
