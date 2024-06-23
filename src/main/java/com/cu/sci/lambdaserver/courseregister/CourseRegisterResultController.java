@@ -158,6 +158,18 @@ public class CourseRegisterResultController {
         return courseResultsService.getStudentResult(student, year, Set.of(semester));
     }
 
+    @PostMapping("result/finish/{student}/{year}/{semester}/{group}/{grade}/{course}")
+    public MessageResponse finishCourseClassForStudent(
+            @PathVariable String student,
+            @PathVariable Integer year,
+            @PathVariable YearSemester semester,
+            @PathVariable Integer group,
+            @PathVariable Integer grade,
+            @PathVariable String course
+    ) {
+        return courseResultsService.finishCourseClassForStudent(student, year, semester, group, grade, course);
+    }
+
 
 
 //    @PostMapping
