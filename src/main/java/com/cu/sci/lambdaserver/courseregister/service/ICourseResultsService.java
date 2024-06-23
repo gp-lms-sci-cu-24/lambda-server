@@ -20,7 +20,8 @@ public interface ICourseResultsService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN')")
     MessageResponse finishCourseClassForStudent(
-            String studentUsername, Integer year, Set<YearSemester> semester, Integer group, Integer grade
+            String studentUsername, Integer year, YearSemester semester, Integer group, Integer grade, String courseCode
     );
+
 
 }
