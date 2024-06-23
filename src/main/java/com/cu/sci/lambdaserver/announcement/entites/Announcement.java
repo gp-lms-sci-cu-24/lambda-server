@@ -33,6 +33,8 @@ public class Announcement {
     @Enumerated(EnumType.STRING)
     private AnnouncementType type;
 
+    private String image ;
+
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
