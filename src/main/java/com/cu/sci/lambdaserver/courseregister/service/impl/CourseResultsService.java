@@ -61,7 +61,7 @@ public class CourseResultsService implements ICourseResultsService {
 
     public CourseResultState assignState(Integer grade) {
 
-        CourseResultState state;
+        CourseResultState state = null;
 
         if (grade == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "grade is required");
@@ -73,7 +73,8 @@ public class CourseResultsService implements ICourseResultsService {
 
         if (grade >= 60) {
             state = CourseResultState.PASSED;
-        } else {
+        }
+        if(grade == 0) {
             state = CourseResultState.ABSENCE;
         }
 
