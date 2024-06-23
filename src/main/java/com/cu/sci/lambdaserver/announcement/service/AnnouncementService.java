@@ -123,6 +123,10 @@ public class AnnouncementService implements IAnnouncementService{
                     .toList());
         }
 
+        if(announcementsResult.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No announcements found") ;
+        }
+
 
         //convert this list to a list of AnnouncementDto
         List<AnnouncementDto> announcementDtos = announcementsResult.stream().map(announcementMapper::mapTo).toList();
