@@ -74,7 +74,7 @@ public class CourseResultsService implements ICourseResultsService {
         if (grade >= 60) {
             state = CourseResultState.PASSED;
         }
-        if(grade == 0) {
+        if(grade == -1) {
             state = CourseResultState.ABSENCE;
         }
 
