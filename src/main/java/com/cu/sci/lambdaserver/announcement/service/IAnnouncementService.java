@@ -11,7 +11,7 @@ import java.util.Collection;
 public interface IAnnouncementService {
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','PROFESSOR')")
-    AnnouncementDto createAnnouncement(CreateAnnouncementDto createAnnouncementDto);
+    MessageResponse createAnnouncement(CreateAnnouncementDto createAnnouncementDto);
 
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_ADVISOR','PROFESSOR','STUDENT')")
     Page<AnnouncementDto> getAnnouncements(Integer pageNo, Integer pageSize);

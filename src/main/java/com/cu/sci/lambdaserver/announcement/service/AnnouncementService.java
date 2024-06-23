@@ -1,21 +1,22 @@
 package com.cu.sci.lambdaserver.announcement.service;
 
+import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
+import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
 import com.cu.sci.lambdaserver.announcement.entites.Announcement;
 import com.cu.sci.lambdaserver.announcement.entites.SpecificAnnouncement;
+import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.mapper.CreateAnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.mapper.SpecificAnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.repositories.AnnouncementRepository;
-import com.cu.sci.lambdaserver.announcement.dto.AnnouncementDto;
-import com.cu.sci.lambdaserver.announcement.dto.CreateAnnouncementDto;
-import com.cu.sci.lambdaserver.announcement.mapper.AnnouncementMapper;
 import com.cu.sci.lambdaserver.announcement.repositories.SpecificAnnouncementRepository;
+import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.user.UserRepository;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,6 +39,7 @@ public class AnnouncementService implements IAnnouncementService{
     private final AnnouncementMapper announcementMapper ;
     private final CreateAnnouncementMapper createAnnouncementMapper ;
     private final SpecificAnnouncementMapper specificAnnouncementMapper ;
+    private final IAuthenticationFacade authenticationFacade;
     private final SseService sseService ;
 
 
@@ -91,13 +93,46 @@ public class AnnouncementService implements IAnnouncementService{
 
     @Override
     public Page<AnnouncementDto> getAnnouncements(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Announcement> announcements = announcementRepository.findAll(pageable);
+        User authenticatedUser = authenticationFacade.getAuthenticatedUser();
 
-        if(announcements.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No announcements found") ;
+        List<Announcement> announcementsResult = List.of();
+
+        //get specific announcements for the authenticated user
+        List<SpecificAnnouncement> specificAnnouncements = specificAnnouncementRepository.findAllByUser(authenticatedUser).stream().toList();
+        if (!specificAnnouncements.isEmpty()) {
+            announcementsResult.addAll(specificAnnouncements);
         }
-        return announcements.map(announcementMapper::mapTo);
+
+        //add general announcements to the list
+        List<Announcement> generalAnnouncements = announcementRepository.findAllByTypeIgnoreCase(GENERAL).stream().toList();
+        if (!generalAnnouncements.isEmpty()) {
+            announcementsResult.addAll(generalAnnouncements);
+        }
+
+        if (authenticatedUser.getRoles().contains(STUDENT)) {
+            announcementsResult.addAll(announcementRepository
+                    .findAllByTypeIgnoreCase(STUDENT_ONLY)
+                    .stream()
+                    .toList());
+        }
+
+        if (authenticatedUser.getRoles().contains(PROFESSOR)) {
+            announcementsResult.addAll(announcementRepository
+                    .findAllByTypeIgnoreCase(PROFESSOR_ONLY)
+                    .stream()
+                    .toList());
+        }
+
+
+        //convert this list to a list of AnnouncementDto
+        List<AnnouncementDto> announcementDtos = announcementsResult.stream().map(announcementMapper::mapTo).toList();
+
+
+        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
+        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), announcementDtos.size());
+
+        return new PageImpl<>(announcementDtos.subList(start, end), PageRequest.of(pageNo, pageSize), announcementDtos.size());
+
     }
 
 
