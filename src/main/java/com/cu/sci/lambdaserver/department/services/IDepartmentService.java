@@ -6,8 +6,9 @@ import com.cu.sci.lambdaserver.department.dto.DepartmentDto;
 import com.cu.sci.lambdaserver.student.dto.StudentDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  * This interface provides the contract for the Department Service.
@@ -50,21 +51,17 @@ public interface IDepartmentService {
      * This method is secured with Spring Security's @PreAuthorize annotation, which restricts access to users with 'ADMIN' or 'STUDENT_AFFAIR' roles.
      *
      * @param code     The code of the department whose students are to be retrieved.
-     * @param pageNo   The page number to retrieve. This is used for pagination purposes.
-     * @param pageSize The size of the page to retrieve. This is also used for pagination purposes.
-     * @return A Page object containing StudentDto objects. Each StudentDto represents a student in the specified department.
+     * @return A List object containing StudentDto objects. Each StudentDto represents a student in the specified department.
      */
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT_AFFAIR')")
-    Page<StudentDto> getDepartmentStudentsByCode(String code, Integer pageNo, Integer pageSize);
+    List<StudentDto> getDepartmentStudentsByCode(String code);
 
     /**
      * Retrieves all departments.
      *
-     * @param pageNo   The page number to retrieve.
-     * @param pageSize The size of the page to retrieve.
-     * @return A page of departments.
+     * @return A List of departments.
      */
-    Page<DepartmentDto> getAllDepartments(Integer pageNo, Integer pageSize);
+    List<DepartmentDto> getAllDepartments();
 
     /**
      * Retrieves a department.
@@ -78,20 +75,16 @@ public interface IDepartmentService {
      * Retrieves the courses of a department.
      *
      * @param code     The code of the department.
-     * @param pageNo   The page number to retrieve.
-     * @param pageSize The size of the page to retrieve.
-     * @return A page of courses.
+     * @return A List of courses.
      */
-    Page<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize);
+    List<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code);
 
     /**
      * Retrieves the courses of a department for a specific semester.
      *
      * @param code     The code of the department.
-     * @param pageNo   The page number to retrieve.
-     * @param pageSize The size of the page to retrieve.
      * @param semester The semester to retrieve courses for.
-     * @return A page of courses.
+     * @return A List of courses.
      */
-    Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, YearSemester semester);
+    List<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, YearSemester semester);
 }
