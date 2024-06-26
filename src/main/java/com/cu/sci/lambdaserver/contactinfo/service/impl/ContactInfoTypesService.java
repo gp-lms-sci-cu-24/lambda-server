@@ -27,7 +27,7 @@ public class ContactInfoTypesService implements IContactInfoTypesService {
 
         Optional<ContactInfoTypes> contactInfoTypes = contactInfoTypesRepository.findByNameIgnoreCase(contactInfoType.getName());
         if(contactInfoTypes.isPresent()){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Contact Info Type already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Info Type already exists");
         }
 
         ContactInfoTypes contactInfoTypesEntity = contactInfoTypesMapper.mapFrom(contactInfoType);
