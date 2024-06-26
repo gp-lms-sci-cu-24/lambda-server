@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.contactinfo.mapper;
 
-import com.cu.sci.lambdaserver.contactinfo.ContactInfo;
+import com.cu.sci.lambdaserver.contactinfo.entities.ContactInfo;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;

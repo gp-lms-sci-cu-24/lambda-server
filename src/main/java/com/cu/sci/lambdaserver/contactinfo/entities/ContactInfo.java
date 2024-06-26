@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.contactinfo;
+package com.cu.sci.lambdaserver.contactinfo.entities;
 
 
 import com.cu.sci.lambdaserver.user.User;
@@ -19,14 +19,15 @@ public class ContactInfo {
     @SequenceGenerator(name = "contact_info_seq", sequenceName = "contact_info_seq", allocationSize = 10)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String phone;
+    @OneToOne
+    @JoinColumn(name = "contact_info_type_id")
+    private ContactInfoTypes contactInfoType;
 
-    private String telephone;
-
-    private String email;
+    @Column(nullable = false)
+    private String value;
 
 }

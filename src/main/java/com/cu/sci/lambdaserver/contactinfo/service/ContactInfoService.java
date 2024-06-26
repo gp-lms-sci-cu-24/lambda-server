@@ -1,7 +1,7 @@
 package com.cu.sci.lambdaserver.contactinfo.service;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
-import com.cu.sci.lambdaserver.contactinfo.ContactInfo;
+import com.cu.sci.lambdaserver.contactinfo.entities.ContactInfo;
 import com.cu.sci.lambdaserver.contactinfo.ContactInfoRepository;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
