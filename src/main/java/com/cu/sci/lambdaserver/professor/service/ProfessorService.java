@@ -1,9 +1,10 @@
 package com.cu.sci.lambdaserver.professor.service;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
-import com.cu.sci.lambdaserver.courseregister.service.impl.CourseRegisterService;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.ProfessorRepository;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
@@ -31,9 +32,9 @@ public class ProfessorService implements IProfessorService {
 
     private final IAuthenticationFacade authenticationFacade;
     private final ProfessorRepository professorRepository;
-    private final CourseRegisterService courseRegisterService;
     private final ProfessorMapper professorMapper;
     private final CourseClassRepository courseClassRepository;
+    private final CourseClassMapper courseClassMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -45,7 +46,7 @@ public class ProfessorService implements IProfessorService {
         }
 
         Professor professor = new Professor();
-        
+
         professor.setGender(professorDto.getGender());
         professor.setEmail(professorDto.getEmail());
         professor.setDegree(professorDto.getDegree());
@@ -117,9 +118,9 @@ public class ProfessorService implements IProfessorService {
     }
 
     @Override
-    public List<CourseClass> getCourseClasses(String username) {
+    public List<CourseClassDto> getCourseClasses(String username) {
         return professorRepository.findByUsername(username).map(Professor::getCourseClasses)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor with username " + username + " does not exist")).stream().map(courseClassMapper::mapTo).toList();
     }
 
     @Override
