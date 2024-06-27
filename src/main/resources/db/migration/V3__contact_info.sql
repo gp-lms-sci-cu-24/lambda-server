@@ -10,8 +10,7 @@ CREATE TABLE contact_info
     CONSTRAINT pk_contact_info PRIMARY KEY (id)
 );
 
-ALTER TABLE contact_info
-    ADD CONSTRAINT uc_contact_info_user UNIQUE (user_id);
+
 
 ALTER TABLE contact_info
     ADD CONSTRAINT FK_CONTACT_INFO_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);
