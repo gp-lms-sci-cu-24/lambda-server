@@ -94,7 +94,9 @@ public class ContactInfoService implements IContactInfoService {
 
     @Override
     public ContactInfoDto updateContactInfo(Long id, UpdateContactInfoDto contactInfoDto) {
-        Optional<ContactInfo> contactInfo = contactInfoRepository.findById(id);
+        User user = authenticationFacade.getAuthenticatedUser();
+
+        Optional<ContactInfo> contactInfo = contactInfoRepository.findByIdAndUser_Username(id, user.getUsername());
         if(contactInfo.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact Info not found with id: " + id);
         }

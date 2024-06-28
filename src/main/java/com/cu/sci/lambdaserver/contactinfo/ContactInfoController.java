@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.contactinfo;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoTypesDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.dto.UpdateContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.service.impl.ContactInfoService;
 import com.cu.sci.lambdaserver.contactinfo.service.impl.ContactInfoTypesService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -25,6 +26,36 @@ public class ContactInfoController {
     @ResponseStatus(HttpStatus.CREATED)
     public ContactInfoDto createContactInfo(@RequestBody CreateContactInfoDto contactInfoType) {
         return contactInfoService.createContactInfo(contactInfoType);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ContactInfoDto getContactInfo(@PathVariable Long id) {
+        return contactInfoService.getContactInfo(id);
+    }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ContactInfoDto> getMyContactInfo() {
+        return contactInfoService.getMyContactInfos();
+    }
+
+    @GetMapping("/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ContactInfoDto> getContactInfoByUsername(@PathVariable String username) {
+        return contactInfoService.getContactInfos(username);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ContactInfoDto updateContactInfo(@PathVariable Long id, @RequestBody UpdateContactInfoDto contactInfoDto) {
+        return contactInfoService.updateContactInfo(id, contactInfoDto);
+    }
+
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public MessageResponse deleteMyContactInfo() {
+        return contactInfoService.deleteMyContactInfo();
     }
 
 

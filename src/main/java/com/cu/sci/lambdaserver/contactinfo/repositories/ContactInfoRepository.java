@@ -12,4 +12,6 @@ public interface ContactInfoRepository extends JpaRepository<ContactInfo, Long> 
 
     Collection<ContactInfo> findByUser_Username(String username);
 
+    Optional<ContactInfo> findByIdAndUser_Username(Long id, String username);
+
 }
