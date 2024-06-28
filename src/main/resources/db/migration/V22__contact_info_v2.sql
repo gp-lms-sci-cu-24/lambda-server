@@ -1,5 +1,4 @@
 
-
 CREATE SEQUENCE IF NOT EXISTS contact_info_types_seq START WITH 1 INCREMENT BY 10;
 
 CREATE TABLE contact_info_types
@@ -25,6 +24,7 @@ ALTER TABLE contact_info_types
 ALTER TABLE contact_info
     ADD CONSTRAINT FK_CONTACT_INFO_ON_CONTACT_INFO_TYPE FOREIGN KEY (contact_info_type_id) REFERENCES contact_info_types (id);
 
+ALTER TABLE contact_info DROP CONSTRAINT uc_contact_info_user;
 
 ALTER TABLE contact_info
 DROP
@@ -37,3 +37,7 @@ COLUMN phone;
 ALTER TABLE contact_info
 DROP
 COLUMN telephone;
+
+ALTER TABLE settings
+ALTER
+COLUMN value TYPE VARCHAR(255) USING (value::VARCHAR(255));
