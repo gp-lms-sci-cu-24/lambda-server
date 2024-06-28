@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.courseregister;
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseResultDto;
+import com.cu.sci.lambdaserver.courseregister.dto.CumulativeResultDto;
 import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedCourseRegisterService;
 import com.cu.sci.lambdaserver.courseregister.service.IAuthenticatedCourseResultsService;
 import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
@@ -12,6 +13,7 @@ import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -170,7 +172,12 @@ public class CourseRegisterResultController {
         return courseResultsService.finishCourseClassForStudent(student, year, semester, group, grade, course);
     }
 
-
+    @GetMapping("result/map/{student}")
+    public List<List<CumulativeResultDto>> getStudentResultMap(
+            @PathVariable String student
+    ) {
+        return courseResultsService.getStudentMapDepartment(student);
+    }
 
 //    @PostMapping
 //    public Object takeASeat(){

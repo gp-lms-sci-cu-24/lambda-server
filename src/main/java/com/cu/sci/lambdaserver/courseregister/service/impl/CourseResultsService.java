@@ -1,8 +1,11 @@
 package com.cu.sci.lambdaserver.courseregister.service.impl;
 
+import com.cu.sci.lambdaserver.course.entites.DepartmentCourses;
+import com.cu.sci.lambdaserver.course.service.ICourseService;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.repository.CourseClassRepository;
 import com.cu.sci.lambdaserver.courseregister.dto.CourseResultDto;
+import com.cu.sci.lambdaserver.courseregister.dto.CumulativeResultDto;
 import com.cu.sci.lambdaserver.courseregister.entities.CourseRegister;
 import com.cu.sci.lambdaserver.courseregister.entities.CourseResult;
 import com.cu.sci.lambdaserver.courseregister.repositories.CourseRegisterRepository;
@@ -12,18 +15,14 @@ import com.cu.sci.lambdaserver.courseregister.service.ICourseResultsService;
 import com.cu.sci.lambdaserver.student.Student;
 import com.cu.sci.lambdaserver.student.StudentRepository;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
-import com.cu.sci.lambdaserver.utils.enums.CourseResultState;
-import com.cu.sci.lambdaserver.utils.enums.GradeBounds;
-import com.cu.sci.lambdaserver.utils.enums.Rate;
-import com.cu.sci.lambdaserver.utils.enums.YearSemester;
+import com.cu.sci.lambdaserver.utils.enums.*;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +36,7 @@ public class CourseResultsService implements ICourseResultsService {
     private final StudentRepository studentRepository;
     private final CourseClassRepository courseClassRepository;
     private final CourseRegisterRepository courseRegisterRepository;
-
+    private final ICourseService courseService;
 
     public Rate assignRate(Integer grade) {
         if (grade == null) {
@@ -74,7 +73,7 @@ public class CourseResultsService implements ICourseResultsService {
         if (grade >= 60) {
             state = CourseResultState.PASSED;
         }
-        if(grade == -1) {
+        if (grade == -1) {
             state = CourseResultState.ABSENCE;
         }
 
@@ -95,6 +94,7 @@ public class CourseResultsService implements ICourseResultsService {
                 ).collect(Collectors.toSet());
     }
 
+
     @Override
     public Set<CourseResultDto> getStudentResult(String studentUsername, Integer year, Set<YearSemester> semester) {
         authenticatedAccessService.checkAccessRegisterOrResultResource(studentUsername);
@@ -108,6 +108,67 @@ public class CourseResultsService implements ICourseResultsService {
                 ).stream().map(
                         courseResultMapper::mapTo
                 ).collect(Collectors.toSet());
+    }
+
+    int getSemesterIndex(DepartmentSemester semester) {
+        return switch (semester) {
+            case FIRST_SEMESTER -> 0;
+            case SECOND_SEMESTER -> 1;
+            case THIRD_SEMESTER -> 2;
+            case FOURTH_SEMESTER -> 3;
+            case FIFTH_SEMESTER -> 4;
+            case SIXTH_SEMESTER -> 5;
+            case SEVENTH_SEMESTER -> 6;
+            default -> 7;
+        };
+    }
+
+    @Override
+    public List<List<CumulativeResultDto>> getStudentMapDepartment(String studentUsername) {
+        List<List<CumulativeResultDto>> DepartmentMap = new ArrayList<>();
+        for (int i = 0; i < 8; i++)
+            DepartmentMap.add(new ArrayList<>());
+        Student student = studentRepository.findByUsernameIgnoreCase(studentUsername)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found with this code"));
+
+        Collection<CourseResultDto> myResults = courseResultRepository
+                .findByStudent(
+                        student
+                ).stream().map(
+                        courseResultMapper::mapTo
+                ).collect(Collectors.toSet());
+
+        HashMap<String, Integer> noOfFail = new HashMap<>();
+        HashMap<String, Integer> finalGrade = new HashMap<>();
+        HashMap<String, Integer> lastYear = new HashMap<>();
+
+        for (CourseResultDto courseResultDto : myResults) {
+            String courseCode = courseResultDto.getCourseClass().getCourse().getCode();
+            if (courseResultDto.getCourseClass().getYear() >= lastYear.getOrDefault(courseCode, 0)) {
+                finalGrade.put(courseCode, courseResultDto.getGrade());
+                lastYear.put(courseCode, courseResultDto.getCourseClass().getYear());
+                if (courseResultDto.getState() == CourseResultState.FAILED)
+                    noOfFail.put(courseCode, noOfFail.getOrDefault(courseCode, 0) + 1);
+            }
+        }
+
+        Collection<DepartmentCourses> myCourses = courseService.getAllByDepartment(student.getDepartment().getCode());
+        for (DepartmentCourses departmentCourses : myCourses) {
+            DepartmentMap.get(getSemesterIndex(departmentCourses.getSemester())).add(CumulativeResultDto.builder()
+                    .courseCode(departmentCourses.getCourse().getCode())
+                    .courseName(departmentCourses.getCourse().getName())
+                    .credit(departmentCourses.getCourse().getCreditHours())
+                    .mandatory(departmentCourses.getMandatory())
+                    .grade(finalGrade.getOrDefault(departmentCourses.getCourse().getCode(), 0))
+                    .rate(assignRate(finalGrade.getOrDefault(departmentCourses.getCourse().getCode(), 0)))
+                    .numberOfFail(noOfFail.getOrDefault(departmentCourses.getCourse().getCode(), 0))
+                    .state(finalGrade.getOrDefault(departmentCourses.getCourse().getCode(), 0) == 0 ? CourseResultState.NEVER_TAKEN :
+                            assignState(finalGrade.getOrDefault(departmentCourses.getCourse().getCode(), 0)))
+                    .build()
+            );
+        }
+
+        return DepartmentMap;
     }
 
     @Override

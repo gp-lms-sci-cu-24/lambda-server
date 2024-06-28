@@ -252,4 +252,11 @@ public class CourseService implements ICourseService {
                 .mandatory(mandatory)
                 .build();
     }
+
+    @Override
+    public Collection<DepartmentCourses> getAllByDepartment(String departmentCode) {
+        return departmentCoursesRepository.findByDepartmentCode(departmentCode);
+    }
+
+
 }
