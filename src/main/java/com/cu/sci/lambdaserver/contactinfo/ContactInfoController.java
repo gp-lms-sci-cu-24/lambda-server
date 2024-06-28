@@ -40,7 +40,7 @@ public class ContactInfoController {
         return contactInfoService.getMyContactInfos();
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/user/{username}")
     @ResponseStatus(HttpStatus.OK)
     public List<ContactInfoDto> getContactInfoByUsername(@PathVariable String username) {
         return contactInfoService.getContactInfos(username);
@@ -52,21 +52,11 @@ public class ContactInfoController {
         return contactInfoService.updateContactInfo(id, contactInfoDto);
     }
 
-    @DeleteMapping("/me")
+    @DeleteMapping("/me/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public MessageResponse deleteMyContactInfo() {
-        return contactInfoService.deleteMyContactInfo();
+    public MessageResponse deleteMyContactInfo(@PathVariable Long id) {
+        return contactInfoService.deleteMyContactInfo(id);
     }
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -111,9 +111,9 @@ public class ContactInfoService implements IContactInfoService {
     }
 
     @Override
-    public MessageResponse deleteMyContactInfo() {
+    public MessageResponse deleteMyContactInfo(Long id) {
         User user = authenticationFacade.getAuthenticatedUser();
-        Optional<ContactInfo> contactInfo = contactInfoRepository.findByUser_Id(user.getId());
+        Optional<ContactInfo> contactInfo = contactInfoRepository.findByIdAndUser_Username(id, user.getUsername());
         if(contactInfo.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact Info not found for user: " + user.getUsername());
         }

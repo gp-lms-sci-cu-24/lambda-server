@@ -19,7 +19,7 @@ public interface IContactInfoService {
 
     ContactInfoDto updateContactInfo(Long id, UpdateContactInfoDto contactInfoDto);
 
-    MessageResponse deleteMyContactInfo();
+    MessageResponse deleteMyContactInfo(Long id);
 
 }
 
