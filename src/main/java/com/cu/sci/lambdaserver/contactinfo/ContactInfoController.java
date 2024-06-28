@@ -1,12 +1,17 @@
 package com.cu.sci.lambdaserver.contactinfo;
 
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoTypesDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
-import com.cu.sci.lambdaserver.contactinfo.service.ContactInfoService;
+import com.cu.sci.lambdaserver.contactinfo.dto.UpdateContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.service.impl.ContactInfoService;
+import com.cu.sci.lambdaserver.contactinfo.service.impl.ContactInfoTypesService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/contact-info")
@@ -14,38 +19,79 @@ import org.springframework.web.bind.annotation.*;
 public class ContactInfoController {
 
     private final ContactInfoService contactInfoService;
+    private final ContactInfoTypesService contactInfoTypesService ;
 
-
+    //controller methods for contact info
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ContactInfoDto createContactInfo(@RequestBody CreateContactInfoDto contactInfo) {
-        return contactInfoService.createContactInfo(contactInfo);
+    public ContactInfoDto createContactInfo(@RequestBody CreateContactInfoDto contactInfoType) {
+        return contactInfoService.createContactInfo(contactInfoType);
     }
 
-    @GetMapping(path = "/{user-name}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContactInfoDto getContactInfo(@PathVariable(name = "user-name") String userName) {
-        return contactInfoService.getContactInfo(userName);
+    public ContactInfoDto getContactInfo(@PathVariable Long id) {
+        return contactInfoService.getContactInfo(id);
     }
 
-    @GetMapping(path = "/me")
+    @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public ContactInfoDto getMyContactInfo() {
-        return contactInfoService.getMyContactInfo();
+    public List<ContactInfoDto> getMyContactInfo() {
+        return contactInfoService.getMyContactInfos();
     }
 
-
-    @PutMapping(path = "/me")
+    @GetMapping("/user/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public ContactInfoDto updateContactInfo(@RequestBody ContactInfoDto contactInfo) {
-        return contactInfoService.updateContactInfo(contactInfo);
+    public List<ContactInfoDto> getContactInfoByUsername(@PathVariable String username) {
+        return contactInfoService.getContactInfos(username);
     }
 
-    @DeleteMapping(path = "/me")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MessageResponse deleteContactInfo() {
-        return contactInfoService.deleteContactInfo();
+    public ContactInfoDto updateContactInfo(@PathVariable Long id, @RequestBody UpdateContactInfoDto contactInfoDto) {
+        return contactInfoService.updateContactInfo(id, contactInfoDto);
     }
+
+    @DeleteMapping("/me/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public MessageResponse deleteMyContactInfo(@PathVariable Long id) {
+        return contactInfoService.deleteMyContactInfo(id);
+    }
+
+
+
+
+    //controller methods for contact info types
+    @PostMapping("/types")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MessageResponse createContactInfoType(@RequestBody ContactInfoTypesDto contactInfoType) {
+        return contactInfoTypesService.createContactInfoType(contactInfoType);
+    }
+
+    @GetMapping("/types/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public ContactInfoTypesDto getContactInfoType(@PathVariable String name) {
+        return contactInfoTypesService.getContactInfoType(name);
+    }
+
+    @GetMapping("/types")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ContactInfoTypesDto> getAllContactInfoTypes() {
+        return contactInfoTypesService.getAllContactInfoTypes();
+    }
+
+    @PutMapping("/types/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public ContactInfoTypesDto updateContactInfoType(@PathVariable String name, @RequestBody ContactInfoTypesDto contactInfoType) {
+        return contactInfoTypesService.updateContactInfoType(contactInfoType,name);
+    }
+
+    @DeleteMapping("/types/{name}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public MessageResponse deleteContactInfoType(@PathVariable String name) {
+        return contactInfoTypesService.deleteContactInfoType(name);
+    }
+
 
 
 

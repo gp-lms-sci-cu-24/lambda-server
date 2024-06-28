@@ -10,9 +10,10 @@ import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/departments")
@@ -29,8 +30,8 @@ public class DepartmentController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<DepartmentDto> getDepartments(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize) {
-        return departmentService.getAllDepartments(pageNo, pageSize);
+    public List<DepartmentDto> getDepartments() {
+        return departmentService.getAllDepartments();
     }
 
     @GetMapping(path = "/{code}")
@@ -54,20 +55,20 @@ public class DepartmentController {
 
     @GetMapping(path = "/{code}/courses")
     @ResponseStatus(HttpStatus.OK)
-    public Page<DepartmentCoursesCollectingDto> getDepartmentCourses(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
-        return departmentService.getDepartmentCoursesByCode(code, pageNo, pageSize);
+    public List<DepartmentCoursesCollectingDto> getDepartmentCourses(@PathVariable String code) {
+        return departmentService.getDepartmentCoursesByCode(code);
     }
 
 
     @GetMapping(path = "/{code}/courses", params = "details=true")
     @ResponseStatus(HttpStatus.OK)
-    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam YearSemester semester) {
-        return departmentService.getCourseDepartmentByCodeAndSemester(code, pageNo, pageSize, semester);
+    public List<DepartmentCoursesCollectingDto> getCourseDepartmentBySemester(@PathVariable String code, @RequestParam YearSemester semester) {
+        return departmentService.getCourseDepartmentByCodeAndSemester(code, semester);
     }
 
     @GetMapping(path = "/{code}/students")
     @ResponseStatus(HttpStatus.OK)
-    public Page<StudentDto> getDepartmentStudents(@PathVariable String code, @RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
-        return departmentService.getDepartmentStudentsByCode(code, pageNo, pageSize);
+    public List<StudentDto> getDepartmentStudents(@PathVariable String code) {
+        return departmentService.getDepartmentStudentsByCode(code);
     }
 }

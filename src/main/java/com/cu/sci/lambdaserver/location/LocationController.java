@@ -6,9 +6,10 @@ import com.cu.sci.lambdaserver.location.service.ILocationService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/locations")
@@ -25,8 +26,8 @@ public class LocationController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public Page<LocationDto> getAllLocations(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
-        return locationService.getAllLocations(pageNo, pageSize);
+    public List<LocationDto> getAllLocations() {
+        return locationService.getAllLocations();
     }
 
     @GetMapping(path = "/{id}")

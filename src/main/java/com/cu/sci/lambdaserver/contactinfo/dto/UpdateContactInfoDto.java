@@ -1,5 +1,6 @@
 package com.cu.sci.lambdaserver.contactinfo.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContactInfoDto {
+public class UpdateContactInfoDto {
 
-    private Long id ;
+    private String value;
 
-    private String value ;
-
-    private ContactInfoTypesDto type ;
 
 }

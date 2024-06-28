@@ -12,10 +12,6 @@ import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.enums.YearSemester;
 import com.cu.sci.lambdaserver.utils.mapper.config.IMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -67,14 +63,13 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<DepartmentDto> getAllDepartments(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Department> departmentPage = departmentRepository.findAll(pageable);
+    public List<DepartmentDto> getAllDepartments() {
+        List<Department> departments = departmentRepository.findAll();
         //check if list empty
-        if (departmentPage.isEmpty()) {
+        if (departments.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
-        return departmentPage.map(departmentMapper::mapTo);
+        return departments.stream().map(departmentMapper::mapTo).toList();
     }
 
     /**
@@ -153,7 +148,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code, Integer pageNo, Integer pageSize) {
+    public List<DepartmentCoursesCollectingDto> getDepartmentCoursesByCode(String code) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository
                 .findDepartmentByCodeIgnoreCase(code);
@@ -166,11 +161,7 @@ public class DepartmentService implements IDepartmentService {
                 .map(departmentCoursesCollectingMapper::mapTo)
                 .toList();
 
-        // convert list to page
-        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseList.size());
-
-        return new PageImpl<>(courseList.subList(start, end), PageRequest.of(pageNo, pageSize), courseList.size());
+        return courseList;
 
     }
 
@@ -179,7 +170,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, Integer pageNo, Integer pageSize, YearSemester semester) {
+    public List<DepartmentCoursesCollectingDto> getCourseDepartmentByCodeAndSemester(String code, YearSemester semester) {
         // check if department found
         Optional<Department> foundedDepartment = departmentRepository.findDepartmentByCodeIgnoreCase(code);
         if (foundedDepartment.isEmpty()) {
@@ -191,11 +182,7 @@ public class DepartmentService implements IDepartmentService {
                 .filter(departmentCourses -> departmentCourses.getSemester().equals(semester))
                 .map(departmentCoursesCollectingMapper::mapTo).toList();
 
-        // convert list to page
-        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), courseList.size());
-
-        return new PageImpl<>(courseList.subList(start, end), PageRequest.of(pageNo, pageSize), courseList.size());
+        return courseList;
 
     }
 
@@ -203,7 +190,7 @@ public class DepartmentService implements IDepartmentService {
      * {@inheritDoc}
      */
     @Override
-    public Page<StudentDto> getDepartmentStudentsByCode(String code, Integer pageNo, Integer pageSize) {
+    public List<StudentDto> getDepartmentStudentsByCode(String code) {
         /* @TODO: USE Pageable */
 
         //check if department found
@@ -223,9 +210,6 @@ public class DepartmentService implements IDepartmentService {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No students found in this department");
         }
 
-        // convert list to page
-        int start = (int) PageRequest.of(pageNo, pageSize).getOffset();
-        int end = Math.min((start + PageRequest.of(pageNo, pageSize).getPageSize()), StudentDtoList.size());
-        return new PageImpl<>(StudentDtoList.subList(start, end), PageRequest.of(pageNo, pageSize), StudentDtoList.size());
+        return StudentDtoList;
     }
 }

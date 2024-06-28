@@ -7,13 +7,11 @@ import com.cu.sci.lambdaserver.location.dto.LocationDto;
 import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,14 +47,13 @@ public class LocationService implements ILocationService {
      * {@inheritDoc}
      */
     @Override
-    public Page<LocationDto> getAllLocations(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Location> locations = locationRepository.findAll(pageable);
+    public List<LocationDto> getAllLocations() {
+        List<Location> locations = locationRepository.findAll();
         //check if list empty
         if (locations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
-        return locations.map(locationMapper::mapTo);
+        return locations.stream().map(locationMapper::mapTo).toList();
     }
 
     /**
