@@ -4,6 +4,7 @@ package com.cu.sci.lambdaserver.courseclass.service;
 import com.cu.sci.lambdaserver.course.entites.Course;
 import com.cu.sci.lambdaserver.course.repositries.CourseRepository;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
 import com.cu.sci.lambdaserver.courseclass.entity.CourseClassTiming;
@@ -311,6 +312,24 @@ public class CourseClassService implements ICourseClassService {
         professorRepository.save(professor);
 
         return new MessageResponse(String.format("professor %s removed from course class %s", professorUsername, courseCode));
+    }
+
+    @Override
+    public List<CourseClassTimingDto> getCourseClassTimingByLocation(Long locationId) {
+        if (locationRepository.findById(locationId).isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "location not found with this id " + locationId);
+
+        List<CourseClassTiming> timings = courseClassTimingRepository.findByLocationId(locationId);
+
+        return timings.stream().map((element) ->
+                CourseClassTimingDto.builder()
+                        .startTime(element.getStartTime())
+                        .id(element.getId())
+                        .endTime(element.getEndTime())
+                        .day(element.getDay())
+                        .type(element.getType())
+                        .build()
+        ).toList();
     }
 
 

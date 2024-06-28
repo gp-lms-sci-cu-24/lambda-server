@@ -1,6 +1,7 @@
 package com.cu.sci.lambdaserver.courseclass.service;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.user.User;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ICourseClassService {
@@ -37,6 +39,9 @@ public interface ICourseClassService {
     @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     MessageResponse removeProfessorToCourseClassByCourseAndYearAndSemesterAndGroup(User authenticatedUser, String courseCode, Integer year, YearSemester semester, Integer groupNumber, String professorUsername);
 
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
+    List<CourseClassTimingDto> getCourseClassTimingByLocation(Long locationId);
 
 
 //    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN','ACADEMIC_ADVISOR')")

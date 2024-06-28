@@ -2,9 +2,9 @@ package com.cu.sci.lambdaserver.courseclass;
 
 import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CreateCourseClassRequestDto;
 import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
-import com.cu.sci.lambdaserver.courseclass.service.CourseClassTimingService;
 import com.cu.sci.lambdaserver.courseclass.service.ICourseClassService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
 import com.cu.sci.lambdaserver.utils.dto.UsernameRequestDto;
@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -25,7 +26,6 @@ import java.util.Set;
 @Slf4j
 public class CourseClassController {
     private final ICourseClassService courseClassService;
-    private final CourseClassTimingService courseClassTimingService;
     private final IAuthenticationFacade authenticationFacade;
 
     @PostMapping
@@ -144,6 +144,11 @@ public class CourseClassController {
                 , courseCode, year, semester, group, usernameRequestDto.username());
     }
 
+    @GetMapping("/timing/{location}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CourseClassTimingDto> getCourseClassTimingByLocation(@PathVariable("location") Long locationId) {
+        return courseClassService.getCourseClassTimingByLocation(locationId);
+    }
 
 //    @GetMapping("/{course-code}/{group-number}")
 //    @ResponseStatus(HttpStatus.OK)
