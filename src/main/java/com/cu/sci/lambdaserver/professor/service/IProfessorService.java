@@ -15,10 +15,10 @@ public interface IProfessorService {
     ProfessorDto createProfessor(CreateProfessorRequestDto professorDto);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Page<Professor> getAllProfessors(Integer pageNo, Integer pageSize);
+    Page<ProfessorDto> getAllProfessors(Integer pageNo, Integer pageSize);
 
     @PreAuthorize("hasRole('ADMIN')")
-    Collection<Professor> getAllProfessorsByFirstName(String name);
+    Collection<ProfessorDto> getAllProfessorsByFirstName(String name);
 
     @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     ProfessorDto getProfessor(String username);
