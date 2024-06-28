@@ -1,7 +1,6 @@
 package com.cu.sci.lambdaserver.professor;
 
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
-import com.cu.sci.lambdaserver.courseclass.mapper.CourseClassMapper;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.service.IProfessorService;
@@ -13,14 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "api/v1/professors")
 @RequiredArgsConstructor
 public class ProfessorController {
     private final IProfessorService professorService;
-    private final CourseClassMapper courseClassMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -61,7 +58,7 @@ public class ProfessorController {
     @GetMapping(path = "/{username}/course-classes")
     @ResponseStatus(HttpStatus.OK)
     public List<CourseClassDto> getCourseClasses(@PathVariable String username) {
-        return professorService.getCourseClasses(username).stream().map(courseClassMapper::mapTo).collect(Collectors.toList());
+        return professorService.getCourseClasses(username);
     }
 
     @PostMapping(path = "/{username}/course-classes/{courseClassId}")

@@ -4,13 +4,11 @@ import com.cu.sci.lambdaserver.auth.security.IAuthenticationFacade;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
 import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
-import com.cu.sci.lambdaserver.location.mapper.LocationMapper;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.service.ProfessorService;
 import com.cu.sci.lambdaserver.schedule.ScheduleDto;
 import com.cu.sci.lambdaserver.schedule.ScheduleMapper;
 import com.cu.sci.lambdaserver.student.Student;
-import com.cu.sci.lambdaserver.timingregister.service.TimingRegisterService;
 import com.cu.sci.lambdaserver.user.User;
 import com.cu.sci.lambdaserver.utils.enums.Role;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -28,8 +28,7 @@ public class ScheduleService implements IScheduleService {
     private final ICourseRegisterService courseRegisterService;
     private final ScheduleMapper scheduleMapper;
     private final ProfessorService professorService;
-    private final TimingRegisterService TimingRegisterService;
-    private final LocationMapper locationMapper;
+//    private final SettingsService settingsService;
 
 
     @Override
@@ -49,9 +48,19 @@ public class ScheduleService implements IScheduleService {
     public Set<ScheduleDto> getMySchedule(Student student) {
         Set<CourseClassDto> registered = courseRegisterService.getRegisteredCourseClasses(student.getUsername());
         Set<ScheduleDto> schedule = new HashSet<>();
+//        YearSemester semester= settingsService.getSetting("CurrentSemester");
+//        Integer year= settingsService.getSetting("CurrentYear");
+
         for (CourseClassDto courseClass : registered) {
+            // TODO add validation if it's the right semester with the settings service
+//            if(courseClass.getSemester()!=semester || courseClass.getYear()!=year)
+//                continue;
+            if (courseClass.getYear() != Year.now().getValue())
+                continue;
+
             Set<CourseClassTimingDto> timings = courseClass.getTimings();
             for (CourseClassTimingDto timing : timings) {
+
                 schedule.add(scheduleMapper.map(courseClass.getCourse(), timing, courseClass.getGroupNumber()));
             }
         }
@@ -61,7 +70,17 @@ public class ScheduleService implements IScheduleService {
 
     @Override
     public Set<ScheduleDto> getMySchedule(Professor professor) {
-        throw new UnsupportedOperationException("Not Implemented Yet");
+        List<CourseClassDto> courseClasses = professorService.getCourseClasses(professor.getUsername());
+        Set<ScheduleDto> schedule = new HashSet<>();
+        for (CourseClassDto courseClass : courseClasses) {
+            Set<CourseClassTimingDto> timings = courseClass.getTimings();
+            if (timings == null || timings.isEmpty())
+                continue;
+            for (CourseClassTimingDto timing : timings) {
+                schedule.add(scheduleMapper.map(courseClass.getCourse(), timing, courseClass.getGroupNumber()));
+            }
+        }
+        return schedule;
     }
 
 //    public List<ScheduleDto> getSchedule() {

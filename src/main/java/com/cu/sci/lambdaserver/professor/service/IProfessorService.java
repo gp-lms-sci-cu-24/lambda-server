@@ -1,6 +1,6 @@
 package com.cu.sci.lambdaserver.professor.service;
 
-import com.cu.sci.lambdaserver.courseclass.entity.CourseClass;
+import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.professor.Professor;
 import com.cu.sci.lambdaserver.professor.dto.CreateProfessorRequestDto;
 import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
@@ -29,8 +29,8 @@ public interface IProfessorService {
     @PreAuthorize("hasRole('ADMIN')")
     void deleteProfessor(String username);
 
-    @PreAuthorize("hasRole('ADMIN')")
-    List<CourseClass> getCourseClasses(String username);
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
+    List<CourseClassDto> getCourseClasses(String username);
 
     @PreAuthorize("hasRole('ADMIN')")
     Professor assignCourseClass(String username, Long courseClassId);

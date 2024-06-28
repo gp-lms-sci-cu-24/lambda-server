@@ -141,6 +141,10 @@ public class CourseClassService implements ICourseClassService {
             courseClassTimingRepository.save(t);
         });
 
+        //assign admin prof
+        professor.get().getCourseClasses().add(courseClass);
+        professorRepository.save(professor.get());
+
         return courseClassMapper.mapTo(courseClass);
     }
 
@@ -211,7 +215,6 @@ public class CourseClassService implements ICourseClassService {
     }
 
 
-
     @Override
     public CourseClassDto getCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
         boolean courseFound = courseRepository.existsByCodeIgnoreCase(courseCode);
@@ -226,6 +229,7 @@ public class CourseClassService implements ICourseClassService {
 
         return courseClassMapper.mapTo(courseClass.get(), Set.of(CourseClassMapper.Include.values()));
     }
+
     @Override
     public MessageResponse deleteCourseClassByCourseAndYearAndSemesterAndGroup(String courseCode, Integer years, YearSemester semesters, Integer groupNumber) {
         Optional<Course> course = courseRepository.findByCodeIgnoreCase(courseCode);
@@ -310,8 +314,6 @@ public class CourseClassService implements ICourseClassService {
     }
 
 
-
-
 //    @Override
 //    public CourseClassResponseDto getCourseClass(String courseCode , Integer groupNumber) {
 //        //check if the course exist
@@ -369,7 +371,6 @@ public class CourseClassService implements ICourseClassService {
 //
 //        return  courseClasses.stream().map(courseClassMapper::mapTo).toList() ;
 //    }
-
 
 
     private boolean isValidTiming(CourseClassTiming timing, Course course) {

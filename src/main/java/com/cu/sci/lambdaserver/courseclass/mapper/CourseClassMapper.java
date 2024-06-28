@@ -37,6 +37,16 @@ public class CourseClassMapper implements IMapper<CourseClass, CourseClassDto> {
                 .maxCapacity(courseClass.getMaxCapacity())
                 .numberOfStudentsRegistered(courseClass.getNumberOfStudentsRegistered())
                 .year(courseClass.getYear())
+                .timings(courseClass.getTimings().stream()
+                        .map(courseClassTimingMapper::mapTo)
+                        .collect(Collectors.toSet())
+                )
+                .professors(courseClass.getProfessors().stream()
+                        .map(professorMapper::mapTo)
+                        .collect(Collectors.toSet())
+                )
+                .adminProfessor(professorMapper.mapTo(courseClass.getAdminProfessor()))
+                .course(courseMapper.mapTo(courseClass.getCourse()))
                 .groupNumber(courseClass.getGroupNumber())
                 .build();
 
