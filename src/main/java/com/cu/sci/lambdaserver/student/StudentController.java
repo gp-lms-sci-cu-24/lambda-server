@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "api/v1/students")
@@ -39,6 +40,12 @@ public class StudentController {
     @ResponseStatus(HttpStatus.OK)
     public StudentDto getStudent(@PathVariable String code) {
         return studentService.getStudent(code);
+    }
+
+    @GetMapping(path = "/search")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<StudentDto> search(@RequestParam String q) {
+        return studentService.search("%" + q + "%");
     }
 
     @PutMapping(path = "/{code}")

@@ -81,6 +81,17 @@ public class StudentService implements IStudentService {
     }
 
     @Override
+    public Set<StudentDto> search(String q) {
+        if (q == null || q.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Query string is required");
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Student> students = studentRepository.findDistinctByFirstNameLikeIgnoreCaseOrFatherNameLikeIgnoreCaseOrGrandfatherNameLikeIgnoreCaseOrLastnameLikeIgnoreCaseOrCode(q,q,q,q,q,pageable);
+
+        return students.getContent().stream().map(studentDtoiMapper::mapTo).collect(Collectors.toSet());
+    }
+
+    @Override
     public StudentDto getStudent(String code) {
         User user = authenticationFacade.getAuthenticatedUser();
         if (user.hasRole(Role.STUDENT) && !user.getUsername().equals(code)) {
