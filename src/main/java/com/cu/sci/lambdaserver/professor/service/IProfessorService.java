@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface IProfessorService {
     @PreAuthorize("hasRole('ADMIN')")
@@ -22,6 +23,8 @@ public interface IProfessorService {
 
     @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     ProfessorDto getProfessor(String username);
+
+    Set<ProfessorDto> search(String q) ;
 
     @PreAuthorize("hasRole('ADMIN')")
     ProfessorDto updateProfessor(String username, Professor professor);

@@ -37,6 +37,12 @@ public class ProfessorController {
         return professorService.getAllProfessorsByFirstName(name);
     }
 
+    @GetMapping(path = "/search")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<ProfessorDto> search(@RequestParam String q) {
+        return professorService.search("%" + q + "%");
+    }
+
     @GetMapping(path = "/{username}")
     @ResponseStatus(HttpStatus.OK)
     public ProfessorDto getProfessor(@PathVariable("username") String username) {

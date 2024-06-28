@@ -1,6 +1,8 @@
 package com.cu.sci.lambdaserver.professor;
 
 import com.cu.sci.lambdaserver.user.UserAbstractionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -11,5 +13,7 @@ public interface ProfessorRepository extends UserAbstractionRepository<Professor
     Optional<Professor> findByUsername(String username);
 
     Collection<Professor> findAllByFirstNameIgnoreCase(String name);
+
+    Page<Professor> findDistinctByFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(String firstName, String lastName, Pageable pageable);
 
 }
