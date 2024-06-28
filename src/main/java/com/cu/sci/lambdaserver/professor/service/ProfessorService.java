@@ -25,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +92,16 @@ public class ProfessorService implements IProfessorService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found");
         }
         return professorMapper.mapTo(professor.get());
+    }
+
+    @Override
+    public Set<ProfessorDto> search(String q) {
+        if (q == null || q.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Query string is required");
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Professor> professors = professorRepository.findDistinctByFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(q, q, pageable);
+
+        return professors.getContent().stream().map(professorMapper::mapTo).collect(Collectors.toSet());
     }
 
     @Override
