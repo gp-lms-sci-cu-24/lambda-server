@@ -1,6 +1,8 @@
 package com.cu.sci.lambdaserver.contactinfo;
 
+import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoTypesDto;
+import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.service.impl.ContactInfoService;
 import com.cu.sci.lambdaserver.contactinfo.service.impl.ContactInfoTypesService;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
@@ -17,6 +19,25 @@ public class ContactInfoController {
 
     private final ContactInfoService contactInfoService;
     private final ContactInfoTypesService contactInfoTypesService ;
+
+    //controller methods for contact info
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ContactInfoDto createContactInfo(@RequestBody CreateContactInfoDto contactInfoType) {
+        return contactInfoService.createContactInfo(contactInfoType);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //controller methods for contact info types

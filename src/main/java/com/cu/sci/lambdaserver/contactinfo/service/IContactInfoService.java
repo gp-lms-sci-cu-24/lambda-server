@@ -2,19 +2,24 @@ package com.cu.sci.lambdaserver.contactinfo.service;
 
 import com.cu.sci.lambdaserver.contactinfo.dto.ContactInfoDto;
 import com.cu.sci.lambdaserver.contactinfo.dto.CreateContactInfoDto;
+import com.cu.sci.lambdaserver.contactinfo.dto.UpdateContactInfoDto;
 import com.cu.sci.lambdaserver.utils.dto.MessageResponse;
+
+import java.util.List;
 
 public interface IContactInfoService {
 
-    ContactInfoDto createContactInfo(CreateContactInfoDto contactInfo);
+    ContactInfoDto createContactInfo(CreateContactInfoDto createContactInfoDto);
 
-    ContactInfoDto getContactInfo(String userName);
+    List<ContactInfoDto> getMyContactInfos();
 
-    ContactInfoDto getMyContactInfo();
+    List<ContactInfoDto> getContactInfos(String userName) ;
 
-    MessageResponse deleteContactInfo();
+    ContactInfoDto getContactInfo(Long id);
 
-    ContactInfoDto updateContactInfo(ContactInfoDto contactInfo);
+    ContactInfoDto updateContactInfo(Long id, UpdateContactInfoDto contactInfoDto);
+
+    MessageResponse deleteMyContactInfo();
 
 }
 

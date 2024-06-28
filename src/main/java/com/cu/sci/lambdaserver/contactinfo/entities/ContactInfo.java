@@ -23,7 +23,7 @@ public class ContactInfo {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_info_type_id")
     private ContactInfoTypes contactInfoType;
 
