@@ -27,13 +27,13 @@ public class ProfessorController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<Professor> getAllProfessors(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+    public Page<ProfessorDto> getAllProfessors(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         return professorService.getAllProfessors(pageNo, pageSize);
     }
 
     @GetMapping(path = "/search/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Professor> getAllProfessorsByFirstName(@PathVariable("name") String name) {
+    public Collection<ProfessorDto> getAllProfessorsByFirstName(@PathVariable("name") String name) {
         return professorService.getAllProfessorsByFirstName(name);
     }
 

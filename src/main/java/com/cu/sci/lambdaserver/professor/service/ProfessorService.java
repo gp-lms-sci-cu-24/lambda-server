@@ -64,20 +64,20 @@ public class ProfessorService implements IProfessorService {
     }
 
     @Override
-    public Page<Professor> getAllProfessors(Integer pageNo, Integer pageSize) {
+    public Page<ProfessorDto> getAllProfessors(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Professor> prof = professorRepository.findAll(pageable);
+        Page<ProfessorDto> prof = professorRepository.findAll(pageable).map(professorMapper::mapTo);
         if (prof.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Professors found");
         return prof;
     }
 
     @Override
-    public Collection<Professor> getAllProfessorsByFirstName(String name) {
+    public Collection<ProfessorDto> getAllProfessorsByFirstName(String name) {
         Collection<Professor> prof = professorRepository.findAllByFirstNameIgnoreCase(name);
         if (prof.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Professors found");
-        return prof;
+        return prof.stream().map(professorMapper::mapTo).toList();
     }
 
     @Override
