@@ -14,7 +14,8 @@ public class CourseClassTimingService implements ICourseClassTimingService {
 
     @Override
     public boolean isIntersect(CourseClassTiming time1, CourseClassTiming time2) {
-        return time1.getStartTime().before(time2.getEndTime()) &&
+        return time1.getDay().equals(time2.getDay()) &&
+                time1.getStartTime().before(time2.getEndTime()) &&
                 time1.getEndTime().after(time2.getStartTime());
     }
 
