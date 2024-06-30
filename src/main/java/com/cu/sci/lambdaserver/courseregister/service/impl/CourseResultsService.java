@@ -197,6 +197,13 @@ public class CourseResultsService implements ICourseResultsService {
                 .rate(rate)
                 .state(state)
                 .build();
+        if (grade >= GradeBounds.LOWER_BOUND_POOR.getValue()) {
+            //update student info
+            student.setCreditHours(student.getCreditHours() + courseClass.get().getCourse().getCreditHours());
+            student.setCreditHoursSemester(student.getCreditHoursSemester() - courseClass.get().getCourse().getCreditHours());
+
+            studentRepository.save(student);
+        }
 
         courseResultRepository.save(courseResult);
 
