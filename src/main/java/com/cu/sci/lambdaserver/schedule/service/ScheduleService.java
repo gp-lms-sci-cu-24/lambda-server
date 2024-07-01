@@ -5,6 +5,7 @@ import com.cu.sci.lambdaserver.courseclass.dto.CourseClassDto;
 import com.cu.sci.lambdaserver.courseclass.dto.CourseClassTimingDto;
 import com.cu.sci.lambdaserver.courseregister.service.ICourseRegisterService;
 import com.cu.sci.lambdaserver.professor.Professor;
+import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.professor.service.ProfessorService;
 import com.cu.sci.lambdaserver.schedule.ScheduleDto;
 import com.cu.sci.lambdaserver.schedule.ScheduleMapper;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,15 +53,15 @@ public class ScheduleService implements IScheduleService {
 
         for (CourseClassDto courseClass : registered) {
             // TODO add validation if it's the right semester with the settings service
+            // STOP Habd ya K3BOR
 //            if(courseClass.getSemester()!=semester || courseClass.getYear()!=year)
 //                continue;
-            if (courseClass.getYear() != Year.now().getValue())
-                continue;
+//            if (courseClass.getYear() != Year.now().getValue())
+//                continue;
 
             Set<CourseClassTimingDto> timings = courseClass.getTimings();
             for (CourseClassTimingDto timing : timings) {
-
-                schedule.add(scheduleMapper.map(courseClass.getCourse(), timing, courseClass.getGroupNumber()));
+                schedule.add(scheduleMapper.map(courseClass, timing));
             }
         }
 
@@ -73,11 +73,18 @@ public class ScheduleService implements IScheduleService {
         List<CourseClassDto> courseClasses = professorService.getCourseClasses(professor.getUsername());
         Set<ScheduleDto> schedule = new HashSet<>();
         for (CourseClassDto courseClass : courseClasses) {
+
+            courseClass.setAdminProfessor(ProfessorDto.builder()
+                    .firstName(professor.getFirstName())
+                    .lastName(professor.getLastName())
+                    .username(professor.getUsername())
+                    .build());
+
             Set<CourseClassTimingDto> timings = courseClass.getTimings();
             if (timings == null || timings.isEmpty())
                 continue;
             for (CourseClassTimingDto timing : timings) {
-                schedule.add(scheduleMapper.map(courseClass.getCourse(), timing, courseClass.getGroupNumber()));
+                schedule.add(scheduleMapper.map(courseClass, timing));
             }
         }
         return schedule;

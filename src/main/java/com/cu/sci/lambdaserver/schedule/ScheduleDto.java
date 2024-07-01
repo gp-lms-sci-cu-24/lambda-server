@@ -2,6 +2,7 @@ package com.cu.sci.lambdaserver.schedule;
 
 import com.cu.sci.lambdaserver.course.dto.CourseDto;
 import com.cu.sci.lambdaserver.location.dto.LocationDto;
+import com.cu.sci.lambdaserver.professor.dto.ProfessorDto;
 import com.cu.sci.lambdaserver.utils.enums.ClassType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class ScheduleDto {
     ClassType classType;
     CourseDto course;
     Integer courseGroup;
+    ProfessorDto professor;
 
 //    String lecCode;
 //    String courseCode;
