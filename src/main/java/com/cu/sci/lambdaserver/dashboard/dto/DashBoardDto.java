@@ -1,4 +1,4 @@
-package com.cu.sci.lambdaserver.dashboard;
+package com.cu.sci.lambdaserver.dashboard.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

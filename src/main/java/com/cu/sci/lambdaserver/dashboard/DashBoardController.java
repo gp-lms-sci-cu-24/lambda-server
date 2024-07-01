@@ -1,5 +1,7 @@
 package com.cu.sci.lambdaserver.dashboard;
 
+import com.cu.sci.lambdaserver.dashboard.dto.DashBoardDto;
+import com.cu.sci.lambdaserver.dashboard.dto.StudentCountByYearDto;
 import com.cu.sci.lambdaserver.dashboard.service.DashBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = ("/api/v1/dashboard"))
@@ -19,6 +23,12 @@ public class DashBoardController {
     @ResponseStatus(HttpStatus.OK)
     public DashBoardDto getDashBoard() {
         return dashBoardService.getDashBoard();
+    }
+
+    @GetMapping("/student-year")
+    @ResponseStatus(HttpStatus.OK)
+    public List<StudentCountByYearDto> getStudentCountByYear() {
+        return dashBoardService.getStudentCountByYear();
     }
 
 }

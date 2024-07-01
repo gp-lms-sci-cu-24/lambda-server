@@ -3,6 +3,7 @@ package com.cu.sci.lambdaserver.student;
 import com.cu.sci.lambdaserver.user.UserAbstractionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -15,5 +16,13 @@ public interface StudentRepository extends UserAbstractionRepository<Student> {
 
     Collection<Student> getByCodeIn(List<String> studentsCode);
 
+
     Page<Student> findDistinctByFirstNameLikeIgnoreCaseOrFatherNameLikeIgnoreCaseOrGrandfatherNameLikeIgnoreCaseOrLastnameLikeIgnoreCaseOrCode(String firstName, String fatherName, String grandfatherName, String lastname, String code, Pageable pageable);
+
+    Long countByJoiningYear(String year);
+
+    @Query("SELECT DISTINCT s.joiningYear FROM Student s")
+    Collection<String> getDistinctJoiningYear();
+
+
 }
